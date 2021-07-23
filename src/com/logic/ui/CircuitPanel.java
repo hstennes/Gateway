@@ -153,7 +153,7 @@ public class CircuitPanel extends JPanel {
 		
 		editor.getHighlight().render(g);
 		editor.getCustomCreator().render(g);
-		g2d.translate(cam.getX(), cam.getY());
+		g2d.translate(-cam.getX(), -cam.getY());
 		g2d.scale((1 / zoom), (1 / zoom));
 		if(message != null) message.render(g);
 

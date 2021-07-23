@@ -1,6 +1,6 @@
 package com.logic.ui;
 
-import java.awt.Cursor;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -84,11 +84,13 @@ public class LToolBar extends JToolBar implements ActionListener {
 	 * Creates all of the buttons used by the tool bar according to the instance variables
 	 */
 	private void createButtons() {
+		Insets padding = new Insets(0, 5, 0, 5);
 		for(int i = 0; i < dividerIndex1; i++) {
 			JButton button = new JButton(getToolbarIcon(i));
 			button.setToolTipText(tooltips[i]);
 			button.setActionCommand(tooltips[i]);
 			button.addActionListener(this);
+			button.setMargin(padding);
 			add(button);
 		}
 		
@@ -101,6 +103,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 			if(i == dividerIndex2 - 1) button.setSelected(true);
 			button.addActionListener(this);
 			buttonCollection.add(button, tooltips[i]);
+			button.setMargin(padding);
 			add(button);
 		}
 		
@@ -111,6 +114,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 			button.setToolTipText(tooltips[i]);
 			button.setActionCommand(tooltips[i]);
 			button.addActionListener(this);
+			button.setMargin(padding);
 			add(button);
 		}
 		
@@ -121,6 +125,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 			button.setToolTipText(tooltips[i]);
 			button.setActionCommand(tooltips[i]);
 			button.addActionListener(this);
+			button.setMargin(padding);
 			add(button);
 		}
 	
@@ -180,7 +185,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 		cp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		insertPanel.clear();
 	}
-	
+
 	/**
 	 * Changes to insert mode. If restoreSelection is true, then restoreSelection will be called on the InsertPanel's button collection. This
 	 * value should only be set to false if this method is being called by InsertPanel

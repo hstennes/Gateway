@@ -26,26 +26,15 @@ public class InsertPanel extends JPanel implements ActionListener {
 	public static final int BUTTON_SIZE = 70;
 
 	/**
-	 * The size of the padding around the generated logic icons (used in IconLoader)
+	 * The amount of padding around the body of each logic icon, used to determine how the SVGs should be rendered
 	 */
-	public static final int IMAGE_PADDING = 18;
+	public static final int[] paddingValues = new int[] {20, 20, 20, 20, 20, 20, 20, 20, 16, 18, 15, 15, 15, 18, 17};
 
 	/**
 	 * The names of the components in the InsertPanel, which are used for showing tool tips and by the Inserter
 	 */
 	private String[] logicNames = new String[] {"Buffer", "Not", "And", "Nand", "Or", "Nor", "Xor", "Xnor", "Clock", "Light", "Switch", 
 			"Zero", "One", "Button", "Display"};
-	//TODO re-enable display component by adding "Display" to the array
-
-	/**
-	 * The values by which to scale each logic image, in the same order as the array of logic names
-	 */
-	//private float[] scales = new float[] {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 3.5f};
-	
-	/**
-	 * The indexes in the logic image array to skip (because they are different versions of the same component)
-	 */
-	private int[] skipImageIndexes = new int[] {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 25, 29};
 	
 	/**
 	 * The collection of buttons
@@ -77,10 +66,8 @@ public class InsertPanel extends JPanel implements ActionListener {
 	 * Creates the buttons
 	 */
 	private void createButtons() {
-		int indexOffset = 0;
 		for(int i = 0; i < logicNames.length; i++) {
-			while(contains(skipImageIndexes, i + indexOffset)) indexOffset++;
-			JToggleButton button = new JToggleButton(getLogicIcon(i + indexOffset, i));
+			JToggleButton button = new JToggleButton(LogicSimApp.iconLoader.logicIcons[i]);
 			button.setToolTipText(logicNames[i]);
 			button.setActionCommand(logicNames[i]);
 			if(i == 0) button.setSelected(true);
@@ -89,32 +76,6 @@ public class InsertPanel extends JPanel implements ActionListener {
 			buttonCollection.add(button, logicNames[i]);
 			add(button);
 		}
-	}
-	
-	/**
-	 * Returns the scaled version of the specified logic image
-	 * @param imageIndex The index in the logicImages array in IconLoader
-	 * @param arrIndex The index in the logicNames array
-	 * @return
-	 */
-	private ImageIcon getLogicIcon(int imageIndex, int arrIndex) {
-		ImageIcon original = LogicSimApp.iconLoader.logicIcons[imageIndex];
-		return IconLoader.getScaledImage(original, (int) (original.getIconWidth()),
-				(int) (original.getIconHeight()));
-		//TODO this method and IconLoader.getScaledImage should eventually be removed
-	}
-	
-	/**
-	 * Tells whether the given array contains the given value
-	 * @param arr The array to consider
-	 * @param x The value to search for
-	 * @return A boolean telling whether the given array contains the value
-	 */
-	private boolean contains(int[] arr, int x) {
-		for(int i = 0; i < arr.length; i++) {
-			if(arr[i] == x) return true;
-		}
-		return false;
 	}
 	
 	/**

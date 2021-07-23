@@ -28,17 +28,22 @@ import javax.swing.ImageIcon;
 public class IconLoader {
 
 	/**
-	 * The number of logic icons
+	 * The number of images used for drawing circuits
 	 */
-	private final int numLogicIcons = 47;
-	
+	private final int numLogicImages = 14;
+
+	/**
+	 * The number of component icons used in the insert toolbar
+	 */
+	private final int numLogicIcons = 15;
+
 	/**
 	 * The number of tool bar icons
 	 */ 
 	private final int numToolBarIcons = 15;
 	
 	/**
-	 * The sprite sheet that contains all of the images that the program uses
+	 * The sprite sheet that contains all the images that the program uses
 	 */
 	public BufferedImage iconSheet;
 	
@@ -67,10 +72,10 @@ public class IconLoader {
 	 */
 	public IconLoader() {
 		iconSheet = loadImage("/icons.png");
-		logicImages = new LogicImage[numLogicIcons];
+		logicImages = new LogicImage[numLogicImages];
+		logicSVGs = new GraphicsNode[numLogicImages];
 		logicIcons = new ImageIcon[numLogicIcons];
 		toolBarIcons = new ImageIcon[numToolBarIcons];
-		logicSVGs = new GraphicsNode[numLogicIcons];
 		makeImageIcons();
 	}
 	
@@ -118,25 +123,25 @@ public class IconLoader {
 		toolBarIcons[3] = new ImageIcon(loadImage("/select.png"));
 		toolBarIcons[4] = new ImageIcon(loadImage("/pan.png"));
 		toolBarIcons[5] = new ImageIcon(loadImage("/insert.png"));
-		//TODO remove unnecessary parts of this method
+		//TODO make new toolbar icons
 	}
 
 	public void generateToolbarIcons(){
-		logicIcons[0] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.BUFFER)));
-		logicIcons[1] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.NOT)));
-		logicIcons[2] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.AND)));
-		logicIcons[3] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.NAND)));
-		logicIcons[4] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.OR)));
-		logicIcons[5] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.NOR)));
-		logicIcons[6] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.XOR)));
-		logicIcons[7] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.XNOR)));
-		logicIcons[8] = new ImageIcon(renderLogicIcon(new Clock(0, 0)));
-		logicIcons[22] = new ImageIcon(renderLogicIcon(new Light(0, 0)));
-		logicIcons[24] = new ImageIcon(renderLogicIcon(new Switch(0, 0)));
-		logicIcons[26] = new ImageIcon(renderLogicIcon(new Constant(0, 0, CompType.ZERO)));
-		logicIcons[27] = new ImageIcon(renderLogicIcon(new Constant(0, 0, CompType.ONE)));
-		logicIcons[28] = new ImageIcon(renderLogicIcon(new Button(0, 0)));
-		logicIcons[30] = new ImageIcon(renderLogicIcon(new Display(0, 0)));
+		logicIcons[0] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.BUFFER), 0));
+		logicIcons[1] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.NOT), 1));
+		logicIcons[2] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.AND), 2));
+		logicIcons[3] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.NAND), 3));
+		logicIcons[4] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.OR), 4));
+		logicIcons[5] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.NOR), 5));
+		logicIcons[6] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.XOR), 6));
+		logicIcons[7] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.XNOR), 7));
+		logicIcons[8] = new ImageIcon(renderLogicIcon(new Clock(0, 0), 8));
+		logicIcons[9] = new ImageIcon(renderLogicIcon(new Light(0, 0), 9));
+		logicIcons[10] = new ImageIcon(renderLogicIcon(new Switch(0, 0), 10));
+		logicIcons[11] = new ImageIcon(renderLogicIcon(new Constant(0, 0, CompType.ZERO), 11));
+		logicIcons[12] = new ImageIcon(renderLogicIcon(new Constant(0, 0, CompType.ONE), 12));
+		logicIcons[13] = new ImageIcon(renderLogicIcon(new Button(0, 0), 13));
+		logicIcons[14] = new ImageIcon(renderLogicIcon(new Display(0, 0), 14));
 	}
 	
 	/**
@@ -161,7 +166,7 @@ public class IconLoader {
 		}
 		return images;
 	}
-	
+
 	/**
 	 * Returns a scaled version of the image with the specified width and height
 	 * @param image The image to scale
@@ -176,15 +181,16 @@ public class IconLoader {
 	/**
 	 * Renders the icons for each gate using CompDrawer drawing code set to SVG mode. Does not include connections.
 	 * @param model The LComponent that will be rendered to the image (should be placed at 0, 0)
+	 * @param index The index the icon will be placed at in the logicIcons array
 	 * @return The icon based on the given LComponent
 	 */
-	private BufferedImage renderLogicIcon(LComponent model){
+	private BufferedImage renderLogicIcon(LComponent model, int index){
 		BufferedImage image = new BufferedImage(70, 70, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) image.getGraphics();
 		Rectangle bounds = model.getBounds();
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		float scale = Math.min((InsertPanel.BUTTON_SIZE - 2 * InsertPanel.IMAGE_PADDING) / (float) bounds.width,
-				(InsertPanel.BUTTON_SIZE - 2 * InsertPanel.IMAGE_PADDING) / (float) bounds.height);
+		float scale = Math.min((InsertPanel.BUTTON_SIZE - 2 * InsertPanel.paddingValues[index]) / (float) bounds.width,
+				(InsertPanel.BUTTON_SIZE - 2 * InsertPanel.paddingValues[index]) / (float) bounds.height);
 		g2d.scale(scale, scale);
 		g2d.translate((int) ((InsertPanel.BUTTON_SIZE - bounds.width * scale) / 2 / scale),
 				(int) ((InsertPanel.BUTTON_SIZE - bounds.height * scale) / 2 / scale));
@@ -223,7 +229,7 @@ public class IconLoader {
 	 * @param path The file path to load the image from
 	 * @return The BufferedImage
 	 */
-	public BufferedImage loadImage(String path){
+	private BufferedImage loadImage(String path){
 		try {
 			return ImageIO.read(getClass().getResource(path));
 		} catch (IOException e) {

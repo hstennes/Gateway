@@ -1,9 +1,6 @@
 package com.logic.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,7 +16,7 @@ public class UserMessage implements ActionListener {
 	/**
 	 * The font of the message
 	 */
-	private final Font labelFont = new Font("Arial", Font.PLAIN, 15);
+	private final Font labelFont = new Font("Arial", Font.PLAIN, 20);
 	
 	/**
 	 * The background color of the message
@@ -90,6 +87,7 @@ public class UserMessage implements ActionListener {
 	 * @param g The Graphics object to use
 	 */
 	public void render(Graphics g) {
+		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setFont(labelFont);
 		FontMetrics metrics = g.getFontMetrics(labelFont);
 		int width = metrics.stringWidth(text);
@@ -99,10 +97,11 @@ public class UserMessage implements ActionListener {
 		int y = offset + yMargin;
 		
 		g.setColor(labelColor);
-		g.fillRect(x - xMargin, y - yMargin - 12, width + 2 * xMargin, height + 2 * yMargin);
+		g.fillRect(x - xMargin, y - yMargin, width + 2 * xMargin, height + 2 * yMargin);
 		g.setColor(Color.BLACK);
-		g.drawRect(x - xMargin, y - yMargin - 12, width + 2 * xMargin, height + 2 * yMargin);
-		g.drawString(text, x, y);
+		((Graphics2D) g).setStroke(new BasicStroke(1));
+		g.drawRect(x - xMargin, y - yMargin, width + 2 * xMargin, height + 2 * yMargin);
+		g.drawString(text, x, y + height - 2);
 	}
 
 	/**

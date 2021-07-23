@@ -58,7 +58,6 @@ public class CustomHelper {
 		FontRenderContext frc = new FontRenderContext(labelFont.getTransform(), true, true);
 		Rectangle2D bounds = labelFont.getStringBounds(label, frc);
 		int secondDimension = (int) (Math.floor(bounds.getWidth()) + 20);
-		//TODO fix the above line to use appropriate padding
 		return Math.max(firstDimension, secondDimension);
 	}
 	

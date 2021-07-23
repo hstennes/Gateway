@@ -151,7 +151,6 @@ public class Custom extends SComponent {
 		int rotation = rotator.getRotation();
 		if(rotation == CompRotator.UP || rotation == CompRotator.DOWN) return new Rectangle(x, y, height, width);
 		else return new Rectangle(x, y, width, height);
-		//TODO fix this and the following method
 	}
 	
 	/**

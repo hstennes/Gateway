@@ -1,18 +1,11 @@
 package com.logic.input;
 
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
-import com.logic.components.BasicGate;
+import com.logic.components.*;
 import com.logic.components.Button;
-import com.logic.components.Clock;
-import com.logic.components.CompType;
-import com.logic.components.Constant;
-import com.logic.components.Display;
-import com.logic.components.Light;
-import com.logic.components.SingleInputGate;
-import com.logic.components.Switch;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.CompDrawer;
 import com.logic.ui.InsertPanel;
@@ -33,12 +26,6 @@ public class Inserter {
 	 * A boolean telling whether an insert is scheduled
 	 */
 	private boolean insertScheduled;
-	
-	/**
-	 * An array who's values are constant after the constructor that shows the offsets necessary to place components with the mouse at their
-	 * center
-	 */
-	private HashMap<String, Point> offsets;
 	
 	/**
 	 * The CircuitPanel
@@ -71,25 +58,6 @@ public class Inserter {
 		this.editor = editor;
 		this.insertPanel = insertPanel;
 		this.revision = revision;
-		offsets = new HashMap<String, Point>();
-		//float scale = CompDrawer.IMAGE_SCALE;
-		float scale = 0;
-		offsets.put("Buffer", new Point((int) (5.5 * scale), (int) (3.5 * scale)));
-		offsets.put("Not", new Point((int) (5.5 * scale), (int) (3.5 * scale)));
-		offsets.put("And", new Point((int) (5.5 * scale), (int) (3.5 * scale)));
-		offsets.put("Nand", new Point((int) (5.5 * scale), (int) (3.5 * scale)));
-		offsets.put("Or", new Point((int) (5.5 * scale), (int) (3.5 * scale)));
-		offsets.put("Nor", new Point((int) (5.5 * scale), (int) (3.5 * scale)));
-		offsets.put("Xor", new Point((int) (5.5 * scale), (int) (3.5 * scale)));
-		offsets.put("Xnor", new Point((int) (5.5 * scale), (int) (3.5 * scale)));
-		offsets.put("Clock", new Point((int) (5.5 * scale), (int) (3.5 * scale)));
-		offsets.put("Light", new Point((int) (3.5 * scale), (int) (5.5 * scale)));
-		offsets.put("Switch", new Point((int) (4.5 * scale), (int) (4.5 * scale)));
-		offsets.put("Zero", new Point((int) (4.5 * scale), (int) (4.5 * scale)));
-		offsets.put("One", new Point((int) (4.5 * scale), (int) (4.5 * scale)));
-		offsets.put("Button", new Point((int) (4.5 * scale), (int) (5.5 * scale)));
-		offsets.put("Display", new Point((int) (8.5 * scale), (int) (5.5 * scale)));
-		//TODO fix this offset system (used to place center of components at cursor)
 	}
 	
 	/**
@@ -131,29 +99,64 @@ public class Inserter {
 	private void doInsert(String name, Point location) {
 		int x = location.x;
 		int y = location.y;
-		if(editor.isSnap()) {
-			x = (x - offsets.get(name).x) / CircuitEditor.SNAP_DIST * CircuitEditor.SNAP_DIST;
-			y = (y - offsets.get(name).y) / CircuitEditor.SNAP_DIST * CircuitEditor.SNAP_DIST;
+		LComponent lcomp;
+		switch (name) {
+			case "Buffer":
+				lcomp = new SingleInputGate(x, y, CompType.BUFFER);
+				break;
+			case "Not":
+				lcomp = new SingleInputGate(x, y, CompType.NOT);
+				break;
+			case "And":
+				lcomp = new BasicGate(x, y, CompType.AND);
+				break;
+			case "Nand":
+				lcomp = new BasicGate(x, y, CompType.NAND);
+				break;
+			case "Or":
+				lcomp = new BasicGate(x, y, CompType.OR);
+				break;
+			case "Nor":
+				lcomp = new BasicGate(x, y, CompType.NOR);
+				break;
+			case "Xor":
+				lcomp = new BasicGate(x, y, CompType.XOR);
+				break;
+			case "Xnor":
+				lcomp = new BasicGate(x, y, CompType.XNOR);
+				break;
+			case "Clock":
+				lcomp = new Clock(x, y);
+				break;
+			case "Light":
+				lcomp = new Light(x, y);
+				break;
+			case "Switch":
+				lcomp = new Switch(x, y);
+				break;
+			case "Zero":
+				lcomp = new Constant(x, y, CompType.ZERO);
+				break;
+			case "One":
+				lcomp = new Constant(x, y, CompType.ONE);
+				break;
+			case "Button":
+				lcomp = new Button(x, y);
+				break;
+			default:
+				lcomp = new Display(x, y);
+				break;
+		}
+		Rectangle b = lcomp.getBounds();
+		if(editor.isSnap()){
+			lcomp.setX((b.x - b.width / 2) / CircuitEditor.SNAP_DIST * CircuitEditor.SNAP_DIST);
+			lcomp.setY((b.y - b.height / 2) / CircuitEditor.SNAP_DIST * CircuitEditor.SNAP_DIST);
 		}
 		else {
-			x -= offsets.get(name).x;
-			y -= offsets.get(name).y;
-		}              
-		if(name.equals("Buffer")) cp.addLComp(new SingleInputGate(x, y, CompType.BUFFER));
-		else if(name.equals("Not")) cp.addLComp(new SingleInputGate(x, y, CompType.NOT));
-		else if(name.equals("And")) cp.addLComp(new BasicGate(x, y, CompType.AND));
-		else if(name.equals("Nand")) cp.addLComp(new BasicGate(x, y, CompType.NAND));
-		else if(name.equals("Or")) cp.addLComp(new BasicGate(x, y, CompType.OR));
-		else if(name.equals("Nor")) cp.addLComp(new BasicGate(x, y, CompType.NOR));
-		else if(name.equals("Xor")) cp.addLComp(new BasicGate(x, y, CompType.XOR));
-		else if(name.equals("Xnor")) cp.addLComp(new BasicGate(x, y, CompType.XNOR));
-		else if(name.equals("Clock")) cp.addLComp(new Clock(x, y));
-		else if(name.equals("Light")) cp.addLComp(new Light(x, y));
-		else if(name.equals("Switch")) cp.addLComp(new Switch(x, y));
-		else if(name.equals("Zero")) cp.addLComp(new Constant(x, y, CompType.ZERO));
-		else if(name.equals("One")) cp.addLComp(new Constant(x, y, CompType.ONE));
-		else if(name.equals("Button")) cp.addLComp(new Button(x, y));
-		else if(name.equals("Display")) cp.addLComp(new Display(x, y));
+			lcomp.setX(b.x - b.width / 2);
+			lcomp.setY(b.y - b.height / 2);
+		}
+		cp.addLComp(lcomp);
 		revision.saveState(new CircuitState(cp));
 	}
 }
