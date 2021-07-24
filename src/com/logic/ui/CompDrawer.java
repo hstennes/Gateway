@@ -85,7 +85,7 @@ public class CompDrawer implements Serializable {
 	 * Returns the active image as specified by activeImageIndex
 	 * @return The active image
 	 */
-	public LogicImage getActiveImage() {
+	public BufferedImage getActiveImage() {
 		return LogicSimApp.iconLoader.logicImages[images[activeImageIndex]];
 	}
 
@@ -112,7 +112,6 @@ public class CompDrawer implements Serializable {
 	 */
 	public void drawComponentBody(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		BufferedImage currentImage = getActiveImage().getBufferedImage(CompRotator.RIGHT);
 		Rectangle b = lcomp.getBoundsRight();
 
 		applyTransform(lcomp.getRotator().getRotation(), b.x, b.y, b.width, b.height, g2d);
@@ -126,7 +125,7 @@ public class CompDrawer implements Serializable {
 				svgIcon.setTransform(new AffineTransform(size, 0, 0, size, b.x, b.y - difference / 2));
 			svgIcon.paint(g2d);
 		}
-		else g.drawImage(currentImage, b.x, b.y, b.width, b.height, null);
+		else g.drawImage(getActiveImage(), b.x, b.y, b.width, b.height, null);
 		reverseTransform(g2d);
 
 		if(lcomp.isSelected()) {

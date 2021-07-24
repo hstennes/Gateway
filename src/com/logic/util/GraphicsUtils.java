@@ -2,18 +2,10 @@ package com.logic.util;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-
-import com.logic.components.Connection;
-import com.logic.main.LogicSimApp;
-import com.logic.ui.CompDrawer;
-import com.logic.ui.CompRotator;
-import com.logic.ui.LogicImage;
 
 /**
  * A class that holds static helper methods for GUI

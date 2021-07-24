@@ -88,8 +88,10 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * @return A bounding box for the component
 	 */
 	public Rectangle getBounds() {
-		BufferedImage image = drawer.getActiveImage().getBufferedImage(rotator.getRotation());
-		return new Rectangle(x, y, image.getWidth() / CompDrawer.RENDER_SCALE, image.getHeight() / CompDrawer.RENDER_SCALE);
+		Rectangle boundsRight = getBoundsRight();
+		if(rotator.getRotation() == CompRotator.UP || rotator.getRotation() == CompRotator.DOWN)
+			return new Rectangle(x, y, boundsRight.height, boundsRight.width);
+		return new Rectangle(x, y, boundsRight.width, boundsRight.height);
 	}
 	
 	/**
@@ -97,7 +99,7 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * @return A bounding box for the component
 	 */
 	public Rectangle getBoundsRight() {
-		BufferedImage image = drawer.getActiveImage().getBufferedImage(CompRotator.RIGHT);
+		BufferedImage image = drawer.getActiveImage();
 		return new Rectangle(x, y, image.getWidth() / CompDrawer.RENDER_SCALE, image.getHeight() / CompDrawer.RENDER_SCALE);
 	}
 	

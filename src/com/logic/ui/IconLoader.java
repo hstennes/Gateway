@@ -50,7 +50,7 @@ public class IconLoader {
 	/**
 	 * The array of logic images
 	 */
-	public LogicImage[] logicImages;
+	public BufferedImage[] logicImages;
 
 	/**
 	 * The array of logic SVGs
@@ -72,31 +72,30 @@ public class IconLoader {
 	 */
 	public IconLoader() {
 		iconSheet = loadImage("/icons.png");
-		logicImages = new LogicImage[numLogicImages];
+		logicImages = new BufferedImage[numLogicImages];
 		logicSVGs = new GraphicsNode[numLogicImages];
 		logicIcons = new ImageIcon[numLogicIcons];
 		toolBarIcons = new ImageIcon[numToolBarIcons];
-		makeImageIcons();
 	}
 	
 	/**
 	 * Loads all the BufferedImages and SVG GraphicsNode objects that the program uses
 	 */
-	private void makeImageIcons() {
-		logicImages[0] = new LogicImage(imageFromSVG("res/buffer.svg", 240, 240));
-		logicImages[1] = new LogicImage(imageFromSVG("res/and.svg", 240, 240));
-		logicImages[2] = new LogicImage(imageFromSVG("res/or.svg", 240, 240));
-		logicImages[3] = new LogicImage(imageFromSVG("res/switch_off.svg", 180, 240));
-		logicImages[4] = new LogicImage(imageFromSVG("res/switch_on.svg", 180, 240));
-		logicImages[5] = new LogicImage(imageFromSVG("res/button_off.svg", 240, 240));
-		logicImages[6] = new LogicImage(imageFromSVG("res/button_on.svg", 240, 240));
-		logicImages[7] = new LogicImage(imageFromSVG("res/light_off.svg", 180, 240));
-		logicImages[8] = new LogicImage(imageFromSVG("res/light_on.svg", 180, 240));
-		logicImages[9] = new LogicImage(imageFromSVG("res/off_const.svg", 180, 240));
-		logicImages[10] = new LogicImage(imageFromSVG("res/on_const.svg", 180, 240));
-		logicImages[11] = new LogicImage(imageFromSVG("res/clock_off.svg", 240, 240));
-		logicImages[12] = new LogicImage(imageFromSVG("res/clock_on.svg", 240, 240));
-		logicImages[13] = new LogicImage(imageFromSVG("res/display.svg", 300, 300));
+	public void makeImageIcons() {
+		logicImages[0] = imageFromSVG("res/buffer.svg", 240, 240);
+		logicImages[1] = imageFromSVG("res/and.svg", 240, 240);
+		logicImages[2] = imageFromSVG("res/or.svg", 240, 240);
+		logicImages[3] = imageFromSVG("res/switch_off.svg", 180, 240);
+		logicImages[4] = imageFromSVG("res/switch_on.svg", 180, 240);
+		logicImages[5] = imageFromSVG("res/button_off.svg", 240, 240);
+		logicImages[6] = imageFromSVG("res/button_on.svg", 240, 240);
+		logicImages[7] = imageFromSVG("res/light_off.svg", 180, 240);
+		logicImages[8] = imageFromSVG("res/light_on.svg", 180, 240);
+		logicImages[9] = imageFromSVG("res/off_const.svg", 180, 240);
+		logicImages[10] = imageFromSVG("res/on_const.svg", 180, 240);
+		logicImages[11] = imageFromSVG("res/clock_off.svg", 240, 240);
+		logicImages[12] = imageFromSVG("res/clock_on.svg", 240, 240);
+		logicImages[13] = imageFromSVG("res/display.svg", 300, 300);
 
 		logicSVGs[0] = loadSvg("res/buffer.svg");
 		logicSVGs[1] = loadSvg("res/and.svg");
@@ -124,9 +123,7 @@ public class IconLoader {
 		toolBarIcons[4] = new ImageIcon(loadImage("/pan.png"));
 		toolBarIcons[5] = new ImageIcon(loadImage("/insert.png"));
 		//TODO make new toolbar icons
-	}
 
-	public void generateToolbarIcons(){
 		logicIcons[0] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.BUFFER), 0));
 		logicIcons[1] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.NOT), 1));
 		logicIcons[2] = new ImageIcon(renderLogicIcon(new BasicGate(0, 0, CompType.AND), 2));
