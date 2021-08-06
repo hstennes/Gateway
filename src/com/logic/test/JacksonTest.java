@@ -31,7 +31,19 @@ public class JacksonTest {
         list.add(pet1);
         list.add(pet2);
 
-        data.put("pets", list);
+        List<Integer> num1 = new ArrayList<>();
+        num1.add(3);
+        num1.add(4);
+
+        List<Integer> num2 = new ArrayList<>();
+        num2.add(7);
+        num2.add(5);
+
+        List<List<Integer>> numbers = new ArrayList<>();
+        numbers.add(num1);
+        numbers.add(num2);
+
+        data.put("pets", numbers);
 
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -42,4 +54,16 @@ public class JacksonTest {
             e.printStackTrace();
         }
     }
+    /*
+    File format:
+    components: [
+        {
+            id assigned when saving
+            type from CompType
+            x, y, rotation
+            input: [list of id or -1]
+        }
+    ]
+
+     */
 }
