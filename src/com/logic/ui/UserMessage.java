@@ -87,7 +87,6 @@ public class UserMessage implements ActionListener {
 	 * @param g The Graphics object to use
 	 */
 	public void render(Graphics g) {
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setFont(labelFont);
 		FontMetrics metrics = g.getFontMetrics(labelFont);
 		int width = metrics.stringWidth(text);
