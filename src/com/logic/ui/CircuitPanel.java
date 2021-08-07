@@ -85,6 +85,11 @@ public class CircuitPanel extends JPanel {
 	 * The Window that holds this CircuitPanel
 	 */
 	private Window window;
+
+	/**
+	 * Continuously counts up to guarantee unique component IDs
+	 */
+	private int idCounter = 1;
 	
 	/**
 	 * Constructs a new CircuitPanel
@@ -157,7 +162,7 @@ public class CircuitPanel extends JPanel {
 		g2d.scale((1 / zoom), (1 / zoom));
 		if(message != null) message.render(g);
 
-		System.out.println("Frametime: " + (System.currentTimeMillis() - time));
+		//System.out.println("Frametime: " + (System.currentTimeMillis() - time));
 	}
 	
 	/**
@@ -165,6 +170,9 @@ public class CircuitPanel extends JPanel {
 	 * @param lcomp The LComponent to add
 	 */
 	public void addLComp(LComponent lcomp) {
+		if(lcomp.getId() != -1) throw new IllegalArgumentException("Component added to CP must have blank ID");
+		lcomp.giveId(idCounter);
+		idCounter++;
 		lcomps.add(lcomp);
 		if(lcomp instanceof SComponent) ((SComponent) lcomp).start(this);
 		if(lcomp instanceof IComponent) addMouseListener((IComponent) lcomp);

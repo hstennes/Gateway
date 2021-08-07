@@ -20,6 +20,12 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * The ID of this component, used for saving (although this class does not care how the ID is used, it's just an integer
+	 * that can only be set once)
+	 */
+	private int id = -1;
+
+	/**
 	 * The position of the component in the CircuitPanel
 	 */
 	protected int x, y;
@@ -101,6 +107,22 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	public Rectangle getBoundsRight() {
 		BufferedImage image = drawer.getActiveImage();
 		return new Rectangle(x, y, image.getWidth() / CompDrawer.RENDER_SCALE, image.getHeight() / CompDrawer.RENDER_SCALE);
+	}
+
+	/**
+	 * Returns this component's ID, or -1 if it was never given an ID
+	 * @return the ID
+	 */
+	public int getId(){
+		return id;
+	}
+
+	/**
+	 * Sets the component ID.  Can only be called once, subsequent calls will not change the ID
+	 * @param id The component ID
+	 */
+	public void giveId(int id){
+		if(this.id == -1) this.id = id;
 	}
 	
 	/**
@@ -206,7 +228,7 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	
 	@Override
 	public String toString() {
-		return (this instanceof Custom ? "\"" + ((Custom) this).getLabel() + "\"" : 
-			NameConverter.nameFromType(type) + ", (" + x + ", " + y + ")");
+		return ((this instanceof Custom ? "\"" + ((Custom) this).getLabel() + "\"" :
+			NameConverter.nameFromType(type) + ", (" + x + ", " + y + ")") + ", ID=" + id);
 	}
 }

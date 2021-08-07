@@ -111,7 +111,7 @@ public class CustomCreator {
 				centerRect.y - centerRectExpand, 
 				centerRect.width + 2 * centerRectExpand, 
 				centerRect.height + 2 * centerRectExpand);
-		for(int i = 0; i < selection.size(); i++) lcomps.add(selection.get(i));
+		lcomps.addAll(selection);
 		selection.clear();
 	}
 	
@@ -134,6 +134,8 @@ public class CustomCreator {
 		ArrayList<LComponent> lcomps = CompUtils.duplicate(this.lcomps);
 		for(int i = 0; i < lcomps.size(); i++) {
 			LComponent lcomp = lcomps.get(i);
+			lcomp.giveId(i + 1);
+			System.out.println(lcomp);
 			if(lcomp instanceof Light || lcomp instanceof Switch) {
 				if(centerRect.contains(lcomp.getX(), lcomp.getY())) {
 					JOptionPane.showMessageDialog(null, "Please drag all lights and switches outside of the rectangle");
