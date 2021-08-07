@@ -64,6 +64,11 @@ public class CustomCreator {
 	 * The CircuitPanel
 	 */
 	private CircuitPanel cp;
+
+	/**
+	 * Counts up to give unique IDs to each newly created custom component
+	 */
+	private int idCounter = 1;
 	
 	/**
 	 * Constructs a new CustomCreator
@@ -160,7 +165,8 @@ public class CustomCreator {
 				content.put(CompRotator.RIGHT, right.toArray(new LComponent[0]));
 				int x = centerRect.x + centerRect.width + customPlacementOffset;
 				int y = centerRect.y + centerRect.height + customPlacementOffset;
-				Custom custom = new Custom(x, y, label, content, lcomps);
+				Custom custom = new Custom(x, y, label, content, lcomps, idCounter);
+				idCounter++;
 				cp.addLComp(custom);
 				cp.getEditor().getRevision().saveState(new CircuitState(cp));
 			}

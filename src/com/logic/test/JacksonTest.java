@@ -58,10 +58,16 @@ public class JacksonTest {
     File format:
     components: [
         {
-            id assigned when saving
+            id assigned when saving using list index
             type from CompType
             x, y, rotation
             input: [list of id or -1]
+        }
+    ]
+    customs: [
+        {
+            name
+
         }
     ]
 

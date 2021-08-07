@@ -107,7 +107,7 @@ public class CompUtils {
 		newContent.put(CompRotator.DOWN, bottom.toArray(new LComponent[0]));
 		newContent.put(CompRotator.LEFT, left.toArray(new LComponent[0]));
 		newContent.put(CompRotator.RIGHT, right.toArray(new LComponent[0]));
-		Custom result = new Custom(custom.getX(), custom.getY(), custom.getLabel(), newContent, newInnerComps);
+		Custom result = new Custom(custom.getX(), custom.getY(), custom.getLabel(), newContent, newInnerComps, custom.getTypeID());
 		result.setName(custom.getName());
 		result.getRotator().setRotation(custom.getRotator().getRotation());
 		return result;

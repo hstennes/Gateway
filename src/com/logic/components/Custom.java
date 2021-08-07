@@ -60,6 +60,11 @@ public class Custom extends SComponent {
 	 * The label that appears on the custom component (ex: "Adder")
 	 */
 	private String label;
+
+	/**
+	 * An ID to show that different custom objects are of the same "type".  Assigned by CustomCreator.
+	 */
+	private int typeID;
 	
 	/**
 	 * @param x The x position
@@ -69,11 +74,12 @@ public class Custom extends SComponent {
 	 * connections will appear on. To populate this map, use map.put(CompRotator.SOME_ROTATION, arrayOfLightsAndSwitches)
 	 * @param innerComps The list of all LComponents that are contained in this component
 	 */
-	public Custom(int x, int y, String label, HashMap<Integer, LComponent[]> content, ArrayList<LComponent> innerComps) {
+	public Custom(int x, int y, String label, HashMap<Integer, LComponent[]> content, ArrayList<LComponent> innerComps, int typeID) {
 		super(x, y, CompType.CUSTOM);
 		this.label = label;
 		this.content = content;
 		this.innerComps = innerComps;
+		this.typeID = typeID;
 		inputs = new HashMap<Integer, CustomInput>();
 		outputs = new HashMap<Integer, CustomOutput>();
 		CustomHelper helper = new CustomHelper(content);
@@ -255,5 +261,13 @@ public class Custom extends SComponent {
 	 */
 	public String getLabel() {
 		return label;
+	}
+
+	/**
+	 * Returns the custom type ID
+	 * @return type id
+	 */
+	public int getTypeID(){
+		return typeID;
 	}
 }
