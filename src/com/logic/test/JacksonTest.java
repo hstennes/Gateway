@@ -2,15 +2,16 @@ package com.logic.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logic.components.LComponent;
+import com.logic.files.JSONFile;
+import com.logic.ui.CircuitPanel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class JacksonTest {
 
     public static void main(String[] args){
+        /*
         Map<String, Object> data = new HashMap<>();
         data.put("first", "Hank");
         data.put("last", "Stennes");
@@ -43,7 +44,8 @@ public class JacksonTest {
         numbers.add(num1);
         numbers.add(num2);
 
-        data.put("pets", numbers);
+        int[][] pogNumbers = new int[][] {new int[] {1, 2, 3}, new int[] {4, 5, 6}};
+        data.put("pets", pogNumbers);
 
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -53,23 +55,98 @@ public class JacksonTest {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+
+        try {
+            testObjectThing();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+         */
     }
+
+    public static void testSave(List<LComponent> lcomps) {
+        JSONFile file = new JSONFile(lcomps);
+        String jsonResult = null;
+        try {
+            jsonResult = new ObjectMapper().writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(file);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        System.out.println(jsonResult);
+    }
+
+    public static void testLoad(CircuitPanel cp){
+        String str = "{\n" +
+                "  \"components\" : [ {\n" +
+                "    \"type\" : \"SWITCH\",\n" +
+                "    \"x\" : 288,\n" +
+                "    \"y\" : 79,\n" +
+                "    \"name\" : \"Untitled component\",\n" +
+                "    \"com\" : \"No comments\",\n" +
+                "    \"input\" : [ ]\n" +
+                "  }, {\n" +
+                "    \"type\" : \"SWITCH\",\n" +
+                "    \"x\" : 507,\n" +
+                "    \"y\" : 72,\n" +
+                "    \"rot\" : 1,\n" +
+                "    \"name\" : \"Untitled component\",\n" +
+                "    \"com\" : \"No comments\",\n" +
+                "    \"input\" : [ ],\n" +
+                "    \"state\" : true\n" +
+                "  }, {\n" +
+                "    \"type\" : \"NOR\",\n" +
+                "    \"x\" : 750,\n" +
+                "    \"y\" : 82,\n" +
+                "    \"name\" : \"Untitled component\",\n" +
+                "    \"com\" : \"No comments\",\n" +
+                "    \"input\" : [ [ ], [ ] ]\n" +
+                "  }, {\n" +
+                "    \"type\" : \"CLOCK\",\n" +
+                "    \"x\" : 368,\n" +
+                "    \"y\" : 297,\n" +
+                "    \"name\" : \"Untitled component\",\n" +
+                "    \"com\" : \"No comments\",\n" +
+                "    \"input\" : [ ],\n" +
+                "    \"delay\" : 300\n" +
+                "  } ]\n" +
+                "}";
+        try {
+            JSONFile file = new ObjectMapper().readValue(str, JSONFile.class);
+            System.out.println(file.components[1].type + " " + file.components[1].state);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     /*
     File format:
     components: [
         {
             id assigned when saving using list index
-            type from CompType
+            type from CompType OR customID
             x, y, rotation
-            input: [list of id or -1]
+            name, comments (if present?)
+            connect: [
+                [id, output_number, signal]
+            ]
+
+            state (just for switch?)
+            delay (just for clock)
         }
     ]
     customs: [
         {
-            name
-
+            typeID
+            label
+            components: [
+                {
+                    Same as above
+                }
+            ]
         }
     ]
-
      */
 }

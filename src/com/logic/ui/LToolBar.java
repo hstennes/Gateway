@@ -11,6 +11,7 @@ import javax.swing.JToolBar;
 
 import com.logic.main.FileManager;
 import com.logic.main.LogicSimApp;
+import com.logic.test.JacksonTest;
 
 /**
  * A tool bar for the program
@@ -160,8 +161,14 @@ public class LToolBar extends JToolBar implements ActionListener {
 		else if(command.equals("Undo")) cp.getEditor().getRevision().undo();
 		else if(command.equals("Redo")) cp.getEditor().getRevision().redo();
 		else if(command.equals("New")) LogicSimApp.newWindow(null);
-		else if(command.equals("Open")) fileManager.open();
-		else if(command.equals("Save")) fileManager.save();
+		else if(command.equals("Open")) {
+			//fileManager.open();
+			JacksonTest.testLoad(cp);
+		}
+		else if(command.equals("Save")) {
+			//fileManager.save();
+			JacksonTest.testSave(cp.lcomps);
+		}
 		else if(command.equals("Create Custom Component")) cp.getEditor().getCustomCreator().createCustom();
 	}
 	
