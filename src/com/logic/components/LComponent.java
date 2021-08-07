@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 import com.logic.engine.LogicEngine;
 import com.logic.ui.CompDrawer;
+import com.logic.ui.CompProperties;
 import com.logic.ui.CompRotator;
 import com.logic.util.Deletable;
 import com.logic.util.NameConverter;
@@ -67,8 +68,8 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 		drawer = new CompDrawer(this);
 		io = new IOManager(this);
 		rotator = new CompRotator();
-		name = "Untitled component";
-		comments = "No comments";
+		name = CompProperties.defaultName;
+		comments = CompProperties.defaultComments;
 	}
 	
 	/**

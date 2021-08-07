@@ -26,6 +26,16 @@ import com.logic.util.NameConverter;
 public class CompProperties extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * The default name every component is given
+	 */
+	public static final String defaultName = "Untitled component";
+
+	/**
+	 * The defaults comment every component is given
+	 */
+	public static final String defaultComments = "No comments";
 	
 	/**
 	 * The title of the properties panel

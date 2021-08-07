@@ -2,6 +2,7 @@ package com.logic.files;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.logic.components.*;
+import com.logic.ui.CompProperties;
 
 import java.util.Map;
 
@@ -33,8 +34,8 @@ public class FileComponent {
         x = lcomp.getX();
         y = lcomp.getY();
         rot = lcomp.getRotator().getRotation();
-        name = lcomp.getName();
-        com = lcomp.getComments();
+        name = lcomp.getName().equals(CompProperties.defaultName) ? "" : lcomp.getName();
+        com = lcomp.getComments().equals(CompProperties.defaultComments) ? "" : lcomp.getComments();
         if(type == CompType.SWITCH) state = ((Switch) lcomp).getState();
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
 
