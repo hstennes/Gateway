@@ -32,6 +32,9 @@ public class FileComponent {
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int delay;
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public int customid;
+
     public FileComponent(LComponent lcomp, Map<LComponent, Integer> idMap){
         type = lcomp.getType();
         pos = new int[] {lcomp.getX(), lcomp.getY()};
@@ -40,6 +43,7 @@ public class FileComponent {
         com = lcomp.getComments().equals(CompProperties.defaultComments) ? "" : lcomp.getComments();
         if(type == CompType.SWITCH) state = ((Switch) lcomp).getState();
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
+        else if(type == CompType.CUSTOM) customid = ((Custom) lcomp).getTypeID();
 
         IOManager io = lcomp.getIO();
         input = new int[io.getNumInputs()][3];

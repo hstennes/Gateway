@@ -1,26 +1,38 @@
 package com.logic.files;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.logic.components.CompType;
-import com.logic.components.Connection;
-import com.logic.components.LComponent;
-import com.logic.components.Wire;
+import com.logic.components.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JSONFile {
 
     public FileComponent[] components;
 
+    public CustomBlueprint[] customs;
+
     public JSONFile(List<LComponent> lcomps){
         Map<LComponent, Integer> idMap = new HashMap<>();
-        for(int i = 0; i < lcomps.size(); i++) idMap.put(lcomps.get(i), i);
+        HashSet<Integer> customIDs = new HashSet<>();
+        ArrayList<Custom> uniqueCustoms = new ArrayList<>();
+
+        for(int i = 0; i < lcomps.size(); i++) {
+            LComponent lcomp = lcomps.get(i);
+            idMap.put(lcomps.get(i), i);
+            if(lcomp.getType() == CompType.CUSTOM) {
+                int typeID = ((Custom) lcomp).getTypeID();
+                if(!customIDs.contains(typeID)) {
+                    customIDs.add(typeID);
+                    uniqueCustoms.add((Custom) lcomp);
+                }
+            }
+        }
 
         components = new FileComponent[lcomps.size()];
         for(int i = 0; i < lcomps.size(); i++) components[i] = new FileComponent(lcomps.get(i), idMap);
+
+        customs = new CustomBlueprint[uniqueCustoms.size()];
+        for(int i = 0; i < uniqueCustoms.size(); i++) customs[i] = new CustomBlueprint(uniqueCustoms.get(i));
     }
 
     public JSONFile(){ }
