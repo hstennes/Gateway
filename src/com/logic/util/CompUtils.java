@@ -2,18 +2,9 @@ package com.logic.util;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import com.logic.components.Connection;
-import com.logic.components.Custom;
-import com.logic.components.IOManager;
-import com.logic.components.LComponent;
-import com.logic.components.Light;
-import com.logic.components.Switch;
-import com.logic.components.Wire;
+import com.logic.components.*;
 import com.logic.ui.CompRotator;
 
 /**
@@ -22,6 +13,68 @@ import com.logic.ui.CompRotator;
  *
  */
 public class CompUtils {
+
+	/**
+	 * Creates a component of the given type with the given coordinates
+	 * @param type The component type (case-insensitive CompType value as string)
+	 * @param x The x position
+	 * @param y The y position
+	 * @return The component
+	 */
+	public static LComponent makeComponent(String type, int x, int y){
+		LComponent lcomp;
+		type = type.toLowerCase();
+		switch (type) {
+			case "buffer":
+				lcomp = new SingleInputGate(x, y, CompType.BUFFER);
+				break;
+			case "not":
+				lcomp = new SingleInputGate(x, y, CompType.NOT);
+				break;
+			case "and":
+				lcomp = new BasicGate(x, y, CompType.AND);
+				break;
+			case "nand":
+				lcomp = new BasicGate(x, y, CompType.NAND);
+				break;
+			case "or":
+				lcomp = new BasicGate(x, y, CompType.OR);
+				break;
+			case "nor":
+				lcomp = new BasicGate(x, y, CompType.NOR);
+				break;
+			case "xor":
+				lcomp = new BasicGate(x, y, CompType.XOR);
+				break;
+			case "xnor":
+				lcomp = new BasicGate(x, y, CompType.XNOR);
+				break;
+			case "clock":
+				lcomp = new Clock(x, y);
+				break;
+			case "light":
+				lcomp = new Light(x, y);
+				break;
+			case "switch":
+				lcomp = new Switch(x, y);
+				break;
+			case "zero":
+				lcomp = new Constant(x, y, CompType.ZERO);
+				break;
+			case "one":
+				lcomp = new Constant(x, y, CompType.ONE);
+				break;
+			case "button":
+				lcomp = new Button(x, y);
+				break;
+			case "display":
+				lcomp = new Display(x, y);
+				break;
+			default:
+				throw new IllegalArgumentException("Component name not recognized");
+		}
+		return lcomp;
+	}
 
 	/**
 	 * Creates a deep clone of the given list of LComponents without adding any offset

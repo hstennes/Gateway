@@ -9,6 +9,7 @@ import com.logic.components.Button;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.CompDrawer;
 import com.logic.ui.InsertPanel;
+import com.logic.util.CompUtils;
 
 /**
  * This class holds the code for adding components to the CircuitPanel
@@ -97,56 +98,7 @@ public class Inserter {
 	 * @param location The location of the mouse
 	 */
 	private void doInsert(String name, Point location) {
-		int x = location.x;
-		int y = location.y;
-		LComponent lcomp;
-		switch (name) {
-			case "Buffer":
-				lcomp = new SingleInputGate(x, y, CompType.BUFFER);
-				break;
-			case "Not":
-				lcomp = new SingleInputGate(x, y, CompType.NOT);
-				break;
-			case "And":
-				lcomp = new BasicGate(x, y, CompType.AND);
-				break;
-			case "Nand":
-				lcomp = new BasicGate(x, y, CompType.NAND);
-				break;
-			case "Or":
-				lcomp = new BasicGate(x, y, CompType.OR);
-				break;
-			case "Nor":
-				lcomp = new BasicGate(x, y, CompType.NOR);
-				break;
-			case "Xor":
-				lcomp = new BasicGate(x, y, CompType.XOR);
-				break;
-			case "Xnor":
-				lcomp = new BasicGate(x, y, CompType.XNOR);
-				break;
-			case "Clock":
-				lcomp = new Clock(x, y);
-				break;
-			case "Light":
-				lcomp = new Light(x, y);
-				break;
-			case "Switch":
-				lcomp = new Switch(x, y);
-				break;
-			case "Zero":
-				lcomp = new Constant(x, y, CompType.ZERO);
-				break;
-			case "One":
-				lcomp = new Constant(x, y, CompType.ONE);
-				break;
-			case "Button":
-				lcomp = new Button(x, y);
-				break;
-			default:
-				lcomp = new Display(x, y);
-				break;
-		}
+		LComponent lcomp = CompUtils.makeComponent(name, location.x, location.y);
 		Rectangle b = lcomp.getBounds();
 		if(editor.isSnap()){
 			lcomp.setX((b.x - b.width / 2) / CircuitEditor.SNAP_DIST * CircuitEditor.SNAP_DIST);
