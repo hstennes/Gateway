@@ -43,7 +43,7 @@ public class Custom extends SComponent {
 	/**
 	 * The content map that is given when the component is constructed, used for copying the component
 	 */
-	private HashMap<Integer, LComponent[]> content;
+	private LComponent[][] content;
 	
 	/**
 	 * The list of all LComponents contained within this component, used for displaying the inside of the component, copying the component,
@@ -74,7 +74,7 @@ public class Custom extends SComponent {
 	 * connections will appear on. To populate this map, use map.put(CompRotator.SOME_ROTATION, arrayOfLightsAndSwitches)
 	 * @param innerComps The list of all LComponents that are contained in this component
 	 */
-	public Custom(int x, int y, String label, HashMap<Integer, LComponent[]> content, ArrayList<LComponent> innerComps, int typeID) {
+	public Custom(int x, int y, String label, LComponent[][] content, ArrayList<LComponent> innerComps, int typeID) {
 		super(x, y, CompType.CUSTOM);
 		this.label = label;
 		this.content = content;
@@ -87,7 +87,7 @@ public class Custom extends SComponent {
 		height = helper.chooseHeight();
 		
 		for(int s  = CompRotator.RIGHT; s <= CompRotator.UP; s++) {
-			LComponent[] side = content.get(s);
+			LComponent[] side = content[s];
 			if(side != null) initSide(side, s, helper);
 		}
 	}
@@ -243,7 +243,7 @@ public class Custom extends SComponent {
 	 * Return the content HashMap of this custom component
 	 * @return The content HashMap
 	 */
-	public HashMap<Integer, LComponent[]> getContent(){
+	public LComponent[][] getContent(){
 		return content;
 	}
 	

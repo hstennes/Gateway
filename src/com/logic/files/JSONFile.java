@@ -7,6 +7,8 @@ import java.util.*;
 
 public class JSONFile {
 
+    public int version = 1;
+
     public FileComponent[] components;
 
     public CustomBlueprint[] cTypes;

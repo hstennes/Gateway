@@ -26,7 +26,7 @@ public class JacksonTest {
         try{
             long time1 = System.currentTimeMillis();
             JSONFile file = new ObjectMapper().readValue(Paths.get("testsave.json").toFile(), JSONFile.class);
-            long time2=  System.currentTimeMillis();
+            long time2 = System.currentTimeMillis();
             cp.addLComps(file.getLComps());
             long time3 = System.currentTimeMillis();
 

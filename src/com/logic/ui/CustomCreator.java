@@ -127,27 +127,37 @@ public class CustomCreator {
 	 * Calculates the layout of inputs and outputs for the custom component based on the positions given by the user and adds the custom 
 	 * component to the CircuitPanel. If the user has left any of the lights or switches inside of the bounding rectangle, then this method
 	 * will do nothing and return a value of false.
-	 * @return A boolean telling whether this method was successful
 	 */
-	public boolean completeCustom() {
-		boolean successful = true;
-		int a = centerRect.x;
-		int b = centerRect.y;
-		int a2 = centerRect.x + centerRect.width;
-		int b2 = centerRect.y + centerRect.height;
+	public void completeCustom() {
+		ArrayList<LComponent> lcomps = CompUtils.duplicate(this.lcomps);
+		LComponent[][] content = getCustomContent(lcomps, centerRect);
+		if(content == null)
+			JOptionPane.showMessageDialog(null, "Please drag all lights and switches outside of the rectangle");
+		String label = JOptionPane.showInputDialog(null, "New component label?");
+		if(label != null){
+			int x = centerRect.x + centerRect.width + customPlacementOffset;
+			int y = centerRect.y + centerRect.height + customPlacementOffset;
+			Custom custom = new Custom(x, y, label, content, lcomps, customs.size());
+			customs.add(CompUtils.duplicateCustom(custom));
+			cp.addLComp(custom);
+			cp.getEditor().getRevision().saveState(new CircuitState(cp));
+		}
+		reset();
+	}
+
+	public static LComponent[][] getCustomContent(ArrayList<LComponent> lcomps, Rectangle centerBounds){
+		int a = centerBounds.x;
+		int b = centerBounds.y;
+		int a2 = centerBounds.x + centerBounds.width;
+		int b2 = centerBounds.y + centerBounds.height;
 		ArrayList<LComponent> top = new ArrayList<LComponent>();
 		ArrayList<LComponent> bottom = new ArrayList<LComponent>();
 		ArrayList<LComponent> left = new ArrayList<LComponent>();
 		ArrayList<LComponent> right = new ArrayList<LComponent>();
-		ArrayList<LComponent> lcomps = CompUtils.duplicate(this.lcomps);
 		for(int i = 0; i < lcomps.size(); i++) {
 			LComponent lcomp = lcomps.get(i);
 			if(lcomp instanceof Light || lcomp instanceof Switch) {
-				if(centerRect.contains(lcomp.getX(), lcomp.getY())) {
-					JOptionPane.showMessageDialog(null, "Please drag all lights and switches outside of the rectangle");
-					successful = false;
-					break;
-				}
+				if(centerBounds.contains(lcomp.getX(), lcomp.getY())) return null;
 				int x = lcomp.getX();
 				int y = lcomp.getY();
 				if(y - b + a <= x && x <= -y + b + a2 && y <= b) CompUtils.addInPlace(lcomp, top, true);
@@ -156,26 +166,11 @@ public class CustomCreator {
 				else if(x >= a && a2 - x + b <= y && y <= x - a2 + b2) CompUtils.addInPlace(lcomp, right, false);
 			}
 		}
-		
-		if(successful) {
-			String label = JOptionPane.showInputDialog(null, "New component label?");
-			if(label != null) {
-				HashMap<Integer, LComponent[]> content = new HashMap<Integer, LComponent[]>();
-				content.put(CompRotator.UP, top.toArray(new LComponent[0]));
-				content.put(CompRotator.DOWN, bottom.toArray(new LComponent[0]));
-				content.put(CompRotator.LEFT, left.toArray(new LComponent[0]));
-				content.put(CompRotator.RIGHT, right.toArray(new LComponent[0]));
-				int x = centerRect.x + centerRect.width + customPlacementOffset;
-				int y = centerRect.y + centerRect.height + customPlacementOffset;
-				Custom custom = new Custom(x, y, label, content, lcomps, customs.size());
-				customs.add(CompUtils.duplicateCustom(custom));
-				cp.addLComp(custom);
-				cp.getEditor().getRevision().saveState(new CircuitState(cp));
-			}
-			reset();
-		}
-		cp.repaint();
-		return successful;
+
+		return new LComponent[][] {right.toArray(new LComponent[0]),
+				bottom.toArray(new LComponent[0]),
+				left.toArray(new LComponent[0]),
+				top.toArray(new LComponent[0])};
 	}
 	
 	/**

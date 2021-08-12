@@ -36,13 +36,13 @@ public class CustomHelper {
 	/**
 	 * The map of lights and switches from the CustomCreator
 	 */
-	private HashMap<Integer, LComponent[]> content;
+	private LComponent[][] content;
 	
 	/**
 	 * Constructs a new CustomHelper
 	 * @param content The content map given to the constructor of the custom component
 	 */
-	public CustomHelper(HashMap<Integer, LComponent[]> content) {
+	public CustomHelper(LComponent[][] content) {
 		this.content = content;
 	}
 	
@@ -54,7 +54,7 @@ public class CustomHelper {
 	 * @return The width of the Custom component
 	 */
 	public int chooseWidth(String label, Font labelFont) {
-		int firstDimension = findDimension(content.get(CompRotator.UP), content.get(CompRotator.DOWN));
+		int firstDimension = findDimension(content[CompRotator.UP], content[CompRotator.DOWN]);
 		FontRenderContext frc = new FontRenderContext(labelFont.getTransform(), true, true);
 		Rectangle2D bounds = labelFont.getStringBounds(label, frc);
 		int secondDimension = (int) (Math.floor(bounds.getWidth()) + 20);
@@ -67,7 +67,7 @@ public class CustomHelper {
 	 * @return
 	 */
 	public int chooseHeight() {
-		return findDimension(content.get(CompRotator.LEFT), content.get(CompRotator.RIGHT));
+		return findDimension(content[CompRotator.LEFT], content[CompRotator.RIGHT]);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class CustomHelper {
 	 * @return A list of points to place the connections at
 	 */
 	public Point[] getConnectionPoints(int sideNum, int width, int height) {
-		int num = countConnections(content.get(sideNum));
+		int num = countConnections(content[sideNum]);
 		Point[] points = new Point[num];
 		int connectionSpace = num + (num - 1) * connectionSpacing;	
 		int pos;

@@ -15,7 +15,7 @@ import com.logic.ui.CompRotator;
 public class CompUtils {
 
 	/**
-	 * Creates a component of the given type with the given coordinates
+	 * Creates a component of the given type with the given coordinates (does not support custom components)
 	 * @param type The component type (case-insensitive CompType value as string)
 	 * @param x The x position
 	 * @param y The y position
@@ -140,26 +140,26 @@ public class CompUtils {
 	 * @return A copy of the Custom component
 	 */
 	public static Custom duplicateCustom(Custom custom) {
-		HashMap<Integer, LComponent[]> content = custom.getContent();
+		LComponent[][] content = custom.getContent();
 		ArrayList<LComponent> innerComps = custom.getInnerComps();
 		ArrayList<LComponent> newInnerComps = CompUtils.duplicate(innerComps);
 		ArrayList<LComponent> top = new ArrayList<LComponent>(), bottom = new ArrayList<LComponent>(), left = new ArrayList<LComponent>(), 
-				right = new ArrayList<LComponent>();		
+				right = new ArrayList<LComponent>();
 		for(int i = 0; i < newInnerComps.size(); i++) {
 			LComponent oldComp = innerComps.get(i);
 			LComponent newComp = newInnerComps.get(i);
 			if(oldComp instanceof Light || oldComp instanceof Switch) {
-				if(Arrays.asList(content.get(CompRotator.LEFT)).contains(oldComp)) CompUtils.addInPlace(newComp, left, false);
-				else if(Arrays.asList(content.get(CompRotator.UP)).contains(oldComp)) CompUtils.addInPlace(newComp, top, true);
-				else if(Arrays.asList(content.get(CompRotator.RIGHT)).contains(oldComp)) CompUtils.addInPlace(newComp, right, false);
-				else if(Arrays.asList(content.get(CompRotator.DOWN)).contains(oldComp)) CompUtils.addInPlace(newComp, bottom, true);
+				if(Arrays.asList(content[CompRotator.LEFT]).contains(oldComp)) CompUtils.addInPlace(newComp, left, false);
+				else if(Arrays.asList(content[CompRotator.UP]).contains(oldComp)) CompUtils.addInPlace(newComp, top, true);
+				else if(Arrays.asList(content[CompRotator.RIGHT]).contains(oldComp)) CompUtils.addInPlace(newComp, right, false);
+				else if(Arrays.asList(content[CompRotator.DOWN]).contains(oldComp)) CompUtils.addInPlace(newComp, bottom, true);
 			}
 		}
-		HashMap<Integer, LComponent[]> newContent = new HashMap<Integer, LComponent[]>();
-		newContent.put(CompRotator.UP, top.toArray(new LComponent[0]));
-		newContent.put(CompRotator.DOWN, bottom.toArray(new LComponent[0]));
-		newContent.put(CompRotator.LEFT, left.toArray(new LComponent[0]));
-		newContent.put(CompRotator.RIGHT, right.toArray(new LComponent[0]));
+
+		LComponent[][] newContent = new LComponent[][] {right.toArray(new LComponent[0]),
+				bottom.toArray(new LComponent[0]),
+				left.toArray(new LComponent[0]),
+				top.toArray(new LComponent[0])};
 		Custom result = new Custom(custom.getX(), custom.getY(), custom.getLabel(), newContent, newInnerComps, custom.getTypeID());
 		result.setName(custom.getName());
 		result.getRotator().setRotation(custom.getRotator().getRotation());

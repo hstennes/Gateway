@@ -78,6 +78,7 @@ public class FileComponent {
 
     @JsonIgnore
     public LComponent makeComponent(){
+        if(type.toString().equals("CUSTOM")) return makeCustom();
         LComponent lcomp = CompUtils.makeComponent(type.toString(), pos[0], pos[1]);
         lcomp.getRotator().setRotation(rot);
         if(name != null && !name.equals("")) lcomp.setName(name);
@@ -86,5 +87,10 @@ public class FileComponent {
         if(type == CompType.CLOCK) ((Clock) lcomp).setDelay(delay);
         if(lcomp instanceof BasicGate) ((BasicGate) lcomp).setNumInputs(input.length);
         return lcomp;
+    }
+
+    private Custom makeCustom(){
+        //ah shit here we go again
+        return null;
     }
 }
