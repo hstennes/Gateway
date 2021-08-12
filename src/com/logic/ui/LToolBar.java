@@ -167,7 +167,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 		}
 		else if(command.equals("Save")) {
 			//fileManager.save();
-			JacksonTest.testSave(cp.lcomps);
+			JacksonTest.testSave(cp.lcomps, cp.getEditor().getCustomCreator().getCustoms());
 		}
 		else if(command.equals("Create Custom Component")) cp.getEditor().getCustomCreator().createCustom();
 	}

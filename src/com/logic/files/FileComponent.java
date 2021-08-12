@@ -6,6 +6,7 @@ import com.logic.components.*;
 import com.logic.ui.CompProperties;
 import com.logic.util.CompUtils;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class FileComponent {
@@ -33,9 +34,19 @@ public class FileComponent {
     public int delay;
 
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    public int customid;
+    public int cTypeId;
 
-    public FileComponent(LComponent lcomp, Map<LComponent, Integer> idMap){
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public int cDataId;
+
+    /**
+     * Creates a representation of the given component that can be serialized to a json file.
+     * @param lcomp The component
+     * @param compIndex The mapping of components in the same list as this component to their indexes in the list
+     * @param cDataIndex The mapping of custom components to the index in the cData list where their data is stored
+     * @param topLevel true if this compoent is in the top level components list as opposed to being inside a custom component.
+     */
+    public FileComponent(LComponent lcomp, Map<LComponent, Integer> compIndex, Map<Custom, Integer> cDataIndex, boolean topLevel){
         type = lcomp.getType();
         pos = new int[] {lcomp.getX(), lcomp.getY()};
         rot = lcomp.getRotator().getRotation();
@@ -43,16 +54,21 @@ public class FileComponent {
         com = lcomp.getComments().equals(CompProperties.defaultComments) ? "" : lcomp.getComments();
         if(type == CompType.SWITCH) state = ((Switch) lcomp).getState();
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
-        else if(type == CompType.CUSTOM) customid = ((Custom) lcomp).getTypeID();
+        else if(type == CompType.CUSTOM) {
+            cTypeId = ((Custom) lcomp).getTypeID();
+            if(topLevel) cDataId = cDataIndex.get((Custom) lcomp);
+        }
 
         IOManager io = lcomp.getIO();
-        input = new int[io.getNumInputs()][3];
+        input = new int[io.getNumInputs()][topLevel ? 3 : 2];
         for(int i = 0; i < io.getNumInputs(); i++){
             Connection conn = io.connectionAt(i, Connection.INPUT);
             if(conn.numWires() > 0) {
                 Wire w = conn.getWire();
                 Connection source = w.getSourceConnection();
-                input[i] = new int[] {idMap.get(source.getLcomp()), source.getIndex(), w.getSignal() ? 1 : 0};
+                input[i][0] = compIndex.get(source.getLcomp());
+                input[i][1] = source.getIndex();
+                if(topLevel) input[i][2] = w.getSignal() ? 1 : 0;
             }
             else input[i] = new int[] {};
         }

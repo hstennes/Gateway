@@ -66,9 +66,10 @@ public class CustomCreator {
 	private CircuitPanel cp;
 
 	/**
-	 * Counts up to give unique IDs to each newly created custom component
+	 * A list containing copies of all custom components that have been created. A future feature could be to actually display these in a list rather than having the user just
+	 * copy / paste, but for now this list is only useful for saving the circuit.
 	 */
-	private int idCounter = 1;
+	private ArrayList<Custom> customs;
 	
 	/**
 	 * Constructs a new CustomCreator
@@ -76,7 +77,8 @@ public class CustomCreator {
 	 */
 	public CustomCreator(CircuitPanel cp) {
 		this.cp = cp;
-		lcomps = new ArrayList<LComponent>();
+		lcomps = new ArrayList<>();
+		customs = new ArrayList<>();
 	}
 	
 	/**
@@ -165,8 +167,8 @@ public class CustomCreator {
 				content.put(CompRotator.RIGHT, right.toArray(new LComponent[0]));
 				int x = centerRect.x + centerRect.width + customPlacementOffset;
 				int y = centerRect.y + centerRect.height + customPlacementOffset;
-				Custom custom = new Custom(x, y, label, content, lcomps, idCounter);
-				idCounter++;
+				Custom custom = new Custom(x, y, label, content, lcomps, customs.size());
+				customs.add(CompUtils.duplicateCustom(custom));
 				cp.addLComp(custom);
 				cp.getEditor().getRevision().saveState(new CircuitState(cp));
 			}
@@ -193,6 +195,14 @@ public class CustomCreator {
 	 */
 	public boolean isActive() {
 		return active;
+	}
+
+	/**
+	 * Returns the list of distinct types of custom components
+	 * @return the list of customs
+	 */
+	public ArrayList<Custom> getCustoms(){
+		return customs;
 	}
 	
 }

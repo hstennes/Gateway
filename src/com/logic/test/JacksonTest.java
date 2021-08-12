@@ -2,6 +2,7 @@ package com.logic.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logic.components.Custom;
 import com.logic.components.LComponent;
 import com.logic.files.JSONFile;
 import com.logic.ui.CircuitPanel;
@@ -12,10 +13,10 @@ import java.util.List;
 
 public class JacksonTest {
 
-    public static void testSave(List<LComponent> lcomps) {
-        JSONFile file = new JSONFile(lcomps);
+    public static void testSave(List<LComponent> lcomps, List<Custom> customs) {
+        JSONFile file = new JSONFile(lcomps, customs);
         try {
-            new ObjectMapper().writeValue(Paths.get("testsave.json").toFile(), file);
+            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(Paths.get("testsave.json").toFile(), file);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,7 +43,6 @@ public class JacksonTest {
     File format:
     components: [
         {
-            id assigned when saving using list index
             type from CompType OR customID
             x, y, rotation
             name, comments (if present?)
@@ -50,13 +50,13 @@ public class JacksonTest {
                 [id, output_number, signal]
             ]
 
-            state (just for switch?)
+            state (just for switch)
             delay (just for clock)
+            cTypeId, cDataId (just for custom)
         }
     ]
-    customs: [
+    cTypes: [
         {
-            typeID
             label
             components: [
                 {
@@ -64,6 +64,9 @@ public class JacksonTest {
                 }
             ]
         }
+    ]
+    cData: [
+        [[comp1 wires], [comp2 wires], [custom wires, cDataId]]
     ]
      */
 }

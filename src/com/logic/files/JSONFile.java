@@ -9,30 +9,53 @@ public class JSONFile {
 
     public FileComponent[] components;
 
-    public CustomBlueprint[] customs;
+    public CustomBlueprint[] cTypes;
 
-    public JSONFile(List<LComponent> lcomps){
-        Map<LComponent, Integer> idMap = new HashMap<>();
-        HashSet<Integer> customIDs = new HashSet<>();
-        ArrayList<Custom> uniqueCustoms = new ArrayList<>();
+    public ArrayList<Integer[][]> cData;
+
+    public JSONFile(List<LComponent> lcomps, List<Custom> customs){
+        Map<LComponent, Integer> compIndex = new HashMap<>();
+        Map<Custom, Integer> cDataIndex = new HashMap<>();
+        cData = new ArrayList<>();
 
         for(int i = 0; i < lcomps.size(); i++) {
             LComponent lcomp = lcomps.get(i);
-            idMap.put(lcomps.get(i), i);
-            if(lcomp.getType() == CompType.CUSTOM) {
-                int typeID = ((Custom) lcomp).getTypeID();
-                if(!customIDs.contains(typeID)) {
-                    customIDs.add(typeID);
-                    uniqueCustoms.add((Custom) lcomp);
-                }
+            compIndex.put(lcomp, i);
+            if(lcomp.getType() == CompType.CUSTOM){
+                populateCustomData((Custom) lcomp);
+                cDataIndex.put((Custom) lcomp, cData.size() - 1);
             }
         }
 
         components = new FileComponent[lcomps.size()];
-        for(int i = 0; i < lcomps.size(); i++) components[i] = new FileComponent(lcomps.get(i), idMap);
+        for(int i = 0; i < lcomps.size(); i++) components[i] = new FileComponent(lcomps.get(i), compIndex, cDataIndex, true);
 
-        customs = new CustomBlueprint[uniqueCustoms.size()];
-        for(int i = 0; i < uniqueCustoms.size(); i++) customs[i] = new CustomBlueprint(uniqueCustoms.get(i));
+        cTypes = new CustomBlueprint[customs.size()];
+        for(int i = 0; i < customs.size(); i++) cTypes[i] = new CustomBlueprint(customs.get(i));
+    }
+
+    /**
+     * Recursively adds the wire state data for this custom component and each custom it contains to the cData list.  The state for
+     * this component is added last after any dependencies, so its index will be cData.size() - 1 immediately after this call.
+     * @param custom The custom component
+     */
+    private void populateCustomData(Custom custom){
+        ArrayList<LComponent> innerComps = custom.getInnerComps();
+        Integer[][] data = new Integer[innerComps.size()][];
+        for(int i = 0; i < innerComps.size(); i++){
+            LComponent lcomp = innerComps.get(i);
+            IOManager io = lcomp.getIO();
+            data[i] = new Integer[lcomp.getType() == CompType.CUSTOM ? io.getNumInputs() + 1 : io.getNumInputs()];
+            for(int x = 0; x < io.getNumInputs(); x++){
+                Connection conn = io.connectionAt(x, Connection.INPUT);
+                if(conn.numWires() > 0) data[i][x] = conn.getWire().getSignal() ? 1 : 0;
+            }
+            if(lcomp.getType() == CompType.CUSTOM) {
+                populateCustomData((Custom) lcomp);
+                data[i][data[i].length - 1] = cData.size() - 1;
+            }
+        }
+        cData.add(data);
     }
 
     public JSONFile(){ }
