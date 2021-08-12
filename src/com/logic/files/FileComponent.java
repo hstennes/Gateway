@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.logic.components.*;
 import com.logic.ui.CompProperties;
+import com.logic.ui.CompRotator;
 import com.logic.util.CompUtils;
 
 import java.util.ArrayList;
@@ -77,8 +78,8 @@ public class FileComponent {
     public FileComponent(){ }
 
     @JsonIgnore
-    public LComponent makeComponent(){
-        if(type.toString().equals("CUSTOM")) return makeCustom();
+    public LComponent makeComponent(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
+        if(type.toString().equals("CUSTOM")) return makeCustom(cTypes, cData, topLevel, providedCDataId);
         LComponent lcomp = CompUtils.makeComponent(type.toString(), pos[0], pos[1]);
         lcomp.getRotator().setRotation(rot);
         if(name != null && !name.equals("")) lcomp.setName(name);
@@ -89,8 +90,38 @@ public class FileComponent {
         return lcomp;
     }
 
-    private Custom makeCustom(){
-        //ah shit here we go again
-        return null;
+    private Custom makeCustom(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
+        //this should all go smoothly?
+        int realCDataId = topLevel ? cDataId : providedCDataId;
+
+        CustomBlueprint b = cTypes[cTypeId];
+        ArrayList<LComponent> lcomps = new ArrayList<>();
+        for(int i = 0; i < b.components.length; i++) {
+            if(b.components[i].type.toString().equals("CUSTOM")) {
+                Integer[] compData = cData.get(realCDataId)[i];
+                lcomps.add(b.components[i].makeComponent(cTypes, cData, false, compData[compData.length - 1]));
+            }
+            else lcomps.add(b.components[i].makeComponent(cTypes, cData, false, -1));
+        }
+
+        LComponent[][] content = new LComponent[4][];
+        for(int i = 0; i < content.length; i++) {
+            content[i] = new LComponent[b.io[i].length];
+            for(int x = 0; x < b.io[i].length; x++) content[i][x] = lcomps.get(b.io[i][x]);
+        }
+
+        for(int i = 0; i < b.components.length; i++){
+            FileComponent fc = b.components[i];
+            if(fc.input == null) continue;
+            for(int x = 0; x < fc.input.length; x++){
+                int[] input = fc.input[x];
+                if(input.length == 0) continue;
+                Wire wire = new Wire();
+                wire.setSignal(cData.get(realCDataId)[i][x] == 1);
+                lcomps.get(input[0]).getIO().connectionAt(input[1], Connection.OUTPUT).addWire(wire);
+                lcomps.get(i).getIO().connectionAt(x, Connection.INPUT).addWire(wire);
+            }
+        }
+        return new Custom(pos[0], pos[1], b.label, content, lcomps, cTypeId);
     }
 }

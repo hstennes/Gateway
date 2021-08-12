@@ -6,6 +6,7 @@ import com.logic.components.Custom;
 import com.logic.components.LComponent;
 import com.logic.files.JSONFile;
 import com.logic.ui.CircuitPanel;
+import com.logic.ui.CustomCreator;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -16,18 +17,19 @@ public class JacksonTest {
     public static void testSave(List<LComponent> lcomps, List<Custom> customs) {
         JSONFile file = new JSONFile(lcomps, customs);
         try {
-            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(Paths.get("testsave.json").toFile(), file);
+            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(Paths.get("testsave2.json").toFile(), file);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void testLoad(CircuitPanel cp){
+    public static void testLoad(CircuitPanel cp, CustomCreator customCreator){
         try{
             long time1 = System.currentTimeMillis();
-            JSONFile file = new ObjectMapper().readValue(Paths.get("testsave.json").toFile(), JSONFile.class);
+            JSONFile file = new ObjectMapper().readValue(Paths.get("testsave2.json").toFile(), JSONFile.class);
             long time2 = System.currentTimeMillis();
             cp.addLComps(file.getLComps());
+
             long time3 = System.currentTimeMillis();
 
             System.out.println("JSON parsing: " + (time2 - time1));

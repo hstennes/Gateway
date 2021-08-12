@@ -199,5 +199,13 @@ public class CustomCreator {
 	public ArrayList<Custom> getCustoms(){
 		return customs;
 	}
+
+	/**
+	 * Sets the list of distinct custom components (for loading from file)
+	 * @param customs The list of customs
+	 */
+	public void setCustoms(ArrayList<Custom> customs){
+		this.customs = customs;
+	}
 	
 }

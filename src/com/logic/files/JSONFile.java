@@ -65,7 +65,7 @@ public class JSONFile {
     @JsonIgnore
     public ArrayList<LComponent> getLComps(){
         ArrayList<LComponent> lcomps = new ArrayList<>();
-        for(FileComponent fc : components) lcomps.add(fc.makeComponent());
+        for(FileComponent fc : components) lcomps.add(fc.makeComponent(cTypes, cData, true, -1));
 
         for(int i = 0; i < components.length; i++){
             FileComponent fc = components[i];
