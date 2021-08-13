@@ -1,20 +1,21 @@
-package com.logic.main;
+package com.logic.files;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.nio.file.Paths;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logic.input.Camera;
 import com.logic.input.CircuitState;
 import com.logic.input.RevisionManager;
+import com.logic.main.LogicSimApp;
 import com.logic.ui.CircuitPanel;
+import com.logic.ui.LMenuBar;
 import com.logic.ui.UserMessage;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * A class that manages file saving and opening operations
@@ -80,8 +81,7 @@ public class FileManager {
 	 */
 	public void saveAs() {
 		if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
-			String path = file.getAbsolutePath();
+			String path = getSanitizedPath(fc.getSelectedFile());
 			currentFile = path;
 			saveFile(path);
 		}
@@ -107,19 +107,25 @@ public class FileManager {
 		cp.getWindow().setTitle(path);
 		UserMessage message = new UserMessage(cp, "Circuit saved", 3000);
 		cp.dispMessage(message);
-		FileOutputStream fos;
 		try {
-			fos = new FileOutputStream(path.contains(".gtw") ? path : path + ".gtw");
+			/*
+			FileOutputStream fos = new FileOutputStream(path);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			GatewayFile gatewayFile = new GatewayFile(cp.lcomps, cp.getCamera());
 			oos.writeObject(gatewayFile);
 			oos.close();
 			fos.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			 */
+			Camera cam = cp.getCamera();
+			JSONFile file = new JSONFile(new FileData(cp.lcomps,
+					cp.getEditor().getCustomCreator().getCustoms(),
+					new double[] {cam.getX(), cam.getY(), cam.getZoom()},
+					new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0}));
+			new ObjectMapper().writeValue(Paths.get(path).toFile(), file);
+
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 	}
 	
 	/**
@@ -135,6 +141,7 @@ public class FileManager {
 		else {
 			cp.getWindow().setTitle(path);
 			try {
+				/*
 				FileInputStream fis = new FileInputStream(path);
 				ObjectInputStream ois = new ObjectInputStream(fis); 
 				GatewayFile gatewayFile = (GatewayFile) ois.readObject();
@@ -145,13 +152,40 @@ public class FileManager {
 				revision.saveState(new CircuitState(cp));
 				ois.close();
 				fis.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				 */
+
+				JSONFile file = new ObjectMapper().readValue(Paths.get(path).toFile(), JSONFile.class);
+				FileData fileData = file.getFileData();
+				cp.addLComps(fileData.getLcomps());
+				cp.getEditor().getCustomCreator().setCustoms(fileData.getCustoms());
+				double[] camData = fileData.getCamera();
+				Camera cam = cp.getCamera();
+				cam.setZoom(camData[2]);
+				cam.setX(camData[0]);
+				cam.setY(camData[1]);
+				int[] settings = fileData.getSettings();
+				cp.getEditor().setSnap(settings[0] == 1);
+				cp.setShowGrid(settings[1] == 1);
+				RevisionManager revision = cp.getEditor().getRevision();
+				revision.clearStates();
+				revision.saveState(new CircuitState(cp));
+				cp.repaint();
+
 			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Returns the path of the given file with the correct extension
+	 * @param file The file
+	 * @return The sanitized path
+	 */
+	private String getSanitizedPath(File file){
+		if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("gtw"))
+			return file.getAbsolutePath();
+		else
+			return new File(file.getParentFile(), FilenameUtils.getBaseName(file.getName())+".gtw").getAbsolutePath();
 	}
 }

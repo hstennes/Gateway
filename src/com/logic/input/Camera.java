@@ -167,7 +167,8 @@ public class Camera extends MouseInputAdapter implements MouseWheelListener {
 	}
 	
 	/**
-	 * Sets the zoom of the camera and repaints the CircuitPanel
+	 * Sets the zoom of the camera and repaints the CircuitPanel.  For some reason this method also changes the x and y position
+	 * (something about keeping the camera centered?) so if you want a specific position set that after setting the zoom.
 	 * @param zoom The new zoom value
 	 */
 	public void setZoom(double zoom) {

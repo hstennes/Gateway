@@ -14,7 +14,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
-import com.logic.main.FileManager;
+import com.logic.files.FileManager;
 import com.logic.main.LogicSimApp;
 
 /**

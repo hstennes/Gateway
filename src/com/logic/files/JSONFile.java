@@ -22,6 +22,11 @@ public class JSONFile {
     public double[] camera;
 
     /**
+     * Holds editor preferences. Format [snap to grid, show grid] with 1 for true and 0 for false
+     */
+    public int[] settings;
+
+    /**
      * Represents the list of LComponents in the CircuitPanel
      */
     public FileComponent[] components;
@@ -46,14 +51,14 @@ public class JSONFile {
      * @param fd The FileData to use
      */
     public JSONFile(FileData fd){
+        camera = fd.getCamera();
+        settings = fd.getSettings();
         List<LComponent> lcomps = fd.getLcomps();
         List<Custom> customs = fd.getCustoms();
 
         Map<LComponent, Integer> compIndex = new HashMap<>();
         Map<Custom, Integer> cDataIndex = new HashMap<>();
         cData = new ArrayList<>();
-
-        camera = new double[] {1, 2, 3};
 
         for(int i = 0; i < lcomps.size(); i++) {
             LComponent lcomp = lcomps.get(i);
@@ -131,6 +136,6 @@ public class JSONFile {
                 lcomps.get(i).getIO().connectionAt(x, Connection.INPUT).addWire(wire);
             }
         }
-        return new FileData(lcomps, customs);
+        return new FileData(lcomps, customs, camera, settings);
     }
 }

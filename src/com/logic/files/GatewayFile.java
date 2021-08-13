@@ -1,4 +1,4 @@
-package com.logic.main;
+package com.logic.files;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import com.logic.ui.CircuitPanel;
  * The class that is serialized to save a gateway circuit. This class holds an array of LComponents, a camera zoom value, and a camera 
  * position so that the program can be restored to its previous state when a file is loaded.
  * @author Hank Stennes
- *
  */
+@Deprecated
 public class GatewayFile implements Serializable {
 
 	private static final long serialVersionUID = 1L;

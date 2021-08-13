@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
+import com.logic.files.FileManager;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.CompProperties;
 import com.logic.ui.InsertPanel;

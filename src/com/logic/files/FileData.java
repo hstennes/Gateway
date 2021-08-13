@@ -20,29 +20,37 @@ public class FileData {
      */
     private ArrayList<Custom> customs;
 
+    private double[] camera;
+
+    private int[] settings;
+
     /**
      * Constructs FileData object
      * @param lcomps The LComponents
      * @param customs The custom components
+     * @param camera The camera info array (see JSONFile.camera)
+     * @param settings The settings array (see JSONFile.settings)
      */
-    public FileData(ArrayList<LComponent> lcomps, ArrayList<Custom> customs) {
+    public FileData(ArrayList<LComponent> lcomps, ArrayList<Custom> customs, double[] camera, int[] settings) {
         this.lcomps = lcomps;
         this.customs = customs;
+        this.camera = camera;
+        this.settings = settings;
     }
 
-    /**
-     * Gets the LComponents
-     * @return the LComponent list
-     */
     public ArrayList<LComponent> getLcomps() {
         return lcomps;
     }
 
-    /**
-     * Gets the custom components
-     * @return The custom list
-     */
     public ArrayList<Custom> getCustoms() {
         return customs;
+    }
+
+    public double[] getCamera() {
+        return camera;
+    }
+
+    public int[] getSettings() {
+        return settings;
     }
 }
