@@ -10,6 +10,9 @@ import com.logic.util.CompUtils;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * A FileComponent is serialized to create a representation of an LComponent
+ */
 public class FileComponent {
 
     public CompType type;
@@ -25,18 +28,34 @@ public class FileComponent {
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public String com;
 
+    /**
+     * Encodes the input connections on this component.  Each inner array represents one input connection and has the following structure:
+     * {connected component index, connected component output number, wire state (only included for top level components)}
+     */
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int[][] input;
 
+    /**
+     * On / off state for switches
+     */
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public boolean state;
 
+    /**
+     * Delay value for clocks
+     */
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int delay;
 
+    /**
+     * If this component is a custom, stores the index in the cTypes array for its blueprint
+     */
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int cTypeId;
 
+    /**
+     * If this component is a custom, stores the index in the cData array for the associated wire state data
+     */
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int cDataId;
 
@@ -45,7 +64,7 @@ public class FileComponent {
      * @param lcomp The component
      * @param compIndex The mapping of components in the same list as this component to their indexes in the list
      * @param cDataIndex The mapping of custom components to the index in the cData list where their data is stored
-     * @param topLevel true if this compoent is in the top level components list as opposed to being inside a custom component.
+     * @param topLevel true if this component is in the top level components list as opposed to being inside a custom component.
      */
     public FileComponent(LComponent lcomp, Map<LComponent, Integer> compIndex, Map<Custom, Integer> cDataIndex, boolean topLevel){
         type = lcomp.getType();
@@ -75,8 +94,19 @@ public class FileComponent {
         }
     }
 
+    /**
+     * Needed for deserialization to work
+     */
     public FileComponent(){ }
 
+    /**
+     * Converts this FileComponent back to an LComponent
+     * @param cTypes cTypesArray to use if this component is a custom
+     * @param cData cData array to use if this component is a custom
+     * @param topLevel see constructor
+     * @param providedCDataId gives the index for custom data; overrides internal cDataId value if this is not a top level component
+     * @return The LComponent
+     */
     @JsonIgnore
     public LComponent makeComponent(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
         if(type.toString().equals("CUSTOM")) return makeCustom(cTypes, cData, topLevel, providedCDataId);
@@ -90,8 +120,15 @@ public class FileComponent {
         return lcomp;
     }
 
+    /**
+     * Helper method for converting to a custom component
+     * @param cTypes The cTypes
+     * @param cData The cData
+     * @param topLevel The topLevel flag
+     * @param providedCDataId the providedCDataId
+     * @return Custom component
+     */
     private Custom makeCustom(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
-        //this should all go smoothly?
         int realCDataId = topLevel ? cDataId : providedCDataId;
 
         CustomBlueprint b = cTypes[cTypeId];

@@ -138,13 +138,19 @@ public class CustomCreator {
 			int x = centerRect.x + centerRect.width + customPlacementOffset;
 			int y = centerRect.y + centerRect.height + customPlacementOffset;
 			Custom custom = new Custom(x, y, label, content, lcomps, customs.size());
-			customs.add(CompUtils.duplicateCustom(custom));
+			storeCopy(custom);
 			cp.addLComp(custom);
 			cp.getEditor().getRevision().saveState(new CircuitState(cp));
 		}
 		reset();
 	}
 
+	/**
+	 * Constructs the content parameter for a Custom component from the bounding rectangle and list of components
+	 * @param lcomps The components selected by the user
+	 * @param centerBounds The bounding box
+	 * @return The content parameter
+	 */
 	public static LComponent[][] getCustomContent(ArrayList<LComponent> lcomps, Rectangle centerBounds){
 		int a = centerBounds.x;
 		int b = centerBounds.y;
@@ -171,6 +177,17 @@ public class CustomCreator {
 				bottom.toArray(new LComponent[0]),
 				left.toArray(new LComponent[0]),
 				top.toArray(new LComponent[0])};
+	}
+
+	/**
+	 * Saves a copy of a newly created custom component to the list of distinct customs
+	 * @param custom The component to add
+	 */
+	private void storeCopy(Custom custom){
+		Custom copy = CompUtils.duplicateCustom(custom);
+		copy.setX(0);
+		copy.setY(0);
+		customs.add(copy);
 	}
 	
 	/**

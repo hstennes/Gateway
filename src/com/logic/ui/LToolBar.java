@@ -163,7 +163,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 		else if(command.equals("New")) LogicSimApp.newWindow(null);
 		else if(command.equals("Open")) {
 			//fileManager.open();
-			JacksonTest.testLoad(cp);
+			JacksonTest.testLoad(cp, cp.getEditor().getCustomCreator());
 		}
 		else if(command.equals("Save")) {
 			//fileManager.save();
