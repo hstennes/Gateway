@@ -239,4 +239,12 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 	public void chooseSelect() {
 		select.setSelected(true);
 	}
+
+	/**
+	 * Updates the menu UI to reflect the internal snap to grid and show grid settings
+	 */
+	public void syncViewSettings(){
+		snap.setSelected(cp.getEditor().isSnap());
+		showGrid.setSelected(cp.isShowGrid());
+	}
 }

@@ -166,6 +166,7 @@ public class FileManager {
 				int[] settings = fileData.getSettings();
 				cp.getEditor().setSnap(settings[0] == 1);
 				cp.setShowGrid(settings[1] == 1);
+				((LMenuBar) cp.getWindow().getJMenuBar()).syncViewSettings();
 				RevisionManager revision = cp.getEditor().getRevision();
 				revision.clearStates();
 				revision.saveState(new CircuitState(cp));
