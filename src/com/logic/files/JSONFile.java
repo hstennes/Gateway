@@ -17,6 +17,11 @@ public class JSONFile {
     public final int version = 1;
 
     /**
+     * Holds camera position data [x, y, zoom]
+     */
+    public double[] camera;
+
+    /**
      * Represents the list of LComponents in the CircuitPanel
      */
     public FileComponent[] components;
@@ -47,6 +52,8 @@ public class JSONFile {
         Map<LComponent, Integer> compIndex = new HashMap<>();
         Map<Custom, Integer> cDataIndex = new HashMap<>();
         cData = new ArrayList<>();
+
+        camera = new double[] {1, 2, 3};
 
         for(int i = 0; i < lcomps.size(); i++) {
             LComponent lcomp = lcomps.get(i);
