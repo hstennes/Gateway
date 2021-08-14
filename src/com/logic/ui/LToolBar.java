@@ -85,9 +85,10 @@ public class LToolBar extends JToolBar implements ActionListener {
 	 * Creates all of the buttons used by the tool bar according to the instance variables
 	 */
 	private void createButtons() {
+		IconLoader icons = LogicSimApp.iconLoader;
 		Insets padding = new Insets(0, 5, 0, 5);
 		for(int i = 0; i < dividerIndex1; i++) {
-			JButton button = new JButton(getToolbarIcon(i));
+			JButton button = new JButton(icons.toolBarIcons[i]);
 			button.setToolTipText(tooltips[i]);
 			button.setActionCommand(tooltips[i]);
 			button.addActionListener(this);
@@ -98,7 +99,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 		addSeparator();
 		
 		for(int i = dividerIndex1; i < dividerIndex2; i++) {
-			JToggleButton button = new JToggleButton(getToolbarIcon(i));
+			JToggleButton button = new JToggleButton(icons.toolBarIcons[i]);
 			button.setToolTipText(tooltips[i]);
 			button.setActionCommand(tooltips[i]);
 			if(i == dividerIndex2 - 1) button.setSelected(true);
@@ -111,7 +112,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 		addSeparator();
 		
 		for(int i = dividerIndex2; i < dividerIndex3; i++) {
-			JButton button = new JButton(getToolbarIcon(i));
+			JButton button = new JButton(icons.toolBarIcons[i]);
 			button.setToolTipText(tooltips[i]);
 			button.setActionCommand(tooltips[i]);
 			button.addActionListener(this);
@@ -122,7 +123,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 		addSeparator();
 		
 		for(int i = dividerIndex3; i < tooltips.length; i++) {
-			JButton button = new JButton(getToolbarIcon(i));
+			JButton button = new JButton(icons.toolBarIcons[i]);
 			button.setToolTipText(tooltips[i]);
 			button.setActionCommand(tooltips[i]);
 			button.addActionListener(this);
@@ -130,17 +131,6 @@ public class LToolBar extends JToolBar implements ActionListener {
 			add(button);
 		}
 	
-	}
-	
-	/**
-	 * Returns a correctly scaled version of the tool bar icon at the specified index in the IconLoader
-	 * @param index The index of the icon in the IconLoader.toolbarIcons array
-	 * @return The icon
-	 */
-	private ImageIcon getToolbarIcon(int index) {
-		if(index <= 5) return LogicSimApp.iconLoader.toolBarIcons[index];
-		ImageIcon original = LogicSimApp.iconLoader.toolBarIcons[index];
-		return IconLoader.getScaledImage(original, original.getIconWidth() * 2, original.getIconHeight() * 2);
 	}
 	
 	/**

@@ -112,17 +112,21 @@ public class IconLoader {
 		logicSVGs[12] = loadSvg("res/clock_on.svg");
 		logicSVGs[13] = loadSvg("res/display.svg");
 
-		BufferedImage[] toolBarImages = readSheetSection(iconSheet, new BufferedImage[numToolBarIcons], 0, 57, 2, 8, 13, 13, 15, 0);
-		for(int i = 0; i < toolBarImages.length; i++) {
-			toolBarIcons[i] = new ImageIcon(toolBarImages[i]);
-		}
 		toolBarIcons[0] = new ImageIcon(loadImage("/new_file.png"));
 		toolBarIcons[1] = new ImageIcon(loadImage("/open_file.png"));
 		toolBarIcons[2] = new ImageIcon(loadImage("/save_file.png"));
 		toolBarIcons[3] = new ImageIcon(loadImage("/select.png"));
 		toolBarIcons[4] = new ImageIcon(loadImage("/pan.png"));
 		toolBarIcons[5] = new ImageIcon(loadImage("/insert.png"));
-		//TODO make new toolbar icons
+		toolBarIcons[6] = new ImageIcon(loadImage("/undo.png"));
+		toolBarIcons[7] = new ImageIcon(loadImage("/redo.png"));
+		toolBarIcons[8] = new ImageIcon(loadImage("/cut.png"));
+		toolBarIcons[9] = new ImageIcon(loadImage("/copy.png"));
+		toolBarIcons[10] = new ImageIcon(loadImage("/paste.png"));
+		toolBarIcons[11] = new ImageIcon(loadImage("/delete.png"));
+		toolBarIcons[12] = new ImageIcon(loadImage("/rotate_counter.png"));
+		toolBarIcons[13] = new ImageIcon(loadImage("/rotate.png"));
+		toolBarIcons[14] = new ImageIcon(loadImage("/custom.png"));
 
 		logicIcons[0] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.BUFFER), 0));
 		logicIcons[1] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.NOT), 1));
@@ -139,40 +143,6 @@ public class IconLoader {
 		logicIcons[12] = new ImageIcon(renderLogicIcon(new Constant(0, 0, CompType.ONE), 12));
 		logicIcons[13] = new ImageIcon(renderLogicIcon(new Button(0, 0), 13));
 		logicIcons[14] = new ImageIcon(renderLogicIcon(new Display(0, 0), 14));
-	}
-	
-	/**
-	 * Reads images from a section of a sprite sheet (This section must have all images arranged in a grid with uniform row and column sizes
-	 * @param sheet The sprite sheet to read from
-	 * @param images The array to place images in
-	 * @param x The horizontal start of the section to read
-	 * @param y The vertical start of the section to read
-	 * @param rows The number of rows in the section
-	 * @param cols The number of columns in the section
-	 * @param rowSize The number of pixels that make one row
-	 * @param colSize The number of pixels that make one column
-	 * @param startIndex The starting index to place images in the array
-	 * @return The array containing all of the images in the specified section of the sprite sheet, starting at the specified index
-	 */
-	private BufferedImage[] readSheetSection(BufferedImage sheet, BufferedImage[] images, int x, int y, int rows, int cols, int rowSize, int colSize, int numImages, int startIndex) {
-		for(int row = 0; row < rows; row++) {
-			for(int col = 0; col < cols; col++) {
-				if(col + row * cols + 1 > numImages) return images; 
-				images[startIndex + col + row * cols] = sheet.getSubimage(x + col * colSize, y + row * rowSize, colSize, rowSize);
-			}
-		}
-		return images;
-	}
-
-	/**
-	 * Returns a scaled version of the image with the specified width and height
-	 * @param image The image to scale
-	 * @param newWidth The new width
-	 * @param newHeight The new height
-	 * @return The scaled image
-	 */
-	public static ImageIcon getScaledImage(ImageIcon image, int newWidth, int newHeight) {
-		return new ImageIcon(image.getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_DEFAULT));
 	}
 
 	/**
