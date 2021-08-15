@@ -111,7 +111,8 @@ public class CompUtils {
 				Connection connection = oldIO.connectionAt(c, Connection.INPUT);
 				if(connection.numWires() == 1) {
 					Wire oldWire = connection.getWire();
-					if(lcomps.contains(oldWire.getSourceConnection().getLcomp())) oldWires.add(oldWire);
+					Connection source = oldWire.getSourceConnection();
+					if(source != null && lcomps.contains(source.getLcomp())) oldWires.add(oldWire);
 				}
 			}
 		}
@@ -136,7 +137,6 @@ public class CompUtils {
 	/**
 	 * Makes a copy of the given Custom component by duplicating its inner components
 	 * @param custom The Custom component to copy
-	 * @param cp The CircuitPanel
 	 * @return A copy of the Custom component
 	 */
 	public static Custom duplicateCustom(Custom custom) {

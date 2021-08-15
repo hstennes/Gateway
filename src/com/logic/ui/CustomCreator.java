@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -129,20 +130,38 @@ public class CustomCreator {
 	 * will do nothing and return a value of false.
 	 */
 	public void completeCustom() {
+		if(!validateLayout(lcomps, centerRect)) {
+			JOptionPane.showMessageDialog(null, "Please drag all lights and switches outside of the rectangle");
+			return;
+		}
+
 		ArrayList<LComponent> lcomps = CompUtils.duplicate(this.lcomps);
 		LComponent[][] content = getCustomContent(lcomps, centerRect);
-		if(content == null)
-			JOptionPane.showMessageDialog(null, "Please drag all lights and switches outside of the rectangle");
 		String label = JOptionPane.showInputDialog(null, "New component label?");
-		if(label != null){
-			int x = centerRect.x + centerRect.width + customPlacementOffset;
-			int y = centerRect.y + centerRect.height + customPlacementOffset;
-			Custom custom = new Custom(x, y, label, content, lcomps, customs.size());
-			storeCopy(custom);
-			cp.addLComp(custom);
-			cp.getEditor().getRevision().saveState(new CircuitState(cp));
-		}
+		if(label == null) return;
+
+		int x = centerRect.x + centerRect.width + customPlacementOffset;
+		int y = centerRect.y + centerRect.height + customPlacementOffset;
+		Custom custom = new Custom(x, y, label, content, lcomps, customs.size());
+		storeCopy(custom);
+		cp.addLComp(custom);
+		cp.getEditor().getRevision().saveState(new CircuitState(cp));
 		reset();
+	}
+
+	/**
+	 * Checks if all lights and switches are outside the center rectangle
+	 * @param lcomps The components included in the custom
+	 * @param centerBounds The bounds rectangle
+	 * @return true if layout is valid
+	 */
+	private boolean validateLayout(ArrayList<LComponent> lcomps, Rectangle centerBounds){
+		for(LComponent lcomp : lcomps){
+			if(lcomp instanceof Light || lcomp instanceof Switch){
+				if(centerBounds.contains(lcomp.getX(), lcomp.getY())) return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -151,7 +170,7 @@ public class CustomCreator {
 	 * @param centerBounds The bounding box
 	 * @return The content parameter
 	 */
-	public static LComponent[][] getCustomContent(ArrayList<LComponent> lcomps, Rectangle centerBounds){
+	private LComponent[][] getCustomContent(ArrayList<LComponent> lcomps, Rectangle centerBounds){
 		int a = centerBounds.x;
 		int b = centerBounds.y;
 		int a2 = centerBounds.x + centerBounds.width;
@@ -163,7 +182,6 @@ public class CustomCreator {
 		for(int i = 0; i < lcomps.size(); i++) {
 			LComponent lcomp = lcomps.get(i);
 			if(lcomp instanceof Light || lcomp instanceof Switch) {
-				if(centerBounds.contains(lcomp.getX(), lcomp.getY())) return null;
 				int x = lcomp.getX();
 				int y = lcomp.getY();
 				if(y - b + a <= x && x <= -y + b + a2 && y <= b) CompUtils.addInPlace(lcomp, top, true);
