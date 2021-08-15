@@ -79,7 +79,6 @@ public class CompUtils {
 	/**
 	 * Creates a deep clone of the given list of LComponents without adding any offset
 	 * @param lcomps The LComponents to duplicate
-	 * @param cp The CircuitPanel
 	 * @return The list of duplicated components
 	 */
 	public static ArrayList<LComponent> duplicate(List<LComponent> lcomps){
@@ -90,7 +89,6 @@ public class CompUtils {
 	 * Creates a deep clone of the given list of LComponents. This is a complicated process that was one of the most annoying parts of 
 	 * creating this application.
 	 * @param lcomps The LComponents to duplicate
-	 * @param cp The CircuitPanel
 	 * @param offset The amount by which to translate the duplicated components from their original positions
 	 * @return The list of duplicated components
 	 */

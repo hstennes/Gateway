@@ -49,8 +49,7 @@ public class CompRotator implements Serializable {
 	
 	/**
 	 * Constructs a new CompRotator
-	 * @param cp The CircuitPanel 
-	 */
+     */
 	public CompRotator() {
 		rotation = RIGHT; 
 	}

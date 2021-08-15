@@ -19,7 +19,6 @@ public class Button extends IComponent {
 	
 	/**
 	 * Creates a new Button
-	 * @param cp The CircuitPanel instance being used
 	 * @param x The x position of the Button
 	 * @param y The y position of the button
 	 */

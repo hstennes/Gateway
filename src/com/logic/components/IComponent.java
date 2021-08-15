@@ -61,7 +61,6 @@ public abstract class IComponent extends LComponent implements MouseListener {
 	
 	/**
 	 * Constructs a new IComponent
-	 * @param cp The CircuitPanel instance being used
 	 * @param x The x position of the component
 	 * @param y The y position of the component
 	 * @param type The type of component (valid values are the types used by any class that is a subclass of IComponent)
@@ -115,7 +114,7 @@ public abstract class IComponent extends LComponent implements MouseListener {
 	/**
 	 * Sets this component to listen for the specified event. This means that notification(...) will be called on this IComponent if the 
 	 * event occurs.
-	 * @param The type of notification (MouseEvent.MOUSE_PRESSED, MouseEvent.MOUSE_RELEASED)
+	 * @param type The type of notification (MouseEvent.MOUSE_PRESSED, MouseEvent.MOUSE_RELEASED)
 	 */
 	protected void setNotificationType(int type) {
 		notificationType = type;

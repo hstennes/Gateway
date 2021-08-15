@@ -45,7 +45,6 @@ public class LogicWorker extends SwingWorker<Integer, Void>{
 	
 	/**
 	 * Constructs a new LogicWorker that starts its LogicEngine with the given component
-	 * @param circuitPanel The CircuitPanel
 	 * @param startingComp The Component to start with in the activeComps list
 	 */
 	private LogicWorker(LComponent startingComp) {
@@ -60,7 +59,7 @@ public class LogicWorker extends SwingWorker<Integer, Void>{
 	/**
 	 * Constructs a new LogicWorker that is guaranteed to bring the circuit to a logically consistent state. This is done by starting 
 	 * the LogicEngine with all components that either have open input connections or 0 input connections
-	 * @param circuitPanel The CircuitPanel
+	 * @param cp The CircuitPanel
 	 */
 	private LogicWorker(CircuitPanel cp) {
 		//Currently used by Selection.deleteSelection, Clipboard.paste, CircuitState.editState

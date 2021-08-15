@@ -18,7 +18,6 @@ public class Switch extends IComponent {
 	
 	/**
 	 * Constructs a new switch
-	 * @param cp The CircuitPanel
 	 * @param x The x position
 	 * @param y The y position
 	 */
