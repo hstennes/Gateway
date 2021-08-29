@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class JacksonTest {
@@ -26,6 +27,16 @@ public class JacksonTest {
                 new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0}));
         try {
             new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(Paths.get("testsave2.json").toFile(), file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void testJackson(){
+        HashMap<String, String> stuff = new HashMap<>();
+        stuff.put("Hello", "world");
+        try {
+            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(Paths.get("testsave3.json").toFile(), stuff);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -9,15 +9,11 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.svg.SVGDocument;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.ImageIcon;
 
 /**
@@ -41,6 +37,16 @@ public class IconLoader {
 	 * The number of tool bar icons
 	 */ 
 	private final int numToolBarIcons = 15;
+
+	/**
+	 * Shows the width of each logic image
+	 */
+	private final int[] imageWidth = new int[] {240, 240, 240, 180, 180, 240, 240, 180, 180, 180, 180, 240, 240, 300};
+
+	/**
+	 * Shows the height of each logic image
+	 */
+	private final int[] imageHeight = new int[] {240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 300};
 	
 	/**
 	 * The sprite sheet that contains all the images that the program uses
@@ -82,35 +88,22 @@ public class IconLoader {
 	 * Loads all the BufferedImages and SVG GraphicsNode objects that the program uses
 	 */
 	public void makeImageIcons() {
-		logicImages[0] = imageFromSVG("res/buffer.svg", 240, 240);
-		logicImages[1] = imageFromSVG("res/and.svg", 240, 240);
-		logicImages[2] = imageFromSVG("res/or.svg", 240, 240);
-		logicImages[3] = imageFromSVG("res/switch_off.svg", 180, 240);
-		logicImages[4] = imageFromSVG("res/switch_on.svg", 180, 240);
-		logicImages[5] = imageFromSVG("res/button_off.svg", 240, 240);
-		logicImages[6] = imageFromSVG("res/button_on.svg", 240, 240);
-		logicImages[7] = imageFromSVG("res/light_off.svg", 180, 240);
-		logicImages[8] = imageFromSVG("res/light_on.svg", 180, 240);
-		logicImages[9] = imageFromSVG("res/off_const.svg", 180, 240);
-		logicImages[10] = imageFromSVG("res/on_const.svg", 180, 240);
-		logicImages[11] = imageFromSVG("res/clock_off.svg", 240, 240);
-		logicImages[12] = imageFromSVG("res/clock_on.svg", 240, 240);
-		logicImages[13] = imageFromSVG("res/display.svg", 300, 300);
+		logicSVGs[0] = loadSvg("/buffer.svg");
+		logicSVGs[1] = loadSvg("/and.svg");
+		logicSVGs[2] = loadSvg("/or.svg");
+		logicSVGs[3] = loadSvg("/switch_off.svg");
+		logicSVGs[4] = loadSvg("/switch_on.svg");
+		logicSVGs[5] = loadSvg("/button_off.svg");
+		logicSVGs[6] = loadSvg("/button_on.svg");
+		logicSVGs[7] = loadSvg("/light_off.svg");
+		logicSVGs[8] = loadSvg("/light_on.svg");
+		logicSVGs[9] = loadSvg("/off_const.svg");
+		logicSVGs[10] = loadSvg("/on_const.svg");
+		logicSVGs[11] = loadSvg("/clock_off.svg");
+		logicSVGs[12] = loadSvg("/clock_on.svg");
+		logicSVGs[13] = loadSvg("/display.svg");
 
-		logicSVGs[0] = loadSvg("res/buffer.svg");
-		logicSVGs[1] = loadSvg("res/and.svg");
-		logicSVGs[2] = loadSvg("res/or.svg");
-		logicSVGs[3] = loadSvg("res/switch_off.svg");
-		logicSVGs[4] = loadSvg("res/switch_on.svg");
-		logicSVGs[5] = loadSvg("res/button_off.svg");
-		logicSVGs[6] = loadSvg("res/button_on.svg");
-		logicSVGs[7] = loadSvg("res/light_off.svg");
-		logicSVGs[8] = loadSvg("res/light_on.svg");
-		logicSVGs[9] = loadSvg("res/off_const.svg");
-		logicSVGs[10] = loadSvg("res/on_const.svg");
-		logicSVGs[11] = loadSvg("res/clock_off.svg");
-		logicSVGs[12] = loadSvg("res/clock_on.svg");
-		logicSVGs[13] = loadSvg("res/display.svg");
+		for(int i = 0; i < logicSVGs.length; i++) logicImages[i] = imageFromSvg(logicSVGs[i], imageWidth[i], imageHeight[i]);
 
 		toolBarIcons[0] = new ImageIcon(loadImage("/new_file.png"));
 		toolBarIcons[1] = new ImageIcon(loadImage("/open_file.png"));
@@ -177,7 +170,7 @@ public class IconLoader {
 		try {
 			String xmlParser = XMLResourceDescriptor.getXMLParserClassName();
 			SAXSVGDocumentFactory df = new SAXSVGDocumentFactory(xmlParser);
-			SVGDocument doc = df.createSVGDocument(path);
+			SVGDocument doc = df.createSVGDocument(path, getClass().getResourceAsStream(path));
 			UserAgent userAgent = new UserAgentAdapter();
 			DocumentLoader loader = new DocumentLoader(userAgent);
 			BridgeContext ctx = new org.apache.batik.bridge.BridgeContext(userAgent, loader);
@@ -206,33 +199,23 @@ public class IconLoader {
 	}
 
 	/**
-	 * An easy way to get a BufferedImage directly from an SVG file using the twelvemonkeys ImageIO plugin
-	 * @param file The SVG file to read from
-	 * @param width The width of the new BufferedImage
-	 * @param height The height of the new BufferedImage
-	 * @return The image
+	 * Converts an SVG to a BufferedImage with the specified dimensions
+	 * @param svg The SVG to convert
+	 * @param width The width
+	 * @param height The height
+	 * @return The BufferedImage
 	 */
-	private BufferedImage imageFromSVG(String file, int width, int height){
-		BufferedImage image = null;
-		try (ImageInputStream input = ImageIO.createImageInputStream(new File(file))) {
-			Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
-			if (!readers.hasNext()) {
-				throw new IllegalArgumentException("No reader for: " + file);
-			}
-			ImageReader reader = readers.next();
-
-			try {
-				reader.setInput(input);
-				ImageReadParam param = reader.getDefaultReadParam();
-				param.setSourceRenderSize(new Dimension(width, height));
-				image = reader.read(0, param);
-			}
-			finally {
-				reader.dispose();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	private BufferedImage imageFromSvg(GraphicsNode svg, int width, int height){
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = (Graphics2D) image.getGraphics();
+		int size = Math.max(width, height);
+		float difference = Math.abs(width - height);
+		if(width <= height)
+			svg.setTransform(new AffineTransform(size, 0, 0, size, -difference / 2, 0));
+		else
+			svg.setTransform(new AffineTransform(size, 0, 0, size, 0,  -difference / 2));
+		svg.paint(g2d);
+		g2d.dispose();
 		return image;
 	}
 }

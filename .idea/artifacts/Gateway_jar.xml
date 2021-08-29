@@ -57,6 +57,9 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/twelvemonkeys/common/common-lang/3.7.0/common-lang-3.7.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/twelvemonkeys/common/common-io/3.7.0/common-io-3.7.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/twelvemonkeys/imageio/imageio-core/3.7.0/imageio-core-3.7.0.jar" path-in-jar="/" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.12.4" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.12.4" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.12.4" />
     </root>
   </artifact>
 </component>

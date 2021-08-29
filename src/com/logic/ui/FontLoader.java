@@ -3,6 +3,7 @@ package com.logic.ui;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -15,10 +16,10 @@ public class FontLoader {
     }
 
     private Font getFont(String path) {
-        URL url = getClass().getResource(path);
+        InputStream stream = getClass().getResourceAsStream(path);
         try {
-            return Font.createFont(Font.TRUETYPE_FONT, new File(url.toURI()));
-        } catch (FontFormatException | IOException | URISyntaxException e) {
+            return Font.createFont(Font.TRUETYPE_FONT, stream);
+        } catch (FontFormatException | IOException e) {
             e.printStackTrace();
             return null;
         }
