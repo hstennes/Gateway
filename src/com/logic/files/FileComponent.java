@@ -110,10 +110,7 @@ public class FileComponent {
     @JsonIgnore
     public LComponent makeComponent(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
         if(type.toString().equals("CUSTOM")) return makeCustom(cTypes, cData, topLevel, providedCDataId);
-        LComponent lcomp = CompUtils.makeComponent(type.toString(), pos[0], pos[1]);
-        lcomp.getRotator().setRotation(rot);
-        if(name != null && !name.equals("")) lcomp.setName(name);
-        if(com != null && !com.equals("")) lcomp.setComments(com);
+        LComponent lcomp = applyProperties(CompUtils.makeComponent(type.toString(), pos[0], pos[1]));
         if(type == CompType.SWITCH) ((Switch) lcomp).setState(state);
         if(type == CompType.CLOCK) ((Clock) lcomp).setDelay(delay);
         if(lcomp instanceof BasicGate) ((BasicGate) lcomp).setNumInputs(input.length);
@@ -128,7 +125,7 @@ public class FileComponent {
      * @param providedCDataId the providedCDataId
      * @return Custom component
      */
-    private Custom makeCustom(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
+    private LComponent makeCustom(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
         int realCDataId = topLevel ? cDataId : providedCDataId;
 
         CustomBlueprint b = cTypes[cTypeId];
@@ -159,6 +156,18 @@ public class FileComponent {
                 lcomps.get(i).getIO().connectionAt(x, Connection.INPUT).addWire(wire);
             }
         }
-        return new Custom(pos[0], pos[1], b.label, content, lcomps, cTypeId);
+        return applyProperties(new Custom(pos[0], pos[1], b.label, content, lcomps, cTypeId));
+    }
+
+    /**
+     * When loading a component, sets the general properties of the component that are not specified in the constructor (rot, com, name)
+     * @param lcomp The component being constructed from the file
+     * @return Returns the given component for convenience
+     */
+    private LComponent applyProperties(LComponent lcomp){
+        lcomp.getRotator().setRotation(rot);
+        if(name != null && !name.equals("")) lcomp.setName(name);
+        if(com != null && !com.equals("")) lcomp.setComments(com);
+        return lcomp;
     }
 }
