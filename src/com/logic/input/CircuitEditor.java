@@ -265,11 +265,13 @@ public class CircuitEditor extends MouseAdapter {
 	 */
 	private void clickSelectDecisionTree(CompSearch cs, int result, boolean shiftDown, boolean doubleClick) {
 		dragMode = DRAGGING_HIGHLIGHT;
+
 		if(result == CompSearch.TOUCHING_ACTION) {
 			LComponent csComp = cs.getLComp();
 			if(csComp instanceof IComponent) ((IComponent) csComp).clickAction();
 		}
-		else if(result == CompSearch.TOUCHING_COMPONENT) {
+
+		if(result == CompSearch.TOUCHING_COMPONENT || result == CompSearch.TOUCHING_ACTION) {
 			LComponent lcomp = cs.getLComp();
 			if(doubleClick && lcomp instanceof Custom) {
 				customViewer.view((Custom) lcomp);
