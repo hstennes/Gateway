@@ -35,11 +35,6 @@ public class CircuitEditor extends MouseAdapter {
 	public static final int SNAP_DIST = CircuitPanel.GRID_SPACING;
 	
 	/**
-	 * The offset added to a component or set of components when they are copied and pasted (in the right and down directions)
-	 */
-	public static final int COPY_OFFSET = 100;
-	
-	/**
 	 * A dragMode that shows that the selection is being dragged
 	 */
 	public static final int DRAGGING_SELECTION = 0;

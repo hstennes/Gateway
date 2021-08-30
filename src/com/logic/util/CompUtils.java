@@ -86,23 +86,24 @@ public class CompUtils {
 	}
 	
 	/**
-	 * Creates a deep clone of the given list of LComponents. This is a complicated process that was one of the most annoying parts of 
-	 * creating this application.
+	 * Creates a deep clone of the given list of LComponents
 	 * @param lcomps The LComponents to duplicate
-	 * @param offset The amount by which to translate the duplicated components from their original positions
+	 * @param pos The (center) position of the copied components
 	 * @return The list of duplicated components
 	 */
-	public static ArrayList<LComponent> duplicate(List<LComponent> lcomps, Point offset) {
+	public static ArrayList<LComponent> duplicate(List<LComponent> lcomps, Point pos) {
 		HashMap<LComponent, LComponent> oldToNew = new HashMap<LComponent, LComponent>();
 		ArrayList<LComponent> newComps = new ArrayList<LComponent>();
 		ArrayList<Wire> oldWires = new ArrayList<Wire>();
+
+		Rectangle oldBounds = getBoundingRectangle(lcomps);
 		
 		for(int l = 0; l < lcomps.size(); l++) { 
 			LComponent oldComp = lcomps.get(l);
 			IOManager oldIO = oldComp.getIO();
 			LComponent newComp = oldComp.makeCopy();
-			newComp.setX(oldComp.getX() + offset.x);
-			newComp.setY(oldComp.getY() + offset.y);
+			newComp.setX(pos.x + oldComp.getX() - (int) oldBounds.getCenterX());
+			newComp.setY(pos.y + oldComp.getY() - (int) oldBounds.getCenterY());
 			oldToNew.put(oldComp, newComp);
 			newComps.add(newComp);
 			for(int c = 0; c < oldIO.getNumInputs(); c++) {
@@ -198,7 +199,7 @@ public class CompUtils {
 	 * Returns the smallest possible Rectangle that completely encloses all of the components 
 	 * @return The bounding Rectangle
 	 */
-	public static Rectangle getBoundingRectangle(ArrayList<LComponent> lcomps) {
+	public static Rectangle getBoundingRectangle(List<LComponent> lcomps) {
 		int minX = 0, maxX = 0, minY = 0, maxY = 0;
 		for(int i = 0; i < lcomps.size(); i++) {
 			LComponent lcomp = lcomps.get(i);

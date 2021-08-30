@@ -1,12 +1,14 @@
 package com.logic.input;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 
 import com.logic.components.LComponent;
 import com.logic.engine.LogicWorker;
 import com.logic.ui.CircuitPanel;
 import com.logic.util.CompUtils;
+
+import javax.swing.*;
 
 /**
  * A class for handling copying and pasting of LComponents
@@ -65,7 +67,12 @@ public class Clipboard {
 	 */
 	public void paste() {
 		if(copy != null) {
-			ArrayList<LComponent> compsToPaste = CompUtils.duplicate(copy, new Point(COPY_OFFSET, COPY_OFFSET));
+
+			Point mouse = MouseInfo.getPointerInfo().getLocation();
+			SwingUtilities.convertPointFromScreen(mouse, cp);
+			mouse = cp.withTransform(mouse);
+
+			ArrayList<LComponent> compsToPaste = CompUtils.duplicate(copy, mouse);
 			cp.addLComps(compsToPaste);
 			editor.getSelection().select(compsToPaste);
 		}
