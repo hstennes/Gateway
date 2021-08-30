@@ -72,7 +72,7 @@ public class Clipboard {
 			SwingUtilities.convertPointFromScreen(mouse, cp);
 			mouse = cp.withTransform(mouse);
 
-			ArrayList<LComponent> compsToPaste = CompUtils.duplicate(copy, mouse);
+			ArrayList<LComponent> compsToPaste = CompUtils.duplicate(copy, mouse, true);
 			cp.addLComps(compsToPaste);
 			editor.getSelection().select(compsToPaste);
 		}

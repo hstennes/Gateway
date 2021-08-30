@@ -82,28 +82,34 @@ public class CompUtils {
 	 * @return The list of duplicated components
 	 */
 	public static ArrayList<LComponent> duplicate(List<LComponent> lcomps){
-		return duplicate(lcomps, new Point(0, 0));
+		return duplicate(lcomps, new Point(0, 0), false);
 	}
 	
 	/**
 	 * Creates a deep clone of the given list of LComponents
 	 * @param lcomps The LComponents to duplicate
 	 * @param pos The (center) position of the copied components
+	 * @param move True to use position, false to leave at current position
 	 * @return The list of duplicated components
 	 */
-	public static ArrayList<LComponent> duplicate(List<LComponent> lcomps, Point pos) {
+	public static ArrayList<LComponent> duplicate(List<LComponent> lcomps, Point pos, boolean move) {
 		HashMap<LComponent, LComponent> oldToNew = new HashMap<LComponent, LComponent>();
 		ArrayList<LComponent> newComps = new ArrayList<LComponent>();
 		ArrayList<Wire> oldWires = new ArrayList<Wire>();
 
-		Rectangle oldBounds = getBoundingRectangle(lcomps);
+		int offX = 0, offY = 0;
+		if(move) {
+			Rectangle oldBounds = getBoundingRectangle(lcomps);
+			offX = pos.x - (int) oldBounds.getCenterX();
+			offY = pos.y - (int) oldBounds.getCenterY();
+		}
 		
 		for(int l = 0; l < lcomps.size(); l++) { 
 			LComponent oldComp = lcomps.get(l);
 			IOManager oldIO = oldComp.getIO();
 			LComponent newComp = oldComp.makeCopy();
-			newComp.setX(pos.x + oldComp.getX() - (int) oldBounds.getCenterX());
-			newComp.setY(pos.y + oldComp.getY() - (int) oldBounds.getCenterY());
+			newComp.setX(oldComp.getX() + offX);
+			newComp.setY(oldComp.getY() + offY);
 			oldToNew.put(oldComp, newComp);
 			newComps.add(newComp);
 			for(int c = 0; c < oldIO.getNumInputs(); c++) {
