@@ -30,7 +30,7 @@ public class Window extends JFrame {
 	 * Creates a new Window with a blank CircuitPanel
 	 */
 	public Window() {
-		super("Gateway - Untitled Circuit");
+		super("Gateway " + LogicSimApp.VERSION + " - Untitled Circuit");
 		createAndShowGUI(null);
 	}
 	

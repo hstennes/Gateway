@@ -23,6 +23,11 @@ public class LogicSimApp {
 	public static final boolean AA = false;
 
 	/**
+	 * The release version
+	 */
+	public static final String VERSION = "v1.2";
+
+	/**
 	 * OS type, used to determine if the look and feel should be switched from default java to windows
 	 */
 	public static String OS = System.getProperty("os.name").toLowerCase();

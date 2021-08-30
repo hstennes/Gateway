@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logic.input.Camera;
 import com.logic.input.CircuitState;
@@ -174,7 +175,8 @@ public class FileManager {
 				revision.clearStates();
 				revision.saveState(new CircuitState(cp));
 				cp.repaint();
-
+			} catch (JsonParseException e){
+				cp.dispMessage(new UserMessage(cp, "File type not supported", 3000));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
