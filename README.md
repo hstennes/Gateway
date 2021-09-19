@@ -4,8 +4,8 @@ Gateway is an easy-to-use logic circuit simulator intended to help teach the bas
 
 ## Custom component creation
 
-<img align="left" src="https://i.imgur.com/TlrvCog.png" alt="Custom components" height="420px"/>
-<img src="https://i.imgur.com/ZbXqJzN.png" alt="Custom components" height="420px"/>
+<img align="left" src="https://i.imgur.com/TlrvCog.png" alt="Custom components" width="55%"/>
+<img src="https://i.imgur.com/ZbXqJzN.png" alt="Custom components" width="38%"/>
 
 Create custom components and specify their layout based on the postion of inputs and outputs in your design.
 
