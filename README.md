@@ -23,4 +23,4 @@ Easily view and change the properties of individual components, and add comments
   
 ## Easy to use
 
-Gateway has all of the quality of life features you would expect, like copy/paste and undo/redo. New componets are inserted simply by clicking where you want them to appear, and wires are created by dragging from one connection to another.  One current limitation is that wires cannot be reshaped, and this will be improved upon in the future.
+Gateway has all of the quality of life features you would expect, like copy/paste and undo/redo. New components are inserted simply by clicking where you want them to appear, and wires are created by dragging from one connection to another.  One current limitation is that wires cannot be reshaped, and this will be improved upon in the future.
