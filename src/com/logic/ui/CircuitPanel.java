@@ -50,6 +50,11 @@ public class CircuitPanel extends JPanel {
 	 * Determines if a grid is drawn in the background of the CircuitPanel
 	 */
 	private boolean showGrid = true;
+
+	/**
+	 * Determines rendering quality. High quality uses SVGs and AA, low quality uses PNGs with no AA.
+	 */
+	private boolean highQuality = true;
 	
 	/**
 	 * The list of all LComponents in the circuit
@@ -127,7 +132,7 @@ public class CircuitPanel extends JPanel {
 		long time = System.currentTimeMillis();
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		if(LogicSimApp.AA) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		double zoom = cam.getZoom();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());
@@ -149,6 +154,7 @@ public class CircuitPanel extends JPanel {
 		
 		for(int i = 0; i < lcomps.size(); i++) {
 			LComponent lcomp = lcomps.get(i);
+			lcomp.getDrawer().setUseSVG(highQuality);
 			if(view.intersects(lcomp.getBounds())) lcomp.render(g, this);
 		}
 		
@@ -158,7 +164,7 @@ public class CircuitPanel extends JPanel {
 		g2d.scale((1 / zoom), (1 / zoom));
 		if(message != null) message.render(g);
 
-		//System.out.println("Frametime: " + (System.currentTimeMillis() - time));
+		System.out.println("Frametime: " + (System.currentTimeMillis() - time));
 	}
 	
 	/**
@@ -308,6 +314,15 @@ public class CircuitPanel extends JPanel {
 	 */
 	public void setShowGrid(boolean showGrid) {
 		this.showGrid = showGrid;
+		repaint();
+	}
+
+	/**
+	 * Changes the quality settings and repaints this CircuitPanel
+	 * @param highQuality The new quality setting
+	 */
+	public void setHighQuality(boolean highQuality){
+		this.highQuality = highQuality;
 		repaint();
 	}
 

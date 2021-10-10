@@ -34,7 +34,7 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 	/**
 	 * The check box buttons in the view menu
 	 */
-	private JCheckBoxMenuItem snap, showGrid;
+	private JCheckBoxMenuItem snap, showGrid, quality;
 	
 	/**
 	 * The CircuitPanel
@@ -137,6 +137,11 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 		addListener(cbMenuItem, "Show");
 		showGrid = cbMenuItem;
 		menu.add(cbMenuItem);
+		cbMenuItem = new JCheckBoxMenuItem("High quality rendering");
+		addListener(cbMenuItem, "Quality");
+		cbMenuItem.setSelected(true);
+		quality = cbMenuItem;
+		menu.add(cbMenuItem);
 		add(menu);
 		
 		menu = new JMenu("Tools");
@@ -209,6 +214,7 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 		else if(command.equals("Zoom out")) cp.getCamera().zoomOut();
 		else if(command.equals("Snap")) cp.getEditor().setSnap(snap.isSelected());
 		else if(command.equals("Show")) cp.setShowGrid(showGrid.isSelected());
+		else if(command.equals("Quality")) cp.setHighQuality(quality.isSelected());
 		else if(command.equals("New")) LogicSimApp.newWindow(null);
 		else if(command.equals("Open")) fileManager.open();
 		else if(command.equals("Save")) fileManager.save();

@@ -1,6 +1,5 @@
 package com.logic.main;
 
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -16,11 +15,6 @@ import com.logic.ui.IconLoader;
  * @author GoopyLotus5844
  */
 public class LogicSimApp {
-
-	/**
-	 * Optionally use AA for all rendering done in circuit panel. Noticeably improvement in quality but laggy on large circuits.
-	 */
-	public static final boolean AA = false;
 
 	/**
 	 * The release version
@@ -94,36 +88,21 @@ public class LogicSimApp {
 		SwingUtilities.invokeLater(LogicSimApp::new);
 		/**
 		 * To do list:
-		 * Make circuit editor add to selection instead of clearing selection if shift key is down *
-		 * Add component properties ui *
-		 * Make wires selectable *
-		 * Add framework for increasing inputs (implemented through CompProperties) *
-		 * Add framework for 90 degree component rotation (implemented through CompProperties) *
-		 * Improve performance at this point because its probably gotten really slow and buggy *
-		 * Add undo and redo functions *
-		 * Add ability to save and load files *
-		 * Add ability to create ICs *
 		 * Add built in latches, flip flops, and random generator
-		 * Make all menu items functional *
+		 * Add copy / paste between windows
+		 * ADD MULTI BIT WIRES
 		 * Text labels (implemented through CompProperties)
 		 * Keyboard shortcuts (such as press A for and, O for or)
 		 * Add circuit timing diagrams for ICs
-		 * Add ability to print circuits
+		 * Add ability to print circuits to pdf
 		 * Add ability to move components with arrow keys
 		 * Add ability to reshape wires
 		 */
 		
 		/**
 		 * Issues
-		 * Trying to drag to create wires is janky *
-		 * Somehow it saved custom_components.gtw.gtw instead of saving over the first *
-		 * Dragging when zoomed in is janky *
-		 * Magic unicorn properties *
-		 * The CircuitEditor and supporting input classes are disorganized *
 		 * The location field in the properties can malfunction
-		 * Opening a file while the app is maximized results in a window with a strange layout at the top
 		 * The insert and select options are redundant; there is no reason to ever use them
-		 * Make scroll to zoom less jank
 		 */
 	}
 }
