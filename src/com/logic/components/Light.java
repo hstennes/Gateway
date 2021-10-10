@@ -11,7 +11,7 @@ import com.logic.ui.CompRotator;
  * @author Hank Stennes
  *
  */
-public class Light extends LComponent {
+public class Light extends LabeledComponent {
 	
 	private static final long serialVersionUID = 1L;
 		
@@ -34,6 +34,7 @@ public class Light extends LComponent {
 		if(io.getInput(0)) drawer.setActiveImageIndex(1);
 		else drawer.setActiveImageIndex(0);
 		drawer.draw(g);
+		renderLabel(g, (io.connectionAt(0, Connection.INPUT).getAbsoluteDirection() + 2) % 4);
 	}
 	
 	@Override

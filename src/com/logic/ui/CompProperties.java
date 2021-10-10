@@ -1,15 +1,10 @@
 package com.logic.ui;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Point;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -66,6 +61,11 @@ public class CompProperties extends JPanel {
 	 * The rotation spinner
 	 */
 	private RotationSpinner rotationSpinner;
+
+	/**
+	 * The checkbox to set if the component shows a label
+	 */
+	private JCheckBox labelCheck;
 	
 	/**
 	 * The label that shows a component's connections
@@ -101,6 +101,11 @@ public class CompProperties extends JPanel {
 	 * The Selection instance that the program is using, which is set using the setCircuitPanel() method
 	 */
 	private Selection selection;
+
+	/**
+	 * The CircuitPanel instance, set using setCircuitPanel
+	 */
+	private CircuitPanel cp;
 	
 	/**
 	 * Creates a new CompProperties and displays the GUI
@@ -155,6 +160,11 @@ public class CompProperties extends JPanel {
 		spinnerPanel.add(spacerPanel);
 		spinnerPanel.add(rotationSpinner);
 		singlePanel.add(spinnerPanel);
+
+		labelCheck = new JCheckBox("Show label", false);
+		labelCheck.setMargin(new Insets(0, 0, 10, 0));
+		addShowLabelListener();
+		singlePanel.add(labelCheck);
 		
 		JLabel connectionTitle = new JLabel("Connections");
 		GraphicsUtils.makeBold(connectionTitle);
@@ -228,6 +238,11 @@ public class CompProperties extends JPanel {
 				delay.setDelayText(((Clock) lcomp).getDelay());
 			}
 			else delay.setVisible(false);
+			if(lcomp instanceof LabeledComponent){
+				labelCheck.setVisible(true);
+				labelCheck.setSelected(((LabeledComponent) lcomp).isShowLabel());
+			}
+			else labelCheck.setVisible(false);
 			nameField.setText(lcomp.getName());
 			location.setPoint(new Point(lcomp.getX(), lcomp.getY()));
 			inputSpinner.getSpinner().setValue(lcomp.getIO().getNumInputs());
@@ -279,13 +294,27 @@ public class CompProperties extends JPanel {
 			public void changedUpdate(DocumentEvent e) { }
 		});
 	}
+
+	/**
+	 * Adds a listener to show label checkbox
+	 */
+	private void addShowLabelListener(){
+		labelCheck.addActionListener(e -> {
+			if(selection.size() == 1 && selection.get(0) instanceof LabeledComponent) {
+				((LabeledComponent) selection.get(0)).setShowLabel(labelCheck.isSelected());
+				cp.repaint();
+			}
+		});
+	}
 	
 	/**
 	 * Saves the name in the nameField to the currently selected LComponent
 	 */
 	private void saveName() {
 		if(selection != null && selection.size() == 1) {
+			LComponent lcomp = selection.get(0);
 			selection.get(0).setName(nameField.getText());
+			if(lcomp instanceof LabeledComponent && ((LabeledComponent) lcomp).isShowLabel()) cp.repaint();
 		}
 	}
 	
@@ -365,6 +394,7 @@ public class CompProperties extends JPanel {
 		rotationSpinner.setCircuitPanel(cp);
 		delay.setCircuitPanel(cp);
 		selection = cp.getEditor().getSelection();
+		this.cp = cp;
 	}
 
 }

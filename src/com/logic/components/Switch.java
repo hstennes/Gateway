@@ -33,6 +33,7 @@ public class Switch extends IComponent {
 		if(getState()) drawer.setActiveImageIndex(1);
 		else drawer.setActiveImageIndex(0);
 		drawer.draw(g);
+		renderLabel(g, (io.connectionAt(0, Connection.OUTPUT).getAbsoluteDirection() + 2) % 4);
 	}
 	
 	@Override

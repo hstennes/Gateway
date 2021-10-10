@@ -16,7 +16,7 @@ import com.logic.ui.CompRotator;
  * @author Hank Stennes
  *
  */
-public abstract class IComponent extends LComponent implements MouseListener {
+public abstract class IComponent extends LabeledComponent implements MouseListener {
 	
 	private static final long serialVersionUID = 1L;
 	
