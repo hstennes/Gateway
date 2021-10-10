@@ -32,7 +32,7 @@ public class LabelDrawer {
         int bHeight = tHeight + 2 * yMargin;
 
         int boxX = alignX == START ? x : alignX == CENTER ? x - bWidth / 2 : x - bWidth;
-        int boxY = alignY == START ? y : alignY == CENTER ? y - bHeight / 2 : x - bHeight;
+        int boxY = alignY == START ? y : alignY == CENTER ? y - bHeight / 2 : y - bHeight;
         int textX = boxX + xMargin;
         int textY = boxY + yMargin + metrics.getAscent();
 

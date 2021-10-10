@@ -79,6 +79,7 @@ public class UserMessage implements ActionListener {
 		this.cp = cp;
 		this.text = text;
 		timer = new Timer(duration, this);
+		drawer = new LabelDrawer(labelFont, labelColor, xMargin, yMargin);
 	}
 	
 	/**
