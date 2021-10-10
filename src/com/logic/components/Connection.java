@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.logic.ui.CompDrawer;
 import com.logic.ui.CompRotator;
+import com.logic.ui.LabelDrawer;
 import com.logic.util.Deletable;
 
 /**
@@ -152,6 +153,7 @@ public class Connection implements Deletable, Serializable {
 	 */
 	public void renderLabel(Graphics g, String label) {
 		Point coord = getCoord();
+		/*
 		FontMetrics metrics = g.getFontMetrics(labelFont);
 		int width = metrics.stringWidth(label);
 		int height = metrics.getHeight();
@@ -169,6 +171,17 @@ public class Connection implements Deletable, Serializable {
 		((Graphics2D) g).setStroke(new BasicStroke(1));
 		g.drawRect(center.x - width / 2 - 1, center.y - height / 2 + 3, width + 2, height);
 		g.drawString(label, center.x - width / 2, center.y + height / 2);
+		 */
+		LabelDrawer drawer = new LabelDrawer(labelFont, Color.WHITE, 3, 2);
+		int offset = 10;
+		if(getAbsoluteDirection() == CompRotator.LEFT)
+			drawer.render(((Graphics2D) g), coord.x - offset, coord.y, LabelDrawer.END, LabelDrawer.CENTER, label);
+		else if(getAbsoluteDirection() == CompRotator.UP)
+			drawer.render(((Graphics2D) g), coord.x, coord.y - offset, LabelDrawer.CENTER, LabelDrawer.END, label);
+		else if(getAbsoluteDirection() == CompRotator.RIGHT)
+			drawer.render(((Graphics2D) g), coord.x + offset, coord.y, LabelDrawer.START, LabelDrawer.CENTER, label);
+		else if(getAbsoluteDirection() == CompRotator.DOWN)
+			drawer.render(((Graphics2D) g), coord.x, coord.y + offset, LabelDrawer.CENTER, LabelDrawer.START, label);
 	}
 	
 	/**

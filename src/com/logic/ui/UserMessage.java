@@ -47,6 +47,11 @@ public class UserMessage implements ActionListener {
 	 * The timer that is used to clear the message, if this message is timed
 	 */
 	private Timer timer;
+
+	/**
+	 * The LabelDrawer instance
+	 */
+	private LabelDrawer drawer;
 	
 	/**
 	 * The CircuitPanel
@@ -61,6 +66,7 @@ public class UserMessage implements ActionListener {
 	public UserMessage(CircuitPanel cp, String text) {
 		this.cp = cp;
 		this.text = text;
+		drawer = new LabelDrawer(labelFont, labelColor, xMargin, yMargin);
 	}
 	
 	/**
@@ -87,7 +93,6 @@ public class UserMessage implements ActionListener {
 	 * @param g The Graphics object to use
 	 */
 	public void render(Graphics g) {
-		LabelDrawer drawer = new LabelDrawer(labelFont, labelColor, xMargin, yMargin);
 		drawer.render(((Graphics2D) g), cp.getWidth() / 2, offset, LabelDrawer.CENTER, LabelDrawer.START, text);
 	}
 
