@@ -318,6 +318,14 @@ public class CircuitPanel extends JPanel {
 	}
 
 	/**
+	 * Returns the quality setting
+	 * @return The quality setting
+	 */
+	public boolean isHighQuality(){
+		return highQuality;
+	}
+
+	/**
 	 * Changes the quality settings and repaints this CircuitPanel
 	 * @param highQuality The new quality setting
 	 */

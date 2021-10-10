@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logic.components.Custom;
 import com.logic.components.LComponent;
 import com.logic.files.FileData;
+import com.logic.files.FileManager;
 import com.logic.files.JSONFile;
 import com.logic.input.Camera;
 import com.logic.ui.CircuitPanel;
@@ -21,7 +22,7 @@ public class JacksonTest {
 
     public static void testSave(CircuitPanel cp) {
         Camera cam = cp.getCamera();
-        JSONFile file = new JSONFile(new FileData(cp.lcomps,
+        JSONFile file = new JSONFile(new FileData(FileManager.FILE_FORMAT_VERSION, cp.lcomps,
                 cp.getEditor().getCustomCreator().getCustoms(),
                 new double[] {cam.getX(), cam.getY(), cam.getZoom()},
                 new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0}));

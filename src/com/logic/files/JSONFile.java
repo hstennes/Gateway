@@ -14,7 +14,7 @@ public class JSONFile {
     /**
      * File format version, incremented whenever a change is made
      */
-    public final int version = 1;
+    public final int version = FileManager.FILE_FORMAT_VERSION;
 
     /**
      * Holds camera position data [x, y, zoom]
@@ -136,6 +136,6 @@ public class JSONFile {
                 lcomps.get(i).getIO().connectionAt(x, Connection.INPUT).addWire(wire);
             }
         }
-        return new FileData(lcomps, customs, camera, settings);
+        return new FileData(version, lcomps, customs, camera, settings);
     }
 }

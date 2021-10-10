@@ -26,6 +26,11 @@ import org.apache.commons.io.FilenameUtils;
 public class FileManager {
 
 	/**
+	 * The file format version. Should be incremented when the file format is changed in any way.
+	 */
+	public static final int FILE_FORMAT_VERSION = 2;
+
+	/**
 	 * A filter that only allows for the selection of files that are compatible with Gateway
 	 */
 	private final FileNameExtensionFilter filter = new FileNameExtensionFilter("Gateway files", "gtw");
@@ -112,21 +117,12 @@ public class FileManager {
 		UserMessage message = new UserMessage(cp, "Circuit saved", 3000);
 		cp.dispMessage(message);
 		try {
-			/*
-			FileOutputStream fos = new FileOutputStream(path);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			GatewayFile gatewayFile = new GatewayFile(cp.lcomps, cp.getCamera());
-			oos.writeObject(gatewayFile);
-			oos.close();
-			fos.close();
-			 */
 			Camera cam = cp.getCamera();
-			JSONFile file = new JSONFile(new FileData(cp.lcomps,
+			JSONFile file = new JSONFile(new FileData(FILE_FORMAT_VERSION, cp.lcomps,
 					cp.getEditor().getCustomCreator().getCustoms(),
 					new double[] {cam.getX(), cam.getY(), cam.getZoom()},
-					new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0}));
+					new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0, cp.isHighQuality() ? 1 : 0}));
 			new ObjectMapper().writeValue(Paths.get(path).toFile(), file);
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -145,19 +141,6 @@ public class FileManager {
 		else {
 			cp.getWindow().setTitle(path);
 			try {
-				/*
-				FileInputStream fis = new FileInputStream(path);
-				ObjectInputStream ois = new ObjectInputStream(fis); 
-				GatewayFile gatewayFile = (GatewayFile) ois.readObject();
-				gatewayFile.setupCircuitPanel(cp);
-				gatewayFile.setupCamera(cp.getCamera());
-				RevisionManager revision = cp.getEditor().getRevision();
-				revision.clearStates();
-				revision.saveState(new CircuitState(cp));
-				ois.close();
-				fis.close();
-				 */
-
 				JSONFile file = new ObjectMapper().readValue(Paths.get(path).toFile(), JSONFile.class);
 				FileData fileData = file.getFileData();
 				cp.addLComps(fileData.getLcomps());
@@ -167,10 +150,7 @@ public class FileManager {
 				cam.setZoom(camData[2]);
 				cam.setX(camData[0]);
 				cam.setY(camData[1]);
-				int[] settings = fileData.getSettings();
-				cp.getEditor().setSnap(settings[0] == 1);
-				cp.setShowGrid(settings[1] == 1);
-				((LMenuBar) cp.getWindow().getJMenuBar()).syncViewSettings();
+				loadSettings(fileData.getVersion(), fileData.getSettings());
 				RevisionManager revision = cp.getEditor().getRevision();
 				revision.clearStates();
 				revision.saveState(new CircuitState(cp));
@@ -181,6 +161,13 @@ public class FileManager {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void loadSettings(int version, int[] settings){
+		cp.getEditor().setSnap(settings[0] == 1);
+		cp.setShowGrid(settings[1] == 1);
+		if(version == 2) cp.setHighQuality(settings[2] == 1);
+		((LMenuBar) cp.getWindow().getJMenuBar()).syncViewSettings();
 	}
 
 	/**

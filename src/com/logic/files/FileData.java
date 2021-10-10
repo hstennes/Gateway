@@ -11,6 +11,11 @@ import java.util.ArrayList;
 public class FileData {
 
     /**
+     * The file format version
+     */
+    private int version;
+
+    /**
      * The list of LComponents from cp
      */
     private ArrayList<LComponent> lcomps;
@@ -20,22 +25,34 @@ public class FileData {
      */
     private ArrayList<Custom> customs;
 
+    /**
+     * The (x, y) position of the camera
+     */
     private double[] camera;
 
+    /**
+     * The settings list
+     */
     private int[] settings;
 
     /**
      * Constructs FileData object
+     * @param version The file format version
      * @param lcomps The LComponents
      * @param customs The custom components
      * @param camera The camera info array (see JSONFile.camera)
      * @param settings The settings array (see JSONFile.settings)
      */
-    public FileData(ArrayList<LComponent> lcomps, ArrayList<Custom> customs, double[] camera, int[] settings) {
+    public FileData(int version, ArrayList<LComponent> lcomps, ArrayList<Custom> customs, double[] camera, int[] settings) {
+        this.version = version;
         this.lcomps = lcomps;
         this.customs = customs;
         this.camera = camera;
         this.settings = settings;
+    }
+
+    public int getVersion(){
+        return version;
     }
 
     public ArrayList<LComponent> getLcomps() {
