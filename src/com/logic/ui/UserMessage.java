@@ -87,20 +87,8 @@ public class UserMessage implements ActionListener {
 	 * @param g The Graphics object to use
 	 */
 	public void render(Graphics g) {
-		g.setFont(labelFont);
-		FontMetrics metrics = g.getFontMetrics(labelFont);
-		int width = metrics.stringWidth(text);
-		int height = metrics.getAscent();
-		
-		int x = (cp.getWidth() - width) / 2;
-		int y = offset + yMargin;
-		
-		g.setColor(labelColor);
-		g.fillRect(x - xMargin, y - yMargin, width + 2 * xMargin, height + 2 * yMargin);
-		g.setColor(Color.BLACK);
-		((Graphics2D) g).setStroke(new BasicStroke(1));
-		g.drawRect(x - xMargin, y - yMargin, width + 2 * xMargin, height + 2 * yMargin);
-		g.drawString(text, x, y + height - 2);
+		LabelDrawer drawer = new LabelDrawer(labelFont, labelColor, xMargin, yMargin);
+		drawer.render(((Graphics2D) g), cp.getWidth() / 2, offset, LabelDrawer.CENTER, LabelDrawer.START, text);
 	}
 
 	/**
