@@ -64,6 +64,7 @@ public class Button extends IComponent {
 		Button result = new Button(x, y);
 		result.getRotator().setRotation(rotator.getRotation());
 		result.setName(getName());
+		result.setShowLabel(isShowLabel());
 		return result;
 	}
 }

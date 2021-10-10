@@ -42,6 +42,7 @@ public class Light extends LabeledComponent {
 		Light result = new Light(x, y);
 		result.getRotator().setRotation(rotator.getRotation());
 		result.setName(getName());
+		result.setShowLabel(isShowLabel());
 		return result;
 	}
 }

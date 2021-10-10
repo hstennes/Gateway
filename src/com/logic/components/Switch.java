@@ -56,6 +56,7 @@ public class Switch extends IComponent {
 		result.getRotator().setRotation(rotator.getRotation());
 		result.setName(getName());
 		result.setState(getState());
+		result.setShowLabel(isShowLabel());
 		return result;
 	}
 }

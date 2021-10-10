@@ -42,6 +42,12 @@ public class FileComponent {
     public boolean state;
 
     /**
+     * Show label option for lights, switches, buttons
+     */
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public boolean showLabel;
+
+    /**
      * Delay value for clocks
      */
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
@@ -72,6 +78,7 @@ public class FileComponent {
         rot = lcomp.getRotator().getRotation();
         name = lcomp.getName().equals(CompProperties.defaultName) ? "" : lcomp.getName();
         com = lcomp.getComments().equals(CompProperties.defaultComments) ? "" : lcomp.getComments();
+        if(lcomp instanceof LabeledComponent) showLabel = ((LabeledComponent) lcomp).isShowLabel();
         if(type == CompType.SWITCH) state = ((Switch) lcomp).getState();
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
         else if(type == CompType.CUSTOM) {
@@ -113,6 +120,7 @@ public class FileComponent {
         LComponent lcomp = applyProperties(CompUtils.makeComponent(type.toString(), pos[0], pos[1]));
         if(type == CompType.SWITCH) ((Switch) lcomp).setState(state);
         if(type == CompType.CLOCK) ((Clock) lcomp).setDelay(delay);
+        if(lcomp instanceof LabeledComponent) ((LabeledComponent) lcomp).setShowLabel(showLabel);
         if(lcomp instanceof BasicGate) ((BasicGate) lcomp).setNumInputs(input.length);
         return lcomp;
     }
