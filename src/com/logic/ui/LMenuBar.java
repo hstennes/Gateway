@@ -252,5 +252,6 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 	public void syncViewSettings(){
 		snap.setSelected(cp.getEditor().isSnap());
 		showGrid.setSelected(cp.isShowGrid());
+		quality.setSelected(cp.isHighQuality());
 	}
 }

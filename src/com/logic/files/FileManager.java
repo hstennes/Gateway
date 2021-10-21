@@ -166,7 +166,7 @@ public class FileManager {
 	private void loadSettings(int version, int[] settings){
 		cp.getEditor().setSnap(settings[0] == 1);
 		cp.setShowGrid(settings[1] == 1);
-		if(version == 2) cp.setHighQuality(settings[2] == 1);
+		if(version >= 2) cp.setHighQuality(settings[2] == 1);
 		((LMenuBar) cp.getWindow().getJMenuBar()).syncViewSettings();
 	}
 
