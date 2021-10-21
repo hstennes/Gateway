@@ -101,7 +101,7 @@ public class FileManager {
 			File file = fc.getSelectedFile();
 			String path = file.getAbsolutePath();
 			if(!path.equals(currentFile)) {
-				openFile(path, cp.getEditor().getRevision().hasEdits());
+				openFile(path, cp.lcomps.size() > 0);
 				currentFile = path;
 			}
 		}
@@ -139,7 +139,6 @@ public class FileManager {
 			LogicSimApp.newWindow(path);
 		}
 		else {
-			cp.getWindow().setTitle(path);
 			try {
 				JSONFile file = new ObjectMapper().readValue(Paths.get(path).toFile(), JSONFile.class);
 				FileData fileData = file.getFileData();
@@ -154,6 +153,7 @@ public class FileManager {
 				RevisionManager revision = cp.getEditor().getRevision();
 				revision.clearStates();
 				revision.saveState(new CircuitState(cp));
+				cp.getWindow().setTitle(path);
 				cp.repaint();
 			} catch (JsonParseException e){
 				cp.dispMessage(new UserMessage(cp, "File type not supported", 3000));

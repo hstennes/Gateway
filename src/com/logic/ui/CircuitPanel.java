@@ -129,7 +129,6 @@ public class CircuitPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		long time = System.currentTimeMillis();
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -163,8 +162,6 @@ public class CircuitPanel extends JPanel {
 		g2d.translate(-cam.getX(), -cam.getY());
 		g2d.scale((1 / zoom), (1 / zoom));
 		if(message != null) message.render(g);
-
-		System.out.println("Frametime: " + (System.currentTimeMillis() - time));
 	}
 	
 	/**
