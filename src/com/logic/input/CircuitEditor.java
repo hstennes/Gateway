@@ -170,14 +170,14 @@ public class CircuitEditor extends MouseAdapter {
 			int result = cs.search(p);
 			
 			if(toolbar.getToolMode().equals("Select")) {
-				clickSelectDecisionTree(cs, result, e.isShiftDown(), e.getClickCount() >= 2);
+				clickSelectDecisionTree(p, cs, result, e.isShiftDown(), e.getClickCount() >= 2);
 			}
 			else if(toolbar.getToolMode().equals("Insert")) {
 				if(result == CompSearch.TOUCHING_COMPONENT || 
 						result == CompSearch.TOUCHING_CONNECTION || 
 						result == CompSearch.TOUCHING_ACTION) {
 					toolbar.changeToSelect(LToolBar.INTERNAL);
-					clickSelectDecisionTree(cs, result, e.isShiftDown(), e.getClickCount() >= 2);
+					clickSelectDecisionTree(p, cs, result, e.isShiftDown(), e.getClickCount() >= 2);
 				}
 				else {
 					dragMode = DRAGGING_HIGHLIGHT;
@@ -253,17 +253,18 @@ public class CircuitEditor extends MouseAdapter {
 	 * Handles a mouse click if the tool bar is in select mode. This method contains all the operations that must be performed if the click
 	 * is touching a component action, touching the bounds of a component, touching a connection, touching a wire, or clear or any click 
 	 * sensitive elements
+	 * @param p The click point in CircuitPanel space
 	 * @param cs The CompSearch used to obtain the given result
 	 * @param result The result of the result of the CompSearch after calling CompSearch.search(Point coord)
 	 * @param shiftDown A boolean telling whether the shift key was down on the mouse event, which influences how the selection is modified
 	 * @param doubleClick A boolean telling whether the mouse event was a double click, which influences how custom components behave 
 	 */
-	private void clickSelectDecisionTree(CompSearch cs, int result, boolean shiftDown, boolean doubleClick) {
+	private void clickSelectDecisionTree(Point p, CompSearch cs, int result, boolean shiftDown, boolean doubleClick) {
 		dragMode = DRAGGING_HIGHLIGHT;
 
 		if(result == CompSearch.TOUCHING_ACTION) {
 			LComponent csComp = cs.getLComp();
-			if(csComp instanceof IComponent) ((IComponent) csComp).clickAction();
+			if(csComp instanceof IComponent) ((IComponent) csComp).componentClicked(p);
 		}
 
 		if(result == CompSearch.TOUCHING_COMPONENT || result == CompSearch.TOUCHING_ACTION) {

@@ -72,11 +72,20 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	
 	/**
 	 * Called when the user clicks in the boundary that has been set using the setClickAction method
+	 * @param boundsClick The click point relative to the click area on the component
 	 */
-	public abstract void clickAction();
+	protected abstract void clickAction(Point boundsClick);
+
+	/**
+	 * Called when the user clicks in the boundary that has been set using the setClickAction method.
+	 * @param cpClick The click point in CircuitPanel space
+	 */
+	public void componentClicked(Point cpClick){
+		clickAction(new Point(clickBounds.x - cpClick.x, clickBounds.y - cpClick.y));
+	}
 	
 	/**
-	 * Called when the action specified through addNotification has occurred
+	 * Called when the action specified through setNotification has occurred
 	 * @param type The type of notification (MouseEvent.MOUSE_PRESSED, MouseEvent.MOUSE_RELEASED)
 	 */
 	public abstract void notification(int type);

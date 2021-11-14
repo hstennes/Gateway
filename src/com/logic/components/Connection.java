@@ -78,6 +78,11 @@ public class Connection implements Deletable, Serializable {
 	 * The position of the connection in the LComponpent's image when the component has a CompRotator.UP rotation.
 	 */
 	private int ux, uy;
+
+	/**
+	 * The bitWidth of this connection. Only wires with the same bit width can connect.
+	 */
+	private int bitWidth;
 	
 	/**
 	 * The direction that this connection is facing, which determines how wires appear when connected to it. Valid values are 
@@ -144,6 +149,16 @@ public class Connection implements Deletable, Serializable {
 		wires.add(wire);
 		wire.fillConnection(this);
 		if(type == OUTPUT) if(wires.size() > 1) wire.setSignal(wires.get(0).getSignal());
+	}
+
+	/**
+	 * Deletes all wires and removes them from the wires list.
+	 */
+	private void clearWires(){
+		for(int i = wires.size() - 1; i >= 0; i--) {
+			wires.get(i).delete();
+		}
+		wires.clear();
 	}
 	
 	/**
@@ -311,10 +326,24 @@ public class Connection implements Deletable, Serializable {
 	
 	@Override
 	public void delete() {
-		for(int i = wires.size() - 1; i >= 0; i--) {
-			wires.get(i).delete();
-		}
-		wires.clear();
+		clearWires();
 	}
-	
+
+	/**
+	 * Sets the new bit width of this connection. If the width has changed, all wires are deleted.
+	 * @param width The new bit width
+	 */
+	public void setBitWidth(int width){
+		if(width == bitWidth) return;
+		if(wires.size() > 0) clearWires();
+		bitWidth = width;
+	}
+
+	/**
+	 * Returns the bit width
+	 * @return the bit width
+	 */
+	public int getBitWidth(){
+		return bitWidth;
+	}
 }

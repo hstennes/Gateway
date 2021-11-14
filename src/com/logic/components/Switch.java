@@ -1,6 +1,6 @@
 package com.logic.components;
 
-import java.awt.Graphics;
+import java.awt.*;
 
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicWorker;
@@ -42,7 +42,7 @@ public class Switch extends IComponent {
 	}
 
 	@Override
-	public void clickAction() {
+	public void clickAction(Point p) {
 		setState(!getState());
 		LogicWorker.startLogic(this);
 	}

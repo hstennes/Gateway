@@ -31,7 +31,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	/**
 	 * The boolean state of the wire
 	 */
-	private boolean signal;
+	private boolean[] signal;
 	
 	/**
 	 * The path that the wire follows in the CircuitPanel
@@ -42,6 +42,14 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * The two connections that the wire is attached to
 	 */
 	private Connection source, dest;
+
+	public Wire(){
+		signal = new boolean[1];
+	}
+
+	public Wire(int bitWidth){
+		signal = new boolean[bitWidth];
+	}
 	
 	@Override
 	public void render(Graphics g, CircuitPanel cp) {
@@ -92,8 +100,11 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 		}
 		
 		g2d.draw(curve);
-		if(signal) g2d.setColor(Color.ORANGE);
-		else g2d.setColor(Color.WHITE);
+		if(signal.length == 1) {
+			if (signal[0]) g2d.setColor(Color.ORANGE);
+			else g2d.setColor(Color.WHITE);
+		}
+		else g2d.setColor(Color.GREEN);
 		g2d.setStroke(new BasicStroke(3));
 		g2d.draw(curve);
 		g2d.setStroke(new BasicStroke(1));
@@ -128,19 +139,20 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	}
 	
 	/**
-	 * Returns the wire's signal
+	 * Returns the wire's signal (the least significant bit if there are multiple)
 	 * @return The wire's signal
 	 */
 	public synchronized boolean getSignal() {
-		return signal;
+		return signal[0];
 	}
 	
 	/**
-	 * Changes the wire's signal. This method is safe to call from the EDT and LogicWorker thread
+	 * Changes the wire's signal (the least significant bit if there are multiple). This method is safe to call from the EDT
+	 * and LogicWorker thread.
 	 * @param signal The new boolean signal
 	 */
 	public synchronized void setSignal(boolean signal) {
-		this.signal = signal;
+		this.signal[0] = signal;
 	}
 	
 	/**
