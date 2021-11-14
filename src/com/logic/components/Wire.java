@@ -46,6 +46,10 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	public Wire(){
 		signal = new boolean[1];
 	}
+
+	public Wire(int bits){
+		signal = new boolean[bits];
+	}
 	
 	@Override
 	public void render(Graphics g, CircuitPanel cp) {
@@ -135,7 +139,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	}
 	
 	/**
-	 * Returns the wire's signal
+	 * Returns the wire's signal (the least significant bit if there are multiple)
 	 * @return The wire's signal
 	 */
 	public synchronized boolean getSignal() {
@@ -143,7 +147,8 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	}
 	
 	/**
-	 * Changes the wire's signal. This method is safe to call from the EDT and LogicWorker thread
+	 * Changes the wire's signal (the least significant bit if there are multiple). This method is safe to call from the EDT
+	 * and LogicWorker thread.
 	 * @param signal The new boolean signal
 	 */
 	public synchronized void setSignal(boolean signal) {

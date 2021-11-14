@@ -1,6 +1,6 @@
 package com.logic.components;
 
-import java.awt.Graphics;
+import java.awt.*;
 
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicWorker;
@@ -44,7 +44,7 @@ public class Button extends IComponent {
 	}
 
 	@Override
-	public void clickAction() {
+	public void clickAction(Point p) {
 		setState(true);
 		LogicWorker.startLogic(this);
 	}
