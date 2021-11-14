@@ -47,8 +47,8 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 		signal = new boolean[1];
 	}
 
-	public Wire(int bits){
-		signal = new boolean[bits];
+	public Wire(int bitWidth){
+		signal = new boolean[bitWidth];
 	}
 	
 	@Override
