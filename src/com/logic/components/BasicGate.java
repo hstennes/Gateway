@@ -14,7 +14,7 @@ import com.logic.util.ConnectionLayout;
  * @author Hank Stennes
  *
  */
-public class BasicGate extends LComponent {
+public class BasicGate extends LComponent implements BitFlexibleElement {
 		
 	private static final long serialVersionUID = 1L;
 
@@ -152,6 +152,13 @@ public class BasicGate extends LComponent {
 		BasicGate result = new BasicGate(x, y, io.getNumInputs(), type);
 		result.getRotator().setRotation(rotator.getRotation());
 		result.setName(getName());
+		result.bitWidth = bitWidth;
 		return result;
+	}
+
+	@Override
+	public void changeBitWidth(int bitWidth) {
+		this.bitWidth = bitWidth;
+
 	}
 }

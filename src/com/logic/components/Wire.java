@@ -29,7 +29,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	private final int curveFactor = 6;
 	
 	/**
-	 * The boolean state of the wire
+	 * The state of the wire
 	 */
 	private boolean[] signal;
 	
@@ -44,10 +44,12 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	private Connection source, dest;
 
 	public Wire(){
+		super(1);
 		signal = new boolean[1];
 	}
 
 	public Wire(int bitWidth){
+		super(bitWidth);
 		signal = new boolean[bitWidth];
 	}
 	
@@ -100,7 +102,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 		}
 		
 		g2d.draw(curve);
-		if(signal.length == 1) {
+		if(bitWidth == 1) {
 			if (signal[0]) g2d.setColor(Color.ORANGE);
 			else g2d.setColor(Color.WHITE);
 		}
