@@ -4,6 +4,7 @@ import com.logic.components.*;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Stores images to speed up rendering
@@ -14,6 +15,10 @@ public class ImageCache {
      * Maps LComponent strings from getHashString to cached images
      */
     private HashMap<String, BufferedImage> images;
+
+    public ImageCache(){
+        images = new HashMap<>();
+    }
 
     /**
      * Adds the given image to the cache.
@@ -52,5 +57,11 @@ public class ImageCache {
         else if(lcomp instanceof IComponent) ext = ((IComponent) lcomp).getState() ? "1" : "0";
         else if(lcomp instanceof Clock) ext = ((Clock) lcomp).isOn() ? "1" : "0";
         return lcomp.getType().toString() + ext;
+    }
+
+    public void printContents(){
+        Set<String> keys = images.keySet();
+        for(String key : keys) System.out.print(key + " ");
+        System.out.println();
     }
 }
