@@ -1,8 +1,8 @@
 package com.logic.ui;
 
-import com.logic.components.LComponent;
-import com.logic.components.Wire;
+import com.logic.components.*;
 import com.logic.input.Camera;
+import com.logic.input.Selection;
 import org.apache.batik.gvt.GraphicsNode;
 
 import java.awt.*;
@@ -11,6 +11,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Renderer {
+
+    public final static int CONNECT_RAD = 9;
 
     private CircuitPanel cp;
 
@@ -70,22 +72,86 @@ public class Renderer {
     }
 
     private BufferedImage renderComponentImage(LComponent lcomp){
-        Rectangle b = lcomp.getBoundsRight();
+        Rectangle lb = lcomp.getBoundsRight();
+        Rectangle cb = lcomp.getIO().getConnectionBounds();
+
         GraphicsNode svg = lcomp.getDrawer().getActiveSVG();
-        int width = (int) (b.width * zoom);
-        int height = (int) (b.height * zoom);
-        BufferedImage image = new BufferedImage((int) (b.width * zoom), (int) (b.height * zoom), Transparency.BITMASK);
+        BufferedImage image = new BufferedImage((int) (cb.width * zoom), (int) (cb.height * zoom), Transparency.BITMASK);
         Graphics2D g2d = (Graphics2D) image.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.scale(zoom, zoom);
 
-        int size = Math.max(width, height);
-        float difference = Math.abs(width - height);
-        if(width <= height)
-            svg.setTransform(new AffineTransform(size, 0, 0, size, -difference / 2, 0));
-        else
-            svg.setTransform(new AffineTransform(size, 0, 0, size, 0,  -difference / 2));
+        drawConnections(g2d, lcomp, -cb.x, -cb.y);
+
+        int size = Math.max(lb.width, lb.height);
+        float difference = Math.abs(lb.width - lb.height);
+        if(lb.width <= lb.height) svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x - difference / 2, -cb.y));
+        else svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x,  -cb.y - difference / 2));
         svg.paint(g2d);
+
+        g2d.setColor(Color.BLUE);
+        g2d.scale(1 / zoom, 1 / zoom);
+        g2d.drawRect(0, 0, image.getWidth(), image.getHeight());
+
         return image;
+    }
+
+    /**
+     * Draws the connections (with lines) for the component as specified by its IOManager
+     * @param g2d The graphics object to use
+     * @param lcomp The LComponent
+     */
+    public void drawConnections(Graphics2D g2d, LComponent lcomp, int dx, int dy){
+        IOManager io = lcomp.getIO();
+        Point barStart = null, barStop = null;
+        for(int i = 0; i < io.getNumInputs(); i++) {
+            Point result = drawConnection(g2d, io.connectionAt(i, Connection.INPUT), dx, dy);
+            if(i == 0) barStart = result;
+            if(i == io.getNumInputs() - 1) barStop = result;
+        }
+        for(int i = 0; i < io.getNumOutputs(); i++) {
+            drawConnection(g2d, io.connectionAt(i, Connection.OUTPUT), dx, dy);
+        }
+
+        if(lcomp instanceof BasicGate && io.getNumInputs() > 2) {
+            g2d.setColor(Color.BLACK);
+            g2d.drawLine(barStart.x, barStart.y, barStop.x, barStop.y);
+        }
+    }
+
+    /**
+     * Draws a line with a dot to represent a connection, taking the direction of the connection into account.  Returns a point showing
+     * the other end of the line, which is used for drawing another connecting line on a BasicGate when there are many inputs.
+     * @param c The connection to render
+     * @param g2d The Graphics2D object to use
+     * @return The endpoint of the line opposite the connection.
+     */
+    private Point drawConnection(Graphics2D g2d, Connection c, int dx, int dy){
+        Point p = new Point(c.getX(), c.getY());
+        p.translate(dx, dy);
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(3));
+        int direction = c.getDirection();
+        Point connectEnd = null;
+        if(direction == CompRotator.RIGHT) {
+            g2d.drawLine(p.x, p.y, p.x - 37, p.y);
+            connectEnd = new Point(p.x - 37, p.y);
+        }
+        if(direction == CompRotator.UP) {
+            g2d.drawLine(p.x, p.y, p.x, p.y + 37);
+            connectEnd = new Point(p.x, p.y + 37);
+        }
+        if(direction == CompRotator.LEFT) {
+            g2d.drawLine(p.x, p.y, p.x + 37, p.y);
+            connectEnd = new Point(p.x + 37, p.y);
+        }
+        if(direction == CompRotator.DOWN) {
+            g2d.drawLine(p.x, p.y, p.x, p.y - 37);
+            connectEnd = new Point(p.x, p.y - 37);
+        }
+        g2d.setColor(Selection.SELECT_COLOR);
+        g2d.fillOval(p.x - 9, p.y - 9, 18, 18);
+        return connectEnd;
     }
 
     private void drawLine(Graphics2D g2d, int x1, int y1, int x2, int y2){

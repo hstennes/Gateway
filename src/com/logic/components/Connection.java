@@ -260,30 +260,6 @@ public class Connection implements Deletable, Serializable {
 	public int getY() {
 		return y;
 	}
-	
-	/**
-	 * Returns the pixel x position of this connection when its LComponent has the given rotation
-	 * @param rotation The rotation of the LComponent
-	 * @return The pixel x position of the connection
-	 */
-	public int getRotatedX(int rotation) {
-		if(rotation == CompRotator.RIGHT) return x;
-		else if(rotation == CompRotator.DOWN) return dx;
-		else if(rotation == CompRotator.LEFT) return lx;
-		return ux;
-	}
-	
-	/**
-	 * Returns the pixel y position of this connection when its LComponent has the given rotation
-	 * @param rotation The rotation of the LComponent
-	 * @return The pixel y position of the connection
-	 */
-	public int getRotatedY(int rotation) {
-		if(rotation == CompRotator.RIGHT) return y;
-		else if(rotation == CompRotator.DOWN) return dy;
-		else if(rotation == CompRotator.LEFT) return ly;
-		return uy;
-	}
 
 	/**
 	 * Sets the pixel position of this connection and computes its possible position under all rotations. The given position is interpreted
@@ -306,7 +282,11 @@ public class Connection implements Deletable, Serializable {
 		ly = left.y;
 		uy = up.y;
 	}
-	
+
+	public int getDirection(){
+		return direction;
+	}
+
     /**
 	 * Returns the direction of this connection when the rotation of the LComponent is accounted for (different than the direction field).
 	 * The given direction can be used to determine how to render a wire without additional calculations

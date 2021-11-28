@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.logic.engine.LogicEngine;
+import com.logic.ui.Renderer;
 import com.logic.util.ConnectionLayout;
 import com.logic.util.Deletable;
 
@@ -148,6 +149,35 @@ public class IOManager implements Deletable, Serializable {
 			if(bounds.contains(p)) return c;
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the full bounding area of the component, including connections. This is different from LComponent.getBounds,
+	 * which includes only the space taken up by the main component image.
+	 * TODO Improve this documentation
+	 * @return The connection bounds
+	 */
+	public Rectangle getConnectionBounds(){
+		Rectangle b = lcomp.getBoundsRight();
+		int xMin = 0, xMax = b.width, yMin = 0, yMax = b.height;
+		int r = Renderer.CONNECT_RAD;
+		for(Connection c : inputs){
+			int cx = c.getX(), cy = c.getY();
+			if(cx - r < xMin) xMin = cx - r;
+			else if(cx + r > xMax) xMax = cx + r;
+			if(cy - r < yMin) yMin = cy - r;
+			else if(cy + r > yMax) yMax = cy + r;
+		}
+		for(Connection c : outputs){
+			int cx = c.getX(), cy = c.getY();
+			if(cx - r < xMin) xMin = cx - r;
+			else if(cx + r > xMax) xMax = cx + r;
+			if(cy - r < yMin) yMin = cy - r;
+			else if(cy + r > yMax) yMax = cy + r;
+		}
+		Rectangle bounds = new Rectangle(new Point(xMin, yMin));
+		bounds.add(new Point(xMax, yMax));
+		return bounds;
 	}
 
 	@Override
