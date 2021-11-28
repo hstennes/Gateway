@@ -19,7 +19,7 @@ public class JSONFile {
     /**
      * Holds camera position data [x, y, zoom]
      */
-    public double[] camera;
+    public float[] camera;
 
     /**
      * Holds editor preferences. Format [snap to grid, show grid] with 1 for true and 0 for false

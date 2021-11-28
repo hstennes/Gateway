@@ -22,32 +22,32 @@ public class Camera extends MouseInputAdapter implements MouseWheelListener {
 	/**
 	 * The amount by which the zoom of the camera is changed when zoomIn or zoomOut is called 
 	 */
-	public final double increment = 0.2f;
+	public final float increment = 0.2f;
 	
 	/**
 	 * The wheel rotation required to make a change of 1 in the zoom value (higher values represent "slower" zoom)
 	 */
-	private final double zoomSpeed = 10;
+	private final float zoomSpeed = 10;
 	
 	/**
 	 * The minimum zoom value
 	 */
-	public final double minZoom = 0.4f;
+	public final float minZoom = 0.4f;
 	
 	/**
 	 * The maximum zoom value
 	 */
-	public final double maxZoom = 3;
+	public final float maxZoom = 3;
 	
 	/**
 	 * The zoom of the camera (the size of everything in the CircuitPanel is multiplied by this value
 	 */
-	private double zoom = 1;
+	private float zoom = 1;
 	
 	/**
 	 * The x and y position of the camera
 	 */
-	private double x, y;
+	private float x, y;
 	
 	/**
 	 * The last recorded x and y position of the camera (used for panning)
@@ -162,7 +162,7 @@ public class Camera extends MouseInputAdapter implements MouseWheelListener {
 	 * Returns the zoom of the camera
 	 * @return The zoom of the camera
 	 */
-	public double getZoom() {
+	public float getZoom() {
 		return zoom;
 	}
 	
@@ -171,7 +171,7 @@ public class Camera extends MouseInputAdapter implements MouseWheelListener {
 	 * (something about keeping the camera centered?) so if you want a specific position set that after setting the zoom.
 	 * @param zoom The new zoom value
 	 */
-	public void setZoom(double zoom) {
+	public void setZoom(float zoom) {
 		if(zoom < minZoom) zoom = minZoom;
 		else if(zoom > maxZoom) zoom = maxZoom;
 		double offsetCoefficient = (this.zoom - zoom) / (this.zoom * zoom);
@@ -193,7 +193,7 @@ public class Camera extends MouseInputAdapter implements MouseWheelListener {
 	 * Returns the x position of the camera
 	 * @return The x position of the camera
 	 */
-	public double getX() {
+	public float getX() {
 		return x;
 	}
 	
@@ -201,7 +201,7 @@ public class Camera extends MouseInputAdapter implements MouseWheelListener {
 	 * Sets the x position of the camera
 	 * @param x The new x position
 	 */
-	public void setX(double x) {
+	public void setX(float x) {
 		this.x = x;
 	}
 	
@@ -209,7 +209,7 @@ public class Camera extends MouseInputAdapter implements MouseWheelListener {
 	 * Returns the y position of the camera
 	 * @return The y position of the camera
 	 */
-	public double getY() {
+	public float getY() {
 		return y;
 	}
 	
@@ -217,7 +217,7 @@ public class Camera extends MouseInputAdapter implements MouseWheelListener {
 	 * Sets the y position of the camera
 	 * @param y The new y position
 	 */
-	public void setY(double y) {
+	public void setY(float y) {
 		this.y = y;
 	}
 	

@@ -24,7 +24,7 @@ public class JacksonTest {
         Camera cam = cp.getCamera();
         JSONFile file = new JSONFile(new FileData(FileManager.FILE_FORMAT_VERSION, cp.lcomps,
                 cp.getEditor().getCustomCreator().getCustoms(),
-                new double[] {cam.getX(), cam.getY(), cam.getZoom()},
+                new float[] {cam.getX(), cam.getY(), cam.getZoom()},
                 new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0}));
         try {
             new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(Paths.get("testsave2.json").toFile(), file);

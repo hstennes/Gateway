@@ -76,7 +76,7 @@ public class ZoomSlider extends JPanel implements ChangeListener {
 		Camera cam = cp.getCamera();
 		JSlider source = (JSlider) e.getSource();
 		int value = source.getValue();
-		double range = cam.maxZoom - cam.minZoom;
+		float range = cam.maxZoom - cam.minZoom;
 		cam.setZoom((range / 100) * value + cam.minZoom);
 	}
 

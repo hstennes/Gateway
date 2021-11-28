@@ -120,7 +120,7 @@ public class FileManager {
 			Camera cam = cp.getCamera();
 			JSONFile file = new JSONFile(new FileData(FILE_FORMAT_VERSION, cp.lcomps,
 					cp.getEditor().getCustomCreator().getCustoms(),
-					new double[] {cam.getX(), cam.getY(), cam.getZoom()},
+					new float[] {cam.getX(), cam.getY(), cam.getZoom()},
 					new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0, cp.isHighQuality() ? 1 : 0}));
 			new ObjectMapper().writeValue(Paths.get(path).toFile(), file);
 		} catch (IOException e) {
@@ -144,7 +144,7 @@ public class FileManager {
 				FileData fileData = file.getFileData();
 				cp.addLComps(fileData.getLcomps());
 				cp.getEditor().getCustomCreator().setCustoms(fileData.getCustoms());
-				double[] camData = fileData.getCamera();
+				float[] camData = fileData.getCamera();
 				Camera cam = cp.getCamera();
 				cam.setZoom(camData[2]);
 				cam.setX(camData[0]);

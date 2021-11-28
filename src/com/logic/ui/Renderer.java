@@ -17,31 +17,32 @@ public class Renderer {
     /**
      * The collection of cached images
      */
-    private ImageCache cache;
+    private final ImageCache cache;
 
     /**
-     * The zoom level last time render was called, used to determine if cache should be cleared
+     * The camera position
      */
-    private double zoom;
+    private float x, y, zoom;
 
     /**
-     * The camera translation the last time render was called
+     * Inverse zoom, used to optimize dividing by zoom
      */
-    private double x, y;
+    private float invZoom;
 
     public Renderer(CircuitPanel cp){
         this.cp = cp;
         cache = new ImageCache();
     }
 
-    public void render(Graphics2D g2d, ArrayList<LComponent> lcomps, ArrayList<Wire> wires, double x, double y, double newZoom){
+    public void render(Graphics2D g2d, ArrayList<LComponent> lcomps, ArrayList<Wire> wires, float x, float y, float newZoom){
         if(newZoom != zoom) cache.clear();
-        zoom = newZoom;
         this.x = x;
         this.y = y;
+        zoom = newZoom;
+        invZoom = 1.0f / zoom;
 
-        Rectangle view = new Rectangle(screenToCircuit(new Point(0, 0), x, y, zoom));
-        view.add(screenToCircuit(new Point(cp.getWidth(), cp.getHeight()), x, y, zoom));
+        Rectangle view = new Rectangle(screenToCircuit(new Point(0, 0), x, y, invZoom));
+        view.add(screenToCircuit(new Point(cp.getWidth(), cp.getHeight()), x, y, invZoom));
 
         renderWires(g2d, wires, view);
         renderComponents(g2d, lcomps, view);
@@ -87,11 +88,11 @@ public class Renderer {
         return image;
     }
 
-    private Point circuitToScreen(Point c, double camX, double camY, double zoom){
+    private Point circuitToScreen(Point c, float camX, float camY, float zoom){
         return new Point((int) ((c.x + camX) * zoom), (int) ((c.y + camY) * zoom));
     }
 
-    private Point screenToCircuit(Point s, double camX, double camY, double zoom){
-        return new Point((int) (s.x / zoom - camX), (int) (s.y / zoom - camY));
+    private Point screenToCircuit(Point s, float camX, float camY, float invZoom){
+        return new Point((int) (s.x * invZoom - camX), (int) (s.y * invZoom - camY));
     }
 }

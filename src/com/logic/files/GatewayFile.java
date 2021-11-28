@@ -27,12 +27,12 @@ public class GatewayFile implements Serializable {
 	/**
 	 * The zoom value that the camera had when the file was saved
 	 */
-	private double camZoom;
+	private float camZoom;
 	
 	/**
 	 * The translate position that the camera was at when the file was saved
 	 */
-	private double camX, camY;
+	private float camX, camY;
 	
 	/**
 	 * Constructs a new GatewayFile that can be serialized to save a circuit
