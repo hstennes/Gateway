@@ -72,17 +72,6 @@ public class CompRotator implements Serializable {
 	}
 	
 	/**
-	 * Normalizes the given rotation to be an equivalent value that is between 0 and 360
-	 * @param rotation The rotation to fix
-	 * @return The normalized rotation
-	 */
-	public static int fixRotation(int rotation) {
-		if(rotation < 0) rotation += 4 * (Math.abs(rotation) / 4 + 1);
-		rotation %= 4;
-		return rotation;
-	}
-	
-	/**
 	 * Returns the current rotation of the component
 	 * @return The current rotation, expressed as one of the four rotation constants
 	 */
@@ -95,7 +84,7 @@ public class CompRotator implements Serializable {
 	 * @param rotation The new rotation 
 	 */
 	public void setRotation(int rotation) {
-		this.rotation = fixRotation(rotation);
+		this.rotation = rotation % 4;
 	}
 	
 }

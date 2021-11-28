@@ -120,4 +120,8 @@ public class Clock extends SComponent {
 		this.delay = delay;
 		if(timer != null) timer.setDelay(delay);
 	}
+
+	public boolean isOn() {
+		return on;
+	}
 }

@@ -313,7 +313,7 @@ public class Connection implements Deletable, Serializable {
 	 * @return The direction of this connection
 	 */
 	public int getAbsoluteDirection() {
-		return CompRotator.fixRotation(direction + lcomp.getRotator().getRotation());
+		return (direction + lcomp.getRotator().getRotation()) % 4;
 	}
 	
 	/**

@@ -41,15 +41,16 @@ public class Debug {
 	/**
 	 * Fills the circuit with connected XNOR gates to test rendering performance
 	 * @param cp The CircuitPanel
+	 * @param includeWires Add a wire connecting each gate to the next
 	 */
-	public static void loadTestCircuit(CircuitPanel cp){
+	public static void loadTestCircuit(CircuitPanel cp, boolean includeWires){
 
 		BasicGate lastGate = null;
 
 		for(int x = -CircuitPanel.GRID_RENDER_X; x < CircuitPanel.GRID_RENDER_X; x += 120){
 			for(int y = -CircuitPanel.GRID_RENDER_Y; y < CircuitPanel.GRID_RENDER_Y; y += 120){
 				BasicGate newGate = new BasicGate(x, y, CompType.XNOR);
-				if(lastGate != null){
+				if(includeWires && lastGate != null){
 					Wire w = new Wire();
 					lastGate.getIO().connectionAt(0, Connection.OUTPUT).addWire(w);
 					newGate.getIO().connectionAt(0, Connection.INPUT).addWire(w);
