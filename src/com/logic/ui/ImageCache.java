@@ -14,7 +14,7 @@ public class ImageCache {
     /**
      * Maps LComponent strings from getHashString to cached images
      */
-    private HashMap<String, BufferedImage> images;
+    private HashMap<String, CachedImage> images;
 
     public ImageCache(){
         images = new HashMap<>();
@@ -25,7 +25,7 @@ public class ImageCache {
      * @param lcomp The LComponent associated with the image
      * @param image The image
      */
-    public void add(LComponent lcomp, BufferedImage image){
+    public void add(LComponent lcomp, CachedImage image){
         images.put(getHashString(lcomp), image);
     }
 
@@ -34,7 +34,7 @@ public class ImageCache {
      * @param lcomp The LComponent
      * @return The image
      */
-    public BufferedImage get(LComponent lcomp){
+    public CachedImage get(LComponent lcomp){
         return images.get(getHashString(lcomp));
     }
 

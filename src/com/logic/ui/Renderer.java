@@ -61,22 +61,22 @@ public class Renderer {
     }
 
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
-        BufferedImage cached = cache.get(lcomp);
+        CachedImage cached = cache.get(lcomp);
         Point p = circuitToScreen(lcomp.getX(), lcomp.getY());
         if(cached == null){
-            BufferedImage image = renderComponentImage(lcomp);
+            CachedImage image = renderComponentImage(lcomp);
             cache.add(lcomp, image);
-            g2d.drawImage(image, p.x, p.y, null);
+            g2d.drawImage(image, p.x - image.cx, p.y - image.cy, null);
         }
-        else g2d.drawImage(cached, p.x, p.y, null);
+        else g2d.drawImage(cached, p.x - cached.cx, p.y - cached.cy, null);
     }
 
-    private BufferedImage renderComponentImage(LComponent lcomp){
+    private CachedImage renderComponentImage(LComponent lcomp){
         Rectangle lb = lcomp.getBoundsRight();
         Rectangle cb = lcomp.getIO().getConnectionBounds();
 
         GraphicsNode svg = lcomp.getDrawer().getActiveSVG();
-        BufferedImage image = new BufferedImage((int) (cb.width * zoom), (int) (cb.height * zoom), Transparency.BITMASK);
+        CachedImage image = new CachedImage((int) (cb.width * zoom), (int) (cb.height * zoom), (int) (-cb.x * zoom), (int) (-cb.y * zoom));
         Graphics2D g2d = (Graphics2D) image.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.scale(zoom, zoom);
