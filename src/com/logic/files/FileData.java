@@ -28,7 +28,7 @@ public class FileData {
     /**
      * The (x, y) position of the camera
      */
-    private double[] camera;
+    private float[] camera;
 
     /**
      * The settings list
@@ -43,7 +43,7 @@ public class FileData {
      * @param camera The camera info array (see JSONFile.camera)
      * @param settings The settings array (see JSONFile.settings)
      */
-    public FileData(int version, ArrayList<LComponent> lcomps, ArrayList<Custom> customs, double[] camera, int[] settings) {
+    public FileData(int version, ArrayList<LComponent> lcomps, ArrayList<Custom> customs, float[] camera, int[] settings) {
         this.version = version;
         this.lcomps = lcomps;
         this.customs = customs;
@@ -63,7 +63,7 @@ public class FileData {
         return customs;
     }
 
-    public double[] getCamera() {
+    public float[] getCamera() {
         return camera;
     }
 

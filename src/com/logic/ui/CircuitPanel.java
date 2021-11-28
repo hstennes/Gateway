@@ -21,6 +21,7 @@ import com.logic.input.CircuitEditor;
 import com.logic.main.LogicSimApp;
 import com.logic.main.Window;
 import com.logic.util.ActionUtils;
+import com.logic.util.Debug;
 
 /**
  * This class provides both a graphical representation of the circuit and a framework for adding components and wires
@@ -90,6 +91,8 @@ public class CircuitPanel extends JPanel {
 	 * The Window that holds this CircuitPanel
 	 */
 	private Window window;
+
+	private Renderer renderer;
 	
 	/**
 	 * Constructs a new CircuitPanel
@@ -119,6 +122,9 @@ public class CircuitPanel extends JPanel {
 		addMouseWheelListener(cam);
 		addMouseListener(cam);
 		addMouseMotionListener(cam);
+
+		renderer = new Renderer(this);
+		Debug.loadTestCircuit(this, true);
 	}
 
 	/**
@@ -128,15 +134,18 @@ public class CircuitPanel extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
+
+		Debug.start("render");
+
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		//if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		double zoom = cam.getZoom();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		g2d.scale(zoom, zoom);
-		g2d.translate(cam.getX(), cam.getY());
+		//g2d.scale(zoom, zoom);
+		//g2d.translate(cam.getX(), cam.getY());
 		g.setColor(Color.GRAY);
 		if(showGrid) {
 			for(int i = -GRID_RENDER_X; i < GRID_RENDER_X; i += GRID_SPACING) g.drawLine(i, -GRID_RENDER_Y, i, GRID_RENDER_Y);
@@ -151,17 +160,21 @@ public class CircuitPanel extends JPanel {
 					view.contains(wire.getDestConnection().getCoord())) wire.render(g, this);
 		}
 		
-		for(int i = 0; i < lcomps.size(); i++) {
+		/*for(int i = 0; i < lcomps.size(); i++) {
 			LComponent lcomp = lcomps.get(i);
 			lcomp.getDrawer().setUseSVG(highQuality);
 			if(view.intersects(lcomp.getBounds())) lcomp.render(g, this);
-		}
+		}*/
+
+		renderer.render(g2d, lcomps, wires, cam.getX(), cam.getY(), cam.getZoom());
 		
 		editor.getHighlight().render(g);
 		editor.getCustomCreator().render(g);
-		g2d.translate(-cam.getX(), -cam.getY());
-		g2d.scale((1 / zoom), (1 / zoom));
+		//g2d.translate(-cam.getX(), -cam.getY());
+		//g2d.scale((1 / zoom), (1 / zoom));
 		if(message != null) message.render(g);
+
+		Debug.end("render");
 	}
 	
 	/**

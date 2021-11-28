@@ -29,12 +29,12 @@ public class CustomViewer {
 	/**
 	 * The zoom of the camera before this CustomViewer became active
 	 */
-	private double oldCamZoom;
+	private float oldCamZoom;
 	
 	/**
 	 * The position of the camera before this CustomViewer became active
 	 */
-	private double oldCamX, oldCamY;
+	private float oldCamX, oldCamY;
 	
 	/**
 	 * The CircuitPanel
