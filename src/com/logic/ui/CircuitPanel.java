@@ -124,7 +124,7 @@ public class CircuitPanel extends JPanel {
 		addMouseMotionListener(cam);
 
 		renderer = new Renderer(this);
-		Debug.loadTestCircuit(this, false);
+		Debug.loadTestCircuit(this, true);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class CircuitPanel extends JPanel {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		//if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		double zoom = cam.getZoom();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());

@@ -22,7 +22,7 @@ public class Renderer {
     /**
      * The camera position
      */
-    private float x, y, zoom;
+    private float cx, cy, zoom;
 
     /**
      * Inverse zoom, used to optimize dividing by zoom
@@ -34,15 +34,15 @@ public class Renderer {
         cache = new ImageCache();
     }
 
-    public void render(Graphics2D g2d, ArrayList<LComponent> lcomps, ArrayList<Wire> wires, float x, float y, float newZoom){
+    public void render(Graphics2D g2d, ArrayList<LComponent> lcomps, ArrayList<Wire> wires, float cx, float cy, float newZoom){
         if(newZoom != zoom) cache.clear();
-        this.x = x;
-        this.y = y;
+        this.cx = cx;
+        this.cy = cy;
         zoom = newZoom;
         invZoom = 1.0f / zoom;
 
-        Rectangle view = new Rectangle(screenToCircuit(new Point(0, 0), x, y, invZoom));
-        view.add(screenToCircuit(new Point(cp.getWidth(), cp.getHeight()), x, y, invZoom));
+        Rectangle view = new Rectangle(screenToCircuit(0, 0));
+        view.add(screenToCircuit(cp.getWidth(), cp.getHeight()));
 
         renderWires(g2d, wires, view);
         renderComponents(g2d, lcomps, view);
@@ -60,7 +60,7 @@ public class Renderer {
 
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
         BufferedImage cached = cache.get(lcomp);
-        Point p = circuitToScreen(new Point(lcomp.getX(), lcomp.getY()), x, y, zoom);
+        Point p = circuitToScreen(lcomp.getX(), lcomp.getY());
         if(cached == null){
             BufferedImage image = renderComponentImage(lcomp);
             cache.add(lcomp, image);
@@ -88,11 +88,23 @@ public class Renderer {
         return image;
     }
 
-    private Point circuitToScreen(Point c, float camX, float camY, float zoom){
-        return new Point((int) ((c.x + camX) * zoom), (int) ((c.y + camY) * zoom));
+    private void drawLine(Graphics2D g2d, int x1, int y1, int x2, int y2){
+        Point p1 = circuitToScreen(x1, y1);
+        Point p2 = circuitToScreen(x2, y2);
+        g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
     }
 
-    private Point screenToCircuit(Point s, float camX, float camY, float invZoom){
-        return new Point((int) (s.x * invZoom - camX), (int) (s.y * invZoom - camY));
+    private void drawCircle(Graphics2D g2d, int x, int y, int r){
+        Point p = circuitToScreen(x, y);
+        int sr = (int) (r * zoom);
+        g2d.drawOval(p.x - sr, p.y - sr, sr * 2, sr * 2);
+    }
+
+    private Point circuitToScreen(int x, int y){
+        return new Point((int) ((x + cx) * zoom), (int) ((y + cy) * zoom));
+    }
+
+    private Point screenToCircuit(int x, int y){
+        return new Point((int) (x * invZoom - cx), (int) (y * invZoom - cy));
     }
 }
