@@ -124,7 +124,7 @@ public class CircuitPanel extends JPanel {
 		addMouseMotionListener(cam);
 
 		renderer = new Renderer(this);
-		//Debug.loadTestCircuit(this, true);
+		Debug.loadTestCircuit(this, true);
 	}
 
 	/**
