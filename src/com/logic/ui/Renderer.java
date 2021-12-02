@@ -65,18 +65,39 @@ public class Renderer {
         CachedImage cached = cache.get(lcomp);
         Point p = circuitToScreen(lcomp.getX(), lcomp.getY());
 
+
         if(cached == null){
             CachedImage image = renderComponentImage(lcomp);
             cache.add(lcomp, image);
-            //g2d.rotate(Math.PI / 2, p.x, p.y + image.y2 - image.y1);
-            g2d.drawImage(image, p.x - image.x1, p.y - image.y1, null);
-            //g2d.rotate(-Math.PI / 2, p.x, p.y + image.y2 - image.y1);
+            Point t = getImageTranslate(lcomp.getRotator().getRotation(), image);
+            double rotation = getRadRotation(lcomp.getRotator().getRotation());
+
+            g2d.rotate(rotation, p.x, p.y);
+            g2d.drawImage(image, p.x + t.x, p.y + t.y, null);
+            g2d.rotate(-rotation, p.x, p.y);
         }
         else {
-            //g2d.rotate(Math.PI / 2, p.x, p.y + cached.y2 - cached.y1);
-            g2d.drawImage(cached, p.x - cached.x1, p.y - cached.y1, null);
-            //g2d.rotate(-Math.PI / 2, p.x, p.y + cached.y2 - cached.y1);
+            Point t = getImageTranslate(lcomp.getRotator().getRotation(), cached);
+            double rotation = getRadRotation(lcomp.getRotator().getRotation());
+
+            g2d.rotate(rotation, p.x, p.y);
+            g2d.drawImage(cached, p.x + t.x, p.y + t.y, null);
+            g2d.rotate(-rotation, p.x, p.y);
         }
+    }
+
+    private double getRadRotation(int rotNumber){
+        if(rotNumber == CompRotator.RIGHT) return 0;
+        if(rotNumber == CompRotator.UP) return -Math.PI / 2;
+        if(rotNumber == CompRotator.LEFT) return Math.PI;
+        return Math.PI / 2;
+    }
+
+    private Point getImageTranslate(int rotNumber, CachedImage image){
+        if(rotNumber == CompRotator.RIGHT) return new Point(-image.x1, -image.y1);
+        if(rotNumber == CompRotator.UP) return new Point(-image.x2, -image.y1);
+        if(rotNumber == CompRotator.LEFT) return new Point(-image.x2, -image.y2);
+        return new Point(-image.x1, -image.y2);
     }
 
     private CachedImage renderComponentImage(LComponent lcomp){
@@ -107,7 +128,7 @@ public class Renderer {
 
         g2d.setColor(Color.BLUE);
         g2d.scale(invZoom, invZoom);
-        g2d.drawRect(0, 0, image.getWidth(), image.getHeight());
+        g2d.drawRect(image.x1, image.y1, image.x2 - image.x1, image.y2 - image.y1);
 
         return image;
     }
