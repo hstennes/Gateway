@@ -1,19 +1,23 @@
 package com.logic.ui;
 
 import com.logic.components.*;
-import com.logic.input.Camera;
 import com.logic.input.Selection;
 import org.apache.batik.gvt.GraphicsNode;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Renderer {
 
     public final static int CONNECT_RAD = 9;
+
+    public final static int[][] rotationAnchorTranslate = new int[][]{
+            new int[] {0, 1},
+            new int[]{0, 3},
+            new int[] {2, 3},
+            new int[] {2, 1}};
 
     private CircuitPanel cp;
 
@@ -37,13 +41,12 @@ public class Renderer {
         cache = new ImageCache();
     }
 
-    public void render(Graphics2D g2d, ArrayList<LComponent> lcomps, ArrayList<Wire> wires, float cx, float cy, float newZoom){
-        if(newZoom != zoom) cache.clear();
+    public void render(Graphics2D g2d, ArrayList<LComponent> lcomps, ArrayList<Wire> wires, float cx, float cy, float zoom){
+        if(this.zoom != zoom) cache.clear();
         this.cx = cx;
         this.cy = cy;
-        zoom = newZoom;
+        this.zoom = zoom;
         invZoom = 1.0f / zoom;
-
         Rectangle view = new Rectangle(screenToCircuit(0, 0));
         view.add(screenToCircuit(cp.getWidth(), cp.getHeight()));
 
@@ -62,50 +65,32 @@ public class Renderer {
     }
 
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
-        CachedImage cached = cache.get(lcomp);
-        Point p = circuitToScreen(lcomp.getX(), lcomp.getY());
-
-
-        if(cached == null){
-            CachedImage image = renderComponentImage(lcomp);
+        CachedImage image = cache.get(lcomp);
+        if(image == null){
+            image = renderComponentImage(lcomp);
             cache.add(lcomp, image);
-            Point t = getImageTranslate(lcomp.getRotator().getRotation(), image);
-            double rotation = getRadRotation(lcomp.getRotator().getRotation());
-
-            g2d.rotate(rotation, p.x, p.y);
-            g2d.drawImage(image, p.x + t.x, p.y + t.y, null);
-            g2d.rotate(-rotation, p.x, p.y);
         }
-        else {
-            Point t = getImageTranslate(lcomp.getRotator().getRotation(), cached);
-            double rotation = getRadRotation(lcomp.getRotator().getRotation());
 
-            g2d.rotate(rotation, p.x, p.y);
-            g2d.drawImage(cached, p.x + t.x, p.y + t.y, null);
-            g2d.rotate(-rotation, p.x, p.y);
-        }
-    }
+        Point p = circuitToScreen(lcomp.getX(), lcomp.getY());
+        int rot = lcomp.getRotator().getRotation();
+        double radians = CompRotator.RAD_ROTATION[rot];
 
-    private double getRadRotation(int rotNumber){
-        if(rotNumber == CompRotator.RIGHT) return 0;
-        if(rotNumber == CompRotator.UP) return -Math.PI / 2;
-        if(rotNumber == CompRotator.LEFT) return Math.PI;
-        return Math.PI / 2;
-    }
-
-    private Point getImageTranslate(int rotNumber, CachedImage image){
-        if(rotNumber == CompRotator.RIGHT) return new Point(-image.x1, -image.y1);
-        if(rotNumber == CompRotator.UP) return new Point(-image.x2, -image.y1);
-        if(rotNumber == CompRotator.LEFT) return new Point(-image.x2, -image.y2);
-        return new Point(-image.x1, -image.y2);
+        g2d.rotate(radians, p.x, p.y);
+        g2d.drawImage(image,
+                p.x - image.anchors[rotationAnchorTranslate[rot][0]],
+                p.y - image.anchors[rotationAnchorTranslate[rot][1]],
+                null);
+        g2d.rotate(-radians, p.x, p.y);
     }
 
     private CachedImage renderComponentImage(LComponent lcomp){
         Rectangle lb = lcomp.getBoundsRight();
         Rectangle cb = lcomp.getIO().getConnectionBounds();
+        CompType type = lcomp.getType();
 
-        GraphicsNode svg = lcomp.getDrawer().getActiveSVG();
-        CachedImage image = new CachedImage((int) (cb.width * zoom), (int) (cb.height * zoom),
+        CachedImage image = new CachedImage(
+                (int) (cb.width * zoom),
+                (int) (cb.height * zoom),
                 (int) (-cb.x * zoom),
                 (int) (-cb.y * zoom),
                 (int) ((-cb.x + lb.width) * zoom),
@@ -116,20 +101,27 @@ public class Renderer {
 
         drawConnections(g2d, lcomp, -cb.x, -cb.y);
 
+        if(type == CompType.CUSTOM) {
+            Rectangle bounds = lcomp.getBoundsRight();
+            bounds.translate(-cb.x, -cb.y);
+            g2d.setColor(Color.WHITE);
+            g2d.fill(bounds);
+            g2d.setColor(Color.BLACK);
+            g2d.setStroke(new BasicStroke(4));
+            g2d.draw(bounds);
+            return image;
+        }
+
+        GraphicsNode svg = lcomp.getDrawer().getActiveSVG();
         int size = Math.max(lb.width, lb.height);
         float difference = Math.abs(lb.width - lb.height);
         if(lb.width <= lb.height) svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x - difference * 0.5, -cb.y));
         else svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x,  -cb.y - difference * 0.5));
         svg.paint(g2d);
 
-        CompType type = lcomp.getType();
+
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
         if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR) drawInverted(g2d, -cb.x, -cb.y);
-
-        g2d.setColor(Color.BLUE);
-        g2d.scale(invZoom, invZoom);
-        g2d.drawRect(image.x1, image.y1, image.x2 - image.x1, image.y2 - image.y1);
-
         return image;
     }
 

@@ -165,7 +165,7 @@ public class Custom extends SComponent {
 	 */
 	@Override
 	public Rectangle getBoundsRight() {
-		return new Rectangle(x, y, width, height);
+		return new Rectangle(0, 0, width, height);
 	}
 
 	/**

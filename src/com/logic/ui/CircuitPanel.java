@@ -140,12 +140,12 @@ public class CircuitPanel extends JPanel {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		//if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		double zoom = cam.getZoom();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		//g2d.scale(zoom, zoom);
-		//g2d.translate(cam.getX(), cam.getY());
+		g2d.scale(zoom, zoom);
+		g2d.translate(cam.getX(), cam.getY());
 		g.setColor(Color.GRAY);
 		if(showGrid) {
 			for(int i = -GRID_RENDER_X; i < GRID_RENDER_X; i += GRID_SPACING) g.drawLine(i, -GRID_RENDER_Y, i, GRID_RENDER_Y);
@@ -166,12 +166,14 @@ public class CircuitPanel extends JPanel {
 			if(view.intersects(lcomp.getBounds())) lcomp.render(g, this);
 		}*/
 
-		renderer.render(g2d, lcomps, wires, cam.getX(), cam.getY(), cam.getZoom());
-		
 		editor.getHighlight().render(g);
 		editor.getCustomCreator().render(g);
-		//g2d.translate(-cam.getX(), -cam.getY());
-		//g2d.scale((1 / zoom), (1 / zoom));
+		g2d.translate(-cam.getX(), -cam.getY());
+		g2d.scale((1 / zoom), (1 / zoom));
+
+		renderer.render(g2d, lcomps, wires, cam.getX(), cam.getY(), cam.getZoom());
+		
+
 		if(message != null) message.render(g);
 
 		Debug.end("render");

@@ -11,6 +11,8 @@ import java.io.Serializable;
 public class CompRotator implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public static final double[] RAD_ROTATION = new double[] {0, Math.PI / 2, Math.PI, -Math.PI / 2};
 	
 	/**
 	 * A constant representing the right (default) direction
@@ -84,7 +86,8 @@ public class CompRotator implements Serializable {
 	 * @param rotation The new rotation 
 	 */
 	public void setRotation(int rotation) {
-		this.rotation = rotation % 4;
+		//java is inane
+		this.rotation = ((rotation % 4) + 4) % 4;
 	}
 	
 }
