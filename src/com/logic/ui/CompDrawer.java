@@ -129,7 +129,7 @@ public class CompDrawer implements Serializable {
 		reverseTransform(g2d);
 
 		if(lcomp.isSelected()) {
-			g.setColor(Selection.SELECT_COLOR);
+			g.setColor(Renderer.SELECT_COLOR);
 			g2d.setStroke(new BasicStroke(2));
 			g2d.draw(lcomp.getBounds());
 		}
@@ -187,7 +187,7 @@ public class CompDrawer implements Serializable {
 			g2d.drawLine(p.x, p.y, p.x, p.y - 37);
 			connectEnd = new Point(p.x, p.y - 37);
 		}
-		g2d.setColor(Selection.SELECT_COLOR);
+		g2d.setColor(Renderer.SELECT_COLOR);
 		g2d.fillOval(p.x - 9, p.y - 9, 18, 18);
 		return connectEnd;
 	}

@@ -33,21 +33,6 @@ public class CircuitPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * The positive and negative x value to which the grid background will be extended to
-	 */
-	public static final int GRID_RENDER_X = 5000;
-	
-	/**
-	 * The positive and negative y value to which the grid background will be extended to 
-	 */
-	public static final int GRID_RENDER_Y = 4000;
-	
-	/**
-	 * The side length of each grid square 
-	 */
-	public static final int GRID_SPACING = 25;
-	
-	/**
 	 * Determines if a grid is drawn in the background of the CircuitPanel
 	 */
 	private boolean showGrid = true;
@@ -134,47 +119,18 @@ public class CircuitPanel extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
-
 		Debug.start("render");
-
 		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		double zoom = cam.getZoom();
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, getWidth(), getHeight());
-		g2d.scale(zoom, zoom);
-		g2d.translate(cam.getX(), cam.getY());
-		g.setColor(Color.GRAY);
-		if(showGrid) {
-			for(int i = -GRID_RENDER_X; i < GRID_RENDER_X; i += GRID_SPACING) g.drawLine(i, -GRID_RENDER_Y, i, GRID_RENDER_Y);
-			for(int i = -GRID_RENDER_Y; i < GRID_RENDER_Y; i += GRID_SPACING) g.drawLine(-GRID_RENDER_X, i, GRID_RENDER_X, i);
-		}
-		
-		Rectangle view = getViewRect();
-		for(int i = 0; i < wires.size(); i++) {
-			Wire wire = wires.get(i);
-			if(!wire.isComplete()) wire.render(g, this);
-			else if(view.contains(wire.getSourceConnection().getCoord()) || 
-					view.contains(wire.getDestConnection().getCoord())) wire.render(g, this);
-		}
-		
-		/*for(int i = 0; i < lcomps.size(); i++) {
-			LComponent lcomp = lcomps.get(i);
-			lcomp.getDrawer().setUseSVG(highQuality);
-			if(view.intersects(lcomp.getBounds())) lcomp.render(g, this);
-		}*/
 
-		editor.getHighlight().render(g);
-		editor.getCustomCreator().render(g);
-		g2d.translate(-cam.getX(), -cam.getY());
-		g2d.scale((1 / zoom), (1 / zoom));
+		/*g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);*/
 
-		renderer.render(g2d, lcomps, wires, cam.getX(), cam.getY(), cam.getZoom());
-		
+		//editor.getHighlight().render(g);
+		//editor.getCustomCreator().render(g);
 
-		if(message != null) message.render(g);
+		renderer.render(((Graphics2D) g), lcomps, wires, cam.getX(), cam.getY(), cam.getZoom());
+
+		//if(message != null) message.render(g);
 
 		Debug.end("render");
 	}

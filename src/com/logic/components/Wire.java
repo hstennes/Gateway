@@ -11,6 +11,7 @@ import java.io.Serializable;
 import com.logic.input.Selection;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.CompRotator;
+import com.logic.ui.Renderer;
 import com.logic.util.Deletable;
 
 /**
@@ -93,7 +94,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 		curve = new CubicCurve2D.Double(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
 		Graphics2D g2d = (Graphics2D) g;
 		if(selected) {
-			g2d.setColor(Selection.SELECT_COLOR);
+			g2d.setColor(Renderer.SELECT_COLOR);
 			g2d.setStroke(new BasicStroke(10));
 		}
 		else {

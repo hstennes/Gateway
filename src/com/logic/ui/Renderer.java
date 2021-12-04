@@ -2,6 +2,7 @@ package com.logic.ui;
 
 import com.logic.components.*;
 import com.logic.input.Selection;
+import com.logic.util.Debug;
 import org.apache.batik.gvt.GraphicsNode;
 
 import java.awt.*;
@@ -18,6 +19,21 @@ public class Renderer {
             new int[]{0, 3},
             new int[] {2, 3},
             new int[] {2, 1}};
+
+    /**
+     * The side length of each grid square
+     */
+    public static final int GRID_SPACING = 25;
+
+    /**
+     * The Color of the box around a component when it is selected
+     */
+    public static final Color SELECT_COLOR = new Color(66, 82, 255);
+
+    /**
+     * The x and y length of the divider lines drawn around the center rectangle
+     */
+    private static final int CUSTOM_DIVIDER_SIZE = 1000;
 
     private CircuitPanel cp;
 
@@ -47,21 +63,74 @@ public class Renderer {
         this.cy = cy;
         this.zoom = zoom;
         invZoom = 1.0f / zoom;
-        Rectangle view = new Rectangle(screenToCircuit(0, 0));
-        view.add(screenToCircuit(cp.getWidth(), cp.getHeight()));
 
+        Rectangle screen = new Rectangle(0, 0, cp.getWidth(), cp.getHeight());
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(screen.x, screen.y, screen.width, screen.height);
+
+        Rectangle view = new Rectangle(screenToCircuit(0, 0));
+        view.add(screenToCircuit(screen.width, screen.height));
+
+
+        applyTransform(g2d);
+        renderGrid(g2d, view);
         renderWires(g2d, wires, view);
+        reverseTransform(g2d);
         renderComponents(g2d, lcomps, view);
+        applyTransform(g2d);
+        renderHighLight(g2d);
+        renderCustom(g2d);
+        reverseTransform(g2d);
+    }
+
+    private void renderGrid(Graphics2D g2d, Rectangle view){
+        if(!cp.isShowGrid()) return;
+        g2d.setColor(Color.GRAY);
+        int startX = (view.x / GRID_SPACING) * GRID_SPACING;
+        int startY = (view.y / GRID_SPACING) * GRID_SPACING;
+        for(int i = startX; i < view.x + view.width; i += GRID_SPACING) g2d.drawLine(i, view.y, i, view.y + view.height);
+        for(int i = startY; i < view.y + view.height; i += GRID_SPACING) g2d.drawLine(view.x, i, view.x + view.width, i);
     }
 
     private void renderWires(Graphics2D g2d, ArrayList<Wire> wires, Rectangle view){
-
+        for (Wire wire : wires) {
+            if (!wire.isComplete()) wire.render(g2d, cp);
+            else if (view.contains(wire.getSourceConnection().getCoord()) ||
+                    view.contains(wire.getDestConnection().getCoord())) wire.render(g2d, cp);
+        }
     }
 
     private void renderComponents(Graphics2D g2d, ArrayList<LComponent> lcomps, Rectangle view){
         for(LComponent lcomp : lcomps) {
             if(view.intersects(lcomp.getBounds())) renderComponent(g2d, lcomp);
         }
+    }
+
+    private void renderHighLight(Graphics2D g2d){
+        Rectangle bounds = cp.getEditor().getHighlight().getBounds();
+        g2d.setColor(SELECT_COLOR);
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        g2d.fill(bounds);
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+        g2d.draw(bounds);
+    }
+
+    private void renderCustom(Graphics2D g2d){
+        if(!cp.getEditor().getCustomCreator().isActive()) return;
+        Rectangle centerRect = cp.getEditor().getCustomCreator().getCenterRect();
+        
+        g2d.setColor(SELECT_COLOR);
+        g2d.setStroke(new BasicStroke(5));
+        g2d.draw(centerRect);
+        int x = centerRect.x;
+        int y = centerRect.y;
+        int x2 = centerRect.x + centerRect.width;
+        int y2 = centerRect.y + centerRect.height;
+        g2d.drawLine(x, y, x - CUSTOM_DIVIDER_SIZE, y - CUSTOM_DIVIDER_SIZE);
+        g2d.drawLine(x2, y, x2 + CUSTOM_DIVIDER_SIZE, y - CUSTOM_DIVIDER_SIZE);
+        g2d.drawLine(x2, y2, x2 + CUSTOM_DIVIDER_SIZE, y2 + CUSTOM_DIVIDER_SIZE);
+        g2d.drawLine(x, y2, x - CUSTOM_DIVIDER_SIZE, y2 + CUSTOM_DIVIDER_SIZE);
+        g2d.setStroke(new BasicStroke(1));
     }
 
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
@@ -178,7 +247,7 @@ public class Renderer {
             g2d.drawLine(p.x, p.y, p.x, p.y - 37);
             connectEnd = new Point(p.x, p.y - 37);
         }
-        g2d.setColor(Selection.SELECT_COLOR);
+        g2d.setColor(SELECT_COLOR);
         g2d.fillOval(p.x - 9, p.y - 9, 18, 18);
         return connectEnd;
     }
@@ -208,16 +277,14 @@ public class Renderer {
         g2d.drawOval(dx + 75, dy + 33, 15, 15);
     }
 
-    private void drawLine(Graphics2D g2d, int x1, int y1, int x2, int y2){
-        Point p1 = circuitToScreen(x1, y1);
-        Point p2 = circuitToScreen(x2, y2);
-        g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+    private void applyTransform(Graphics2D g2d){
+        g2d.scale(zoom, zoom);
+        g2d.translate(cx, cy);
     }
 
-    private void drawCircle(Graphics2D g2d, int x, int y, int r){
-        Point p = circuitToScreen(x, y);
-        int sr = (int) (r * zoom);
-        g2d.drawOval(p.x - sr, p.y - sr, sr * 2, sr * 2);
+    private void reverseTransform(Graphics2D g2d){
+        g2d.translate(-cx, -cy);
+        g2d.scale(invZoom, invZoom);
     }
 
     private Point circuitToScreen(int x, int y){

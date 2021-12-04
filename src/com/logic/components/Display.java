@@ -9,6 +9,7 @@ import com.logic.input.Selection;
 import com.logic.main.LogicSimApp;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.CompRotator;
+import com.logic.ui.Renderer;
 import org.apache.commons.logging.Log;
 
 /**
@@ -51,7 +52,7 @@ public class Display extends LComponent {
 
 		drawer.draw(g);
 		g.setFont(LogicSimApp.fontLoader.sevenSegFont.deriveFont(70f));
-		g.setColor(Selection.SELECT_COLOR);
+		g.setColor(Renderer.SELECT_COLOR);
 		g.drawString(str, x + 22, y + 85);
 	}
 	
