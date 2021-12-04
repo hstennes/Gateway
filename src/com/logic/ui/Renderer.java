@@ -70,6 +70,8 @@ public class Renderer {
         Rectangle view = new Rectangle(screenToCircuit(0, 0));
         view.add(screenToCircuit(screen.width, screen.height));
 
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		if(cp.isHighQuality()) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         applyTransform(g2d);
         renderGrid(g2d, view);
         renderWires(g2d, wires, view);
@@ -95,9 +97,7 @@ public class Renderer {
             if (!wire.isComplete()) wire.render(g2d, cp);
             else if (view.contains(wire.getSourceConnection().getCoord()) ||
                     view.contains(wire.getDestConnection().getCoord())) {
-
                 wire.render(g2d, cp);
-
             }
         }
     }
