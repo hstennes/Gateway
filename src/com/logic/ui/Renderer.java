@@ -67,10 +67,8 @@ public class Renderer {
         Rectangle screen = new Rectangle(0, 0, cp.getWidth(), cp.getHeight());
         g2d.setColor(Color.WHITE);
         g2d.fillRect(screen.x, screen.y, screen.width, screen.height);
-
         Rectangle view = new Rectangle(screenToCircuit(0, 0));
         view.add(screenToCircuit(screen.width, screen.height));
-
 
         applyTransform(g2d);
         renderGrid(g2d, view);
@@ -96,7 +94,11 @@ public class Renderer {
         for (Wire wire : wires) {
             if (!wire.isComplete()) wire.render(g2d, cp);
             else if (view.contains(wire.getSourceConnection().getCoord()) ||
-                    view.contains(wire.getDestConnection().getCoord())) wire.render(g2d, cp);
+                    view.contains(wire.getDestConnection().getCoord())) {
+
+                wire.render(g2d, cp);
+
+            }
         }
     }
 

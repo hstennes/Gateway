@@ -12,6 +12,7 @@ import com.logic.input.Selection;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.CompRotator;
 import com.logic.ui.Renderer;
+import com.logic.util.Debug;
 import com.logic.util.Deletable;
 
 /**
@@ -101,16 +102,29 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 			g2d.setColor(Color.BLACK);
 			g2d.setStroke(new BasicStroke(7));
 		}
-		
+
+
 		g2d.draw(curve);
 		if(bitWidth == 1) {
 			if (signal[0]) g2d.setColor(Color.ORANGE);
 			else g2d.setColor(Color.WHITE);
 		}
 		else g2d.setColor(Color.GREEN);
+
+
 		g2d.setStroke(new BasicStroke(3));
+
+		long time = System.currentTimeMillis();
+
 		g2d.draw(curve);
+
+		long elapsed = System.currentTimeMillis() - time;
+		if(elapsed > 1){
+			System.out.println("wire " + elapsed);
+		}
+
 		g2d.setStroke(new BasicStroke(1));
+
 	}
 	
 	/**
