@@ -9,12 +9,7 @@ import javax.swing.SwingUtilities;
 import com.logic.components.Custom;
 import com.logic.components.IComponent;
 import com.logic.components.LComponent;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompProperties;
-import com.logic.ui.CustomCreator;
-import com.logic.ui.CustomViewer;
-import com.logic.ui.InsertPanel;
-import com.logic.ui.LToolBar;
+import com.logic.ui.*;
 import com.logic.util.CompSearch;
 
 /**
@@ -32,7 +27,7 @@ public class CircuitEditor extends MouseAdapter {
 	/**
 	 * The interval to which all LComponents snap to if snap is enabled
 	 */
-	public static final int SNAP_DIST = CircuitPanel.GRID_SPACING;
+	public static final int SNAP_DIST = Renderer.GRID_SPACING;
 	
 	/**
 	 * A dragMode that shows that the selection is being dragged

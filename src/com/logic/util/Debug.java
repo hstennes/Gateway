@@ -47,7 +47,7 @@ public class Debug {
 
 		BasicGate lastGate = null;
 
-		for(int x = -CircuitPanel.GRID_RENDER_X; x < CircuitPanel.GRID_RENDER_X; x += 120){
+		/*for(int x = -CircuitPanel.GRID_RENDER_X; x < CircuitPanel.GRID_RENDER_X; x += 120){
 			for(int y = -CircuitPanel.GRID_RENDER_Y; y < CircuitPanel.GRID_RENDER_Y; y += 120){
 				BasicGate newGate = new BasicGate(x, y, CompType.XNOR);
 				if(includeWires && lastGate != null){
@@ -59,6 +59,6 @@ public class Debug {
 				cp.addLComp(newGate);
 				lastGate = newGate;
 			}
-		}
+		}*/
 	}
 }

@@ -19,11 +19,6 @@ public class Selection extends ArrayList<LComponent> {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * The Color of the box around a component when it is selected
-	 */
-	public static final Color SELECT_COLOR = new Color(66, 82, 255);
-	
-	/**
 	 * Position values necessary for the dragging algorithm when snapping is enabled
 	 */
 	private int snapX, snapY;

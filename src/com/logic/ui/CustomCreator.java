@@ -32,11 +32,6 @@ public class CustomCreator {
 	private final int centerRectExpand = 25;
 	
 	/**
-	 * The x and y length of the divider lines drawn around the center rectangle
-	 */
-	private final int dividerLineExtension = 1000;
-	
-	/**
 	 * The placement location of a new custom component relative to the bottom right corner of the center rectangle
 	 */
 	private final int customPlacementOffset = 100;
@@ -54,7 +49,7 @@ public class CustomCreator {
 	/**
 	 * The center rectangle that is drawn around the components 
 	 */
-	public Rectangle centerRect;
+	private Rectangle centerRect;
 	
 	/**
 	 * A boolean that tells whether a custom component is currently being created
@@ -80,29 +75,6 @@ public class CustomCreator {
 		this.cp = cp;
 		lcomps = new ArrayList<>();
 		customs = new ArrayList<>();
-	}
-	
-	/**
-	 * Renders the center bounding box and the diagonal lines that divide each input/output section if this CustomCreator is currently active
-	 * @param g The Graphics object to use
-	 */
-	public void render(Graphics g) {
-		if(active) {
-			Graphics2D g2d = (Graphics2D) g;
-			g2d.setColor(Color.BLUE);
-			g2d.setStroke(new BasicStroke(5));
-			g2d.draw(centerRect);
-			
-			int x = centerRect.x;
-			int y = centerRect.y;
-			int x2 = centerRect.x + centerRect.width;
-			int y2 = centerRect.y + centerRect.height;
-			g2d.drawLine(x, y, x - dividerLineExtension, y - dividerLineExtension);
-			g2d.drawLine(x2, y, x2 + dividerLineExtension, y - dividerLineExtension);
-			g2d.drawLine(x2, y2, x2 + dividerLineExtension, y2 + dividerLineExtension);
-			g2d.drawLine(x, y2, x - dividerLineExtension, y2 + dividerLineExtension);
-			g2d.setStroke(new BasicStroke(1));
-		}
 	}
 
 	/**
@@ -241,6 +213,10 @@ public class CustomCreator {
 	 */
 	public void setCustoms(ArrayList<Custom> customs){
 		this.customs = customs;
+	}
+
+	public Rectangle getCenterRect(){
+		return centerRect;
 	}
 	
 }

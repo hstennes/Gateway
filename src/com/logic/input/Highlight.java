@@ -18,11 +18,6 @@ import com.logic.ui.CircuitPanel;
 public class Highlight {
 	
 	/**
-	 * The alpha value that determines how transparent the highlight box is
-	 */
-	private final float alpha = 0.5f;
-	
-	/**
 	 * The current highlight box, within the context of the CircuitPanel coordinate system
 	 */
 	private Rectangle box;
@@ -56,19 +51,6 @@ public class Highlight {
 		this.cp = cp;
 		this.editor = editor;
 		box = new Rectangle();
-	} 
-	
-	/**
-	 * Renders the highlight box (if there is one) as a colored rectangle in the CircuitPanel
-	 * @param g
-	 */
-	public void render(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Selection.SELECT_COLOR);
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-		g2d.fill(box);
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-		g2d.draw(box);
 	}
 	
 	/**
@@ -99,6 +81,10 @@ public class Highlight {
 		editor.getSelection().select(lcomps);
 		box.setBounds(0, 0, 0, 0);
 		active = false;
+	}
+
+	public Rectangle getBounds(){
+		return box;
 	}
 	
 }
