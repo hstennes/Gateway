@@ -95,7 +95,7 @@ public class Renderer {
 
     private void renderWires(Graphics2D g2d, ArrayList<Wire> wires, Rectangle view){
         for (Wire wire : wires) {
-            if (!wire.isComplete()) wire.render(g2d, cp);
+            if (!wire.isComplete()) renderWire(g2d, wire);
             else if (view.contains(wire.getSourceConnection().getCoord()) ||
                     view.contains(wire.getDestConnection().getCoord())) {
                 renderWire(g2d, wire);
@@ -160,7 +160,7 @@ public class Renderer {
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
         CachedImage image = cache.get(lcomp);
         if(image == null){
-            image = renderComponentImage(lcomp);
+            image = renderComponentImage(lcomp, zoom);
             cache.add(lcomp, image);
         }
 
@@ -176,7 +176,7 @@ public class Renderer {
         g2d.rotate(-radians, p.x, p.y);
     }
 
-    private CachedImage renderComponentImage(LComponent lcomp){
+    public CachedImage renderComponentImage(LComponent lcomp, float zoom){
         Rectangle lb = lcomp.getBoundsRight();
         Rectangle cb = lcomp.getIO().getConnectionBounds();
         CompType type = lcomp.getType();

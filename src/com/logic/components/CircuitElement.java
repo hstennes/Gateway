@@ -1,9 +1,5 @@
 package com.logic.components;
 
-import java.awt.Graphics;
-
-import com.logic.ui.CircuitPanel;
-
 /**
  * The superclass for all objects that can be added to the CircuitPanel in creating a circuit
  * @author Hank Stennes
@@ -35,13 +31,6 @@ public abstract class CircuitElement {
 	public CircuitElement(int bitWidth){
 		this.bitWidth = bitWidth;
 	}
-	
-	/**
-	 * Creates a graphical representation of the element in the CircuitPanel
-	 * @param g The Graphics object to use
-	 * @param cp The CircuitPanel that is rendering this LComponent
-	 */
-	public abstract void render(Graphics g, CircuitPanel cp);
 	
 	/**
 	 * Tells if the element is selected

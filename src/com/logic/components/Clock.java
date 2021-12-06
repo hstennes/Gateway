@@ -57,13 +57,6 @@ public class Clock extends SComponent {
 	}
 	
 	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		if(on) drawer.setActiveImageIndex(1);
-		else drawer.setActiveImageIndex(0);
-		drawer.draw(g);
-	}
-	
-	@Override
 	public LComponent makeCopy() {
 		Clock result = new Clock(x, y);
 		result.getRotator().setRotation(rotator.getRotation());

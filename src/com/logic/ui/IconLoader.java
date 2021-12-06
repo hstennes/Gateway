@@ -145,7 +145,7 @@ public class IconLoader {
 	 * @return The icon based on the given LComponent
 	 */
 	private BufferedImage renderLogicIcon(LComponent model, int index){
-		BufferedImage image = new BufferedImage(70, 70, BufferedImage.TYPE_INT_ARGB);
+		/*BufferedImage image = new BufferedImage(70, 70, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) image.getGraphics();
 		Rectangle bounds = model.getBounds();
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -156,7 +156,9 @@ public class IconLoader {
 				(int) ((InsertPanel.BUTTON_SIZE - bounds.height * scale) / 2 / scale));
 		model.getDrawer().setUseSVG(true);
 		model.render(g2d, null);
-		g2d.dispose();
+		g2d.dispose();*/
+
+		BufferedImage image = new Renderer(null).renderComponentImage(model, 0.40f);
 		return image;
 	}
 

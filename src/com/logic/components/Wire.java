@@ -55,64 +55,6 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 		signal = new boolean[bitWidth];
 	}
 	
-	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		Connection connectOne;
-		Connection connectTwo;
-		if(dest != null && source == null) {
-			connectOne = dest;
-			connectTwo = source;
-		}
-		else {
-			connectOne = source;
-			connectTwo = dest;
-		}
-		if(connectOne != null) {
-			Point p1 = connectOne.getCoord();
-			Point p4;
-			if(connectTwo != null) p4 = connectTwo.getCoord();
-			else p4 = cp.getEditor().getWireBuilder().getMousePoint();
-			
-			int offset = (int) (calculateDist(p1, p4) * curveFactor);
-			Point p2 = offsetInDirection(p1, offset, connectOne.getAbsoluteDirection());
-			
-			Point p3;
-			if(connectTwo == null) p3 = cp.getEditor().getWireBuilder().getMousePoint();
-			else p3 = offsetInDirection(p4, offset, connectTwo.getAbsoluteDirection());
-			drawCurve(g, p1, p2, p3, p4);
-		}
-	}
-	
-	/**
-	 * Draws a curve using the specified points as control points
-	 * @param g The Graphics object
-	 * @param p1 The first control point (start of curve)
-	 * @param p2 The second control point (changes shape)
-	 * @param p3 The third control point (changes shape)
-	 * @param p4 The fourth control point (end of curve)
-	 */
-	private void drawCurve(Graphics g, Point p1, Point p2, Point p3, Point p4) {
-		curve = new CubicCurve2D.Double(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
-		Graphics2D g2d = (Graphics2D) g;
-		if(selected) {
-			g2d.setColor(Renderer.SELECT_COLOR);
-			g2d.setStroke(new BasicStroke(10));
-		}
-		else {
-			g2d.setColor(Color.BLACK);
-			g2d.setStroke(new BasicStroke(7));
-		}
-
-		g2d.draw(curve);
-		if(bitWidth == 1) {
-			if (signal[0]) g2d.setColor(Color.ORANGE);
-			else g2d.setColor(Color.WHITE);
-		}
-		else g2d.setColor(Color.GREEN);
-		g2d.setStroke(new BasicStroke(3));
-		g2d.draw(curve);
-	}
-	
 	/**
 	 * Calculates the distance between the two points
 	 * @param p1 The first point

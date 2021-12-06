@@ -42,19 +42,6 @@ public class Display extends LComponent {
 	
 	@Override
 	public void update(LogicEngine engine) { }
-
-	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		int val = calcValue(io.getInput(0), io.getInput(1), io.getInput(2), io.getInput(3));
-		String str;
-		if(val < 10) str = Integer.toString(val);
-		else str = letters[val - 10];
-
-		drawer.draw(g);
-		g.setFont(LogicSimApp.fontLoader.sevenSegFont.deriveFont(70f));
-		g.setColor(Renderer.SELECT_COLOR);
-		g.drawString(str, x + 22, y + 85);
-	}
 	
 	/**
 	 * Returns an integer value in base ten that is equal to the given binary value

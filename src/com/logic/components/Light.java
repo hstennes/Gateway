@@ -30,14 +30,6 @@ public class Light extends LabeledComponent {
 	public void update(LogicEngine engine) {}
 	
 	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		if(io.getInput(0)) drawer.setActiveImageIndex(1);
-		else drawer.setActiveImageIndex(0);
-		drawer.draw(g);
-		renderLabel(g, (io.connectionAt(0, Connection.INPUT).getAbsoluteDirection() + 2) % 4);
-	}
-	
-	@Override
 	public LComponent makeCopy() {
 		Light result = new Light(x, y);
 		result.getRotator().setRotation(rotator.getRotation());

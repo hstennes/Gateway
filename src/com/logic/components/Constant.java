@@ -35,11 +35,6 @@ public class Constant extends LComponent {
 	}
 	
 	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		drawer.draw(g);
-	}
-	
-	@Override
 	public LComponent makeCopy() {
 		Constant result = new Constant(x, y, type);
 		result.getRotator().setRotation(rotator.getRotation());

@@ -108,27 +108,6 @@ public class Custom extends SComponent {
 		}
 		LogicWorker.startLogic(this);
 	}
-
-	/**
-	 * Renders this component by drawing a Rectangle of the appropriate size and using drawer.drawConnections to display connections
-	 */
-	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		drawer.drawConnections(g);
-		for(int i = 0; i < io.getNumInputs(); i++) io.connectionAt(i, Connection.INPUT).renderLabel(g, inputs.get(i).getLabel());
-		for(int i = 0; i < io.getNumOutputs(); i++) io.connectionAt(i, Connection.OUTPUT).renderLabel(g, outputs.get(i).getLabel());
-		Rectangle bounds = getBounds();
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.WHITE);
-		g2d.fill(bounds);
-		g2d.setColor(Color.BLACK);
-		g2d.setStroke(new BasicStroke(4));
-		g2d.draw(bounds);
-		g2d.setColor(Color.BLUE);
-		g2d.setStroke(new BasicStroke(2));
-		if(selected) g2d.drawRect(bounds.x - 1, bounds.y - 1, bounds.width + 2, bounds.height + 2);
-		drawLabel(g2d);
-	}
 	
 	/**
 	 * Updates this component by running a nested LogicEngine on this component's switches and clocks, and then setting the outputs to match 
