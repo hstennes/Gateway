@@ -28,7 +28,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * A constant that represents how curved the wire is by specifying how far the second and third points on the bezier curve are from 
 	 * the first and fourth points, respectively
 	 */
-	private final int curveFactor = 6;
+	private final int curveFactor = 2;
 	
 	/**
 	 * The state of the wire
@@ -73,7 +73,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 			if(connectTwo != null) p4 = connectTwo.getCoord();
 			else p4 = cp.getEditor().getWireBuilder().getMousePoint();
 			
-			int offset = (int) (Math.sqrt(calculateDist(p1, p4)) * curveFactor);
+			int offset = (int) (calculateDist(p1, p4) * curveFactor);
 			Point p2 = offsetInDirection(p1, offset, connectOne.getAbsoluteDirection());
 			
 			Point p3;
@@ -122,8 +122,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	private double calculateDist(Point p1, Point p2) {
 		int dx = p1.x - p2.x;
 		int dy = p1.y - p2.y;
-		double dist = Math.sqrt(dx * dx + dy * dy);
-		return dist;
+		return Math.cbrt(dx * dx + dy * dy);
 	}
 	
 	/**
@@ -182,13 +181,49 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 		if(source == null && connect.getType() == Connection.OUTPUT) source = connect;
 		else if(dest == null && connect.getType() == Connection.INPUT) dest = connect;
 	}
+
+	public CubicCurve2D getCurve(){
+		return curve;
+	}
 	
 	/**
 	 * Returns the curve last drawn by this wire
 	 * @return The wire's curve
 	 */
-	public CubicCurve2D getCurve() {
+	public CubicCurve2D getCurveUpdate(CircuitPanel cp) {
+		Connection s = getSourceConnection(), d = getDestConnection();
+		Connection c1, c2;
+		if(d != null && s == null) {
+			c1 = d;
+			c2 = s;
+		}
+		else {
+			c1 = s;
+			c2 = d;
+		}
+		if(c1 == null) return null;
+
+		Point p1 = c1.getCoord();
+		Point p3, p4;
+		int offset;
+		if(c2 == null){
+			p4 = cp.getEditor().getWireBuilder().getMousePoint();
+			p3 = p4;
+			offset = wireOffset(p1, p4);
+		}
+		else{
+			p4 = c2.getCoord();
+			offset = wireOffset(p1, p4);
+			p3 = offsetInDirection(p4, offset, c2.getAbsoluteDirection());
+		}
+		Point p2 = offsetInDirection(p1, offset, c1.getAbsoluteDirection());
+		curve = new CubicCurve2D.Double(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
 		return curve;
+	}
+
+	private int wireOffset(Point p1, Point p2){
+		int dx = p1.x - p2.x, dy = p1.y - p2.y;
+		return (int) (0.2 * (Math.abs(dx) + Math.abs(dy)));
 	}
 	
 	/**

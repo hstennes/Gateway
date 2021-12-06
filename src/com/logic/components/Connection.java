@@ -58,26 +58,8 @@ public class Connection implements Deletable, Serializable {
 	 * The index of this connection in the list of input connections or output connections
 	 */
 	private int index;
-	
-	/**
-	 * The position of the connection in the LComponpent's image when the component has a CompRotator.RIGHT (default) rotation.
-	 */
-	private int x, y;
-	
-	/**
-	 * The position of the connection in the LComponpent's image when the component has a CompRotator.DOWN rotation.
-	 */
-	private int dx, dy;
-	
-	/**
-	 * The position of the connection in the LComponpent's image when the component has a CompRotator.LEFT rotation.
-	 */
-	private int lx, ly;
-	
-	/**
-	 * The position of the connection in the LComponpent's image when the component has a CompRotator.UP rotation.
-	 */
-	private int ux, uy;
+
+	private int[] pos;
 
 	/**
 	 * The bitWidth of this connection. Only wires with the same bit width can connect.
@@ -185,13 +167,8 @@ public class Connection implements Deletable, Serializable {
 	 * @return This connection's position
 	 */
 	public Point getCoord() {
-		int rotation = lcomp.getRotator().getRotation();
-		Point rotatedPoint = null;
-		if(rotation == CompRotator.RIGHT) rotatedPoint = new Point(x, y);
-		else if(rotation == CompRotator.DOWN) rotatedPoint = new Point(dx, dy);
-		else if(rotation == CompRotator.LEFT) rotatedPoint = new Point(lx, ly);
-		else if(rotation == CompRotator.UP) rotatedPoint = new Point(ux, uy);
-		Point p = new Point((int) (rotatedPoint.x), (int) (rotatedPoint.y));
+		int index = 2 * lcomp.getRotator().getRotation();
+		Point p = new Point(pos[index], pos[index + 1]);
 		p.translate(lcomp.getX(), lcomp.getY());
 		return p;
 	}
@@ -250,7 +227,7 @@ public class Connection implements Deletable, Serializable {
 	 * @return The pixel x of this connection
 	 */
 	public int getX() {
-		return x;
+		return pos[0];
 	}
 	
 	/**
@@ -258,7 +235,7 @@ public class Connection implements Deletable, Serializable {
 	 * @return The pixel y of this connection
 	 */
 	public int getY() {
-		return y;
+		return pos[1];
 	}
 
 	/**
@@ -269,18 +246,11 @@ public class Connection implements Deletable, Serializable {
 	 * @param y The new pixel y position of this connection
 	 */
 	public void setXY(int x, int y) {
-		this.x = x;
-		this.y = y;
 		Rectangle bounds = lcomp.getBoundsRight();
 		Point down = CompRotator.withRotation(x, y, bounds.width, bounds.height, CompRotator.DOWN);
 		Point left = CompRotator.withRotation(x, y, bounds.width, bounds.height, CompRotator.LEFT);
 		Point up = CompRotator.withRotation(x, y, bounds.width, bounds.height, CompRotator.UP);
-		dx = down.x;
-		lx = left.x;
-		ux = up.x;
-		dy = down.y;
-		ly = left.y;
-		uy = up.y;
+		pos = new int[] {x, y, down.x, down.y, left.x, left.y, up.x, up.y};
 	}
 
 	public int getDirection(){

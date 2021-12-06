@@ -10,12 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 import com.logic.files.FileManager;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompProperties;
-import com.logic.ui.InsertPanel;
-import com.logic.ui.LMenuBar;
-import com.logic.ui.LToolBar;
-import com.logic.ui.ZoomSlider;
+import com.logic.ui.*;
 
 /**
  * This class represents one window of the application. Each window holds completely separate data and is essentially its own program
@@ -52,6 +47,7 @@ public class Window extends JFrame {
 	private FileManager createAndShowGUI(String path) {
 		setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setIconImage(LogicSimApp.iconLoader.logicImages[2]);
 		
 		JPanel mainPanel = new JPanel();
 		BoxLayout layout = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);

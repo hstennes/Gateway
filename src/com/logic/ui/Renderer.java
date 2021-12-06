@@ -7,6 +7,7 @@ import org.apache.batik.gvt.GraphicsNode;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
@@ -97,7 +98,7 @@ public class Renderer {
             if (!wire.isComplete()) wire.render(g2d, cp);
             else if (view.contains(wire.getSourceConnection().getCoord()) ||
                     view.contains(wire.getDestConnection().getCoord())) {
-                wire.render(g2d, cp);
+                renderWire(g2d, wire);
             }
         }
     }
@@ -133,6 +134,27 @@ public class Renderer {
         g2d.drawLine(x2, y2, x2 + CUSTOM_DIVIDER_SIZE, y2 + CUSTOM_DIVIDER_SIZE);
         g2d.drawLine(x, y2, x - CUSTOM_DIVIDER_SIZE, y2 + CUSTOM_DIVIDER_SIZE);
         g2d.setStroke(new BasicStroke(1));
+    }
+
+    private void renderWire(Graphics2D g2d, Wire wire){
+        CubicCurve2D curve = wire.getCurveUpdate(cp);
+        if(wire.isSelected()) {
+            g2d.setColor(Renderer.SELECT_COLOR);
+            g2d.setStroke(new BasicStroke(10));
+        }
+        else {
+            g2d.setColor(Color.BLACK);
+            g2d.setStroke(new BasicStroke(7));
+        }
+
+        g2d.draw(curve);
+        if(wire.getBitWidth() == 1) {
+            if (wire.getSignal()) g2d.setColor(Color.ORANGE);
+            else g2d.setColor(Color.WHITE);
+        }
+        else g2d.setColor(Color.GREEN);
+        g2d.setStroke(new BasicStroke(3));
+        g2d.draw(curve);
     }
 
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
