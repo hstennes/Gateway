@@ -1,16 +1,16 @@
 package com.logic.input;
 
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.SwingUtilities;
-
 import com.logic.components.Custom;
 import com.logic.components.IComponent;
 import com.logic.components.LComponent;
+import com.logic.ui.Renderer;
 import com.logic.ui.*;
 import com.logic.util.CompSearch;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * The main class for editing the circuit through mouse events

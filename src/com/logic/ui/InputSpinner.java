@@ -1,13 +1,12 @@
 package com.logic.ui;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import com.logic.components.BasicGate;
-import com.logic.components.IOManager;
 import com.logic.components.LComponent;
 import com.logic.input.CircuitState;
 import com.logic.input.Selection;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * A spinner for changing the number of inputs of a component

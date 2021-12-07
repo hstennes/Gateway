@@ -1,7 +1,6 @@
 package com.logic.ui;
 
-import javax.swing.SpinnerListModel;
-import javax.swing.SpinnerModel;
+import javax.swing.*;
 
 /**
  * A JSpinner that cycles through the given values

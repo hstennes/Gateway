@@ -1,10 +1,7 @@
 package com.logic.components;
 
-import java.awt.Graphics;
-
 import com.logic.engine.LogicEngine;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompRotator;
+import com.logic.util.Constants;
 
 /**
  * A component that constantly outputs either a high or low signal, depending on its type
@@ -25,7 +22,7 @@ public class Constant extends LComponent {
 		super(x, y, type);
 		if(type == CompType.ONE) drawer.setImages(new int[] {10});
 		else if(type == CompType.ZERO) drawer.setImages(new int[] {9});
-		io.addConnection(80, 40, Connection.OUTPUT, CompRotator.RIGHT);
+		io.addConnection(80, 40, Connection.OUTPUT, Constants.RIGHT);
 	}
 	
 	@Override
@@ -37,7 +34,7 @@ public class Constant extends LComponent {
 	@Override
 	public LComponent makeCopy() {
 		Constant result = new Constant(x, y, type);
-		result.getRotator().setRotation(rotator.getRotation());
+		result.setRotation(rotation);
 		result.setName(getName());
 		return result;
 	}

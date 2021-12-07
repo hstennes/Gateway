@@ -1,12 +1,11 @@
 package com.logic.components;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import com.logic.util.CompUtils;
+import com.logic.util.Constants;
+
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
-import com.logic.ui.CompDrawer;
-import com.logic.ui.CompRotator;
 
 /**
  * 
@@ -115,9 +114,9 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	 */
 	protected void setClickAction(int x, int y, int width, int height) {
 		clickBounds = new Rectangle(x, y, width, height);
-		downClickBounds = rotate(clickBounds, CompRotator.DOWN);
-		leftClickBounds = rotate(clickBounds, CompRotator.LEFT);
-		upClickBounds = rotate(clickBounds, CompRotator.UP);
+		downClickBounds = rotate(clickBounds, Constants.DOWN);
+		leftClickBounds = rotate(clickBounds, Constants.LEFT);
+		upClickBounds = rotate(clickBounds, Constants.UP);
 	}
 	
 	/**
@@ -137,8 +136,8 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	 */
 	private Rectangle rotate(Rectangle r, int rotation) {
 		Rectangle bounds = getBounds();
-		Point p1 = CompRotator.withRotation(clickBounds.x, clickBounds.y, bounds.width, bounds.height, rotation);
-		Point p2 = CompRotator.withRotation(clickBounds.x + clickBounds.width, clickBounds.y + clickBounds.height, bounds.width, 
+		Point p1 = CompUtils.withRotation(clickBounds.x, clickBounds.y, bounds.width, bounds.height, rotation);
+		Point p2 = CompUtils.withRotation(clickBounds.x + clickBounds.width, clickBounds.y + clickBounds.height, bounds.width,
 				bounds.height, rotation);
 		Rectangle result = new Rectangle(p1);
 		result.add(p2);
@@ -150,10 +149,10 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	 * @return The click action boundary
 	 */
 	public Rectangle getClickActionBounds() {
-		if(rotator.getRotation() == CompRotator.RIGHT) return new Rectangle(clickBounds.x + x, clickBounds.y + y, clickBounds.width, clickBounds.height);
-		else if(rotator.getRotation() == CompRotator.DOWN) return new Rectangle(downClickBounds.x + x, downClickBounds.y + y, downClickBounds.width, downClickBounds.height);
-		else if(rotator.getRotation() == CompRotator.LEFT) return new Rectangle(leftClickBounds.x + x, leftClickBounds.y + y, leftClickBounds.width, leftClickBounds.height);
-		else if(rotator.getRotation() == CompRotator.UP) return new Rectangle(upClickBounds.x + x, upClickBounds.y + y, upClickBounds.width, upClickBounds.height);
+		if(rotation == Constants.RIGHT) return new Rectangle(clickBounds.x + x, clickBounds.y + y, clickBounds.width, clickBounds.height);
+		else if(rotation == Constants.DOWN) return new Rectangle(downClickBounds.x + x, downClickBounds.y + y, downClickBounds.width, downClickBounds.height);
+		else if(rotation == Constants.LEFT) return new Rectangle(leftClickBounds.x + x, leftClickBounds.y + y, leftClickBounds.width, leftClickBounds.height);
+		else if(rotation == Constants.UP) return new Rectangle(upClickBounds.x + x, upClickBounds.y + y, upClickBounds.width, upClickBounds.height);
 		return null;
 	}
 	

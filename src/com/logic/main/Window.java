@@ -1,16 +1,10 @@
 package com.logic.main;
 
-import java.awt.*;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-
 import com.logic.files.FileManager;
 import com.logic.ui.*;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This class represents one window of the application. Each window holds completely separate data and is essentially its own program

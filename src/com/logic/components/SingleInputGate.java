@@ -1,11 +1,8 @@
 package com.logic.components;
 
-import java.awt.*;
-
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicFunctions;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompRotator;
+import com.logic.util.Constants;
 
 /**
  * This class represents not gates and buffers
@@ -33,8 +30,8 @@ public class SingleInputGate extends LComponent {
 		else if(type == CompType.NOT) function = 0;
 		drawer.setImages(new int[] {0});
 
-		io.addConnection(-25, 40, Connection.INPUT, CompRotator.LEFT);
-		io.addConnection(105, 40, Connection.OUTPUT, CompRotator.RIGHT);
+		io.addConnection(-25, 40, Connection.INPUT, Constants.LEFT);
+		io.addConnection(105, 40, Connection.OUTPUT, Constants.RIGHT);
 	}
 	
 	@Override
@@ -45,7 +42,7 @@ public class SingleInputGate extends LComponent {
 	@Override
 	public LComponent makeCopy() {
 		SingleInputGate result = new SingleInputGate(x, y, type);
-		result.getRotator().setRotation(rotator.getRotation());
+		result.setRotation(rotation);
 		result.setName(getName());
 		return result;
 	}

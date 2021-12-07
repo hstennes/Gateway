@@ -1,8 +1,6 @@
 package com.logic.util;
 
-import java.awt.Point;
-
-import com.logic.ui.CompRotator;
+import java.awt.*;
 
 /**
  * Expresses a certain layout of input or output connections for an IOManager
@@ -70,7 +68,7 @@ public class ConnectionLayout {
 	 */
 	public int getDirection(int index) {
 		if(index >= 0 && index < layout.length) return directions[index];
-		return CompRotator.RIGHT;
+		return Constants.RIGHT;
 	}
 	
 	/**

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.logic.components.*;
 import com.logic.ui.CompProperties;
-import com.logic.ui.CompRotator;
 import com.logic.util.CompUtils;
 
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class FileComponent {
     public FileComponent(LComponent lcomp, Map<LComponent, Integer> compIndex, Map<Custom, Integer> cDataIndex, boolean topLevel){
         type = lcomp.getType();
         pos = new int[] {lcomp.getX(), lcomp.getY()};
-        rot = lcomp.getRotator().getRotation();
+        rot = lcomp.getRotation();
         name = lcomp.getName().equals(CompProperties.defaultName) ? "" : lcomp.getName();
         com = lcomp.getComments().equals(CompProperties.defaultComments) ? "" : lcomp.getComments();
         if(lcomp instanceof LabeledComponent) showLabel = ((LabeledComponent) lcomp).isShowLabel();
@@ -173,7 +172,7 @@ public class FileComponent {
      * @return Returns the given component for convenience
      */
     private LComponent applyProperties(LComponent lcomp){
-        lcomp.getRotator().setRotation(rot);
+        lcomp.setRotation(rot);
         if(name != null && !name.equals("")) lcomp.setName(name);
         if(com != null && !com.equals("")) lcomp.setComments(com);
         return lcomp;

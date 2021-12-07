@@ -1,8 +1,8 @@
 package com.logic.engine;
 
-import java.util.ArrayList;
-
 import com.logic.components.LComponent;
+
+import java.util.ArrayList;
 
 /**
  * This class uses an iterative algorithm to sequentially update all components that are influenced by the list of starting components

@@ -1,16 +1,14 @@
 package com.logic.input;
 
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-
-import javax.swing.SwingUtilities;
-import javax.swing.event.MouseInputAdapter;
-
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.LToolBar;
 import com.logic.ui.ZoomSlider;
+
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 /**
  * Manages zooming and panning of the CircuitPanel

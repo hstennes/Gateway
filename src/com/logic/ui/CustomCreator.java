@@ -1,16 +1,5 @@
 package com.logic.ui;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.swing.JOptionPane;
-
 import com.logic.components.Custom;
 import com.logic.components.LComponent;
 import com.logic.components.Light;
@@ -18,6 +7,10 @@ import com.logic.components.Switch;
 import com.logic.input.CircuitState;
 import com.logic.input.Selection;
 import com.logic.util.CompUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * This class handles the UI for creating custom components

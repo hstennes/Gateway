@@ -1,14 +1,11 @@
 package com.logic.ui;
 
-import java.awt.FlowLayout;
+import com.logic.input.Camera;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import com.logic.input.Camera;
+import java.awt.*;
 
 /**
  * A JSlider for changing the zoom of the CircuitPanel

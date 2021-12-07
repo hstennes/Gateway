@@ -1,13 +1,12 @@
 package com.logic.input;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
 import com.logic.components.LComponent;
 import com.logic.engine.LogicWorker;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.CompProperties;
 import com.logic.util.CompUtils;
+
+import java.util.ArrayList;
 
 /**
  * This class manages selected components and provides means for manipulating them

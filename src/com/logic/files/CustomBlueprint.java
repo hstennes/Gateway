@@ -2,13 +2,9 @@ package com.logic.files;
 
 import com.logic.components.Custom;
 import com.logic.components.LComponent;
-import com.logic.components.Light;
-import com.logic.components.Switch;
-import com.logic.ui.CompRotator;
-import com.logic.util.CompUtils;
+import com.logic.util.Constants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,10 +41,10 @@ public class CustomBlueprint {
 
         io = new int[4][];
         LComponent[][] content = custom.getContent();
-        fillIOArray(compIndex, content, CompRotator.RIGHT);
-        fillIOArray(compIndex, content, CompRotator.UP);
-        fillIOArray(compIndex, content, CompRotator.LEFT);
-        fillIOArray(compIndex, content, CompRotator.DOWN);
+        fillIOArray(compIndex, content, Constants.RIGHT);
+        fillIOArray(compIndex, content, Constants.UP);
+        fillIOArray(compIndex, content, Constants.LEFT);
+        fillIOArray(compIndex, content, Constants.DOWN);
 
         components = new FileComponent[innerComps.size()];
         for(int i = 0; i < innerComps.size(); i++) components[i] = new FileComponent(innerComps.get(i), compIndex, null, false);

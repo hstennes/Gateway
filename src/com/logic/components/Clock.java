@@ -1,14 +1,12 @@
 package com.logic.components;
 
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Timer;
-
 import com.logic.engine.LogicEngine;
 import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompRotator;
+import com.logic.util.Constants;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * This class represents the clock component, which that toggles its output at a specified interval through the use of swing timers
@@ -47,7 +45,7 @@ public class Clock extends SComponent {
 	public Clock(int x, int y) {
 		super(x, y, CompType.CLOCK);
 		drawer.setImages(new int[] {11, 12});
-		io.addConnection(100, 40, Connection.OUTPUT, CompRotator.RIGHT);
+		io.addConnection(100, 40, Connection.OUTPUT, Constants.RIGHT);
 		delay = DEFAULT_DELAY;
 	}
 	
@@ -59,7 +57,7 @@ public class Clock extends SComponent {
 	@Override
 	public LComponent makeCopy() {
 		Clock result = new Clock(x, y);
-		result.getRotator().setRotation(rotator.getRotation());
+		result.setRotation(rotation);
 		result.setName(getName());
 		result.setDelay(delay);
 		return result;

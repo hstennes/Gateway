@@ -3,8 +3,10 @@ package com.logic.files;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.logic.components.*;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A JSONFile object is serialized to create the save file

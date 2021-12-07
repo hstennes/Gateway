@@ -1,7 +1,7 @@
 package com.logic.components;
 
-import com.logic.ui.CompRotator;
 import com.logic.ui.LabelDrawer;
+import com.logic.util.Constants;
 
 import java.awt.*;
 
@@ -42,13 +42,13 @@ public abstract class LabeledComponent extends LComponent{
         Point end = new Point(bounds.x + bounds.width, bounds.y + bounds.height);
         LabelDrawer drawer = new LabelDrawer(labelFont, Color.WHITE, 3, 2);
         int offset = 10;
-        if(absDirection == CompRotator.LEFT)
+        if(absDirection == Constants.LEFT)
             drawer.render(((Graphics2D) g), bounds.x - offset, center.y, LabelDrawer.END, LabelDrawer.CENTER, getName());
-        else if(absDirection == CompRotator.UP)
+        else if(absDirection == Constants.UP)
             drawer.render(((Graphics2D) g), center.x, bounds.y - offset, LabelDrawer.CENTER, LabelDrawer.END, getName());
-        else if(absDirection == CompRotator.RIGHT)
+        else if(absDirection == Constants.RIGHT)
             drawer.render(((Graphics2D) g), end.x + offset, center.y, LabelDrawer.START, LabelDrawer.CENTER, getName());
-        else if(absDirection == CompRotator.DOWN)
+        else if(absDirection == Constants.DOWN)
             drawer.render(((Graphics2D) g), center.x, end.y + offset, LabelDrawer.CENTER, LabelDrawer.START, getName());
     }
 

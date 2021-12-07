@@ -1,13 +1,13 @@
 package com.logic.components;
 
+import com.logic.ui.LabelDrawer;
+import com.logic.util.CompUtils;
+import com.logic.util.Constants;
+import com.logic.util.Deletable;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import com.logic.ui.CompDrawer;
-import com.logic.ui.CompRotator;
-import com.logic.ui.LabelDrawer;
-import com.logic.util.Deletable;
 
 /**
  * This class represents the inputs and outputs on an LComponent
@@ -152,13 +152,13 @@ public class Connection implements Deletable, Serializable {
 		Point coord = getCoord();
 		LabelDrawer drawer = new LabelDrawer(labelFont, Color.WHITE, 3, 2);
 		int offset = 10;
-		if(getAbsoluteDirection() == CompRotator.LEFT)
+		if(getAbsoluteDirection() == Constants.LEFT)
 			drawer.render(((Graphics2D) g), coord.x - offset, coord.y, LabelDrawer.END, LabelDrawer.CENTER, label);
-		else if(getAbsoluteDirection() == CompRotator.UP)
+		else if(getAbsoluteDirection() == Constants.UP)
 			drawer.render(((Graphics2D) g), coord.x, coord.y - offset, LabelDrawer.CENTER, LabelDrawer.END, label);
-		else if(getAbsoluteDirection() == CompRotator.RIGHT)
+		else if(getAbsoluteDirection() == Constants.RIGHT)
 			drawer.render(((Graphics2D) g), coord.x + offset, coord.y, LabelDrawer.START, LabelDrawer.CENTER, label);
-		else if(getAbsoluteDirection() == CompRotator.DOWN)
+		else if(getAbsoluteDirection() == Constants.DOWN)
 			drawer.render(((Graphics2D) g), coord.x, coord.y + offset, LabelDrawer.CENTER, LabelDrawer.START, label);
 	}
 	
@@ -167,7 +167,7 @@ public class Connection implements Deletable, Serializable {
 	 * @return This connection's position
 	 */
 	public Point getCoord() {
-		int index = 2 * lcomp.getRotator().getRotation();
+		int index = 2 * lcomp.getRotation();
 		Point p = new Point(pos[index], pos[index + 1]);
 		p.translate(lcomp.getX(), lcomp.getY());
 		return p;
@@ -247,9 +247,9 @@ public class Connection implements Deletable, Serializable {
 	 */
 	public void setXY(int x, int y) {
 		Rectangle bounds = lcomp.getBoundsRight();
-		Point down = CompRotator.withRotation(x, y, bounds.width, bounds.height, CompRotator.DOWN);
-		Point left = CompRotator.withRotation(x, y, bounds.width, bounds.height, CompRotator.LEFT);
-		Point up = CompRotator.withRotation(x, y, bounds.width, bounds.height, CompRotator.UP);
+		Point down = CompUtils.withRotation(x, y, bounds.width, bounds.height, Constants.DOWN);
+		Point left = CompUtils.withRotation(x, y, bounds.width, bounds.height, Constants.LEFT);
+		Point up = CompUtils.withRotation(x, y, bounds.width, bounds.height, Constants.UP);
 		pos = new int[] {x, y, down.x, down.y, left.x, left.y, up.x, up.y};
 	}
 
@@ -263,7 +263,7 @@ public class Connection implements Deletable, Serializable {
 	 * @return The direction of this connection
 	 */
 	public int getAbsoluteDirection() {
-		return (direction + lcomp.getRotator().getRotation()) % 4;
+		return (direction + lcomp.getRotation()) % 4;
 	}
 	
 	/**

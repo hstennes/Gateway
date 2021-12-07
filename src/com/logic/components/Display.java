@@ -1,16 +1,7 @@
 package com.logic.components;
 
-import java.awt.*;
-import java.text.AttributedCharacterIterator;
-import java.util.Map;
-
 import com.logic.engine.LogicEngine;
-import com.logic.input.Selection;
-import com.logic.main.LogicSimApp;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompRotator;
-import com.logic.ui.Renderer;
-import org.apache.commons.logging.Log;
+import com.logic.util.Constants;
 
 /**
  * A digit display component that shows a decimal value based on four bits of input
@@ -34,10 +25,10 @@ public class Display extends LComponent {
 	public Display(int x, int y) {
 		super(x, y, CompType.DISPLAY);
 		drawer.setImages(new int[] {13});
-		io.addConnection(-20, 2, Connection.INPUT, CompRotator.LEFT);
-		io.addConnection(-20, 34, Connection.INPUT, CompRotator.LEFT);
-		io.addConnection(-20, 66, Connection.INPUT, CompRotator.LEFT);
-		io.addConnection(-20, 98, Connection.INPUT, CompRotator.LEFT);
+		io.addConnection(-20, 2, Connection.INPUT, Constants.LEFT);
+		io.addConnection(-20, 34, Connection.INPUT, Constants.LEFT);
+		io.addConnection(-20, 66, Connection.INPUT, Constants.LEFT);
+		io.addConnection(-20, 98, Connection.INPUT, Constants.LEFT);
 	}
 	
 	@Override
@@ -68,7 +59,7 @@ public class Display extends LComponent {
 	@Override
 	public LComponent makeCopy() {
 		Display result = new Display(x, y);
-		result.getRotator().setRotation(rotator.getRotation());
+		result.setRotation(rotation);
 		result.setName(getName());
 		return result;
 	}

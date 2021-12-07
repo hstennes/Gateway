@@ -1,11 +1,10 @@
 package com.logic.components;
 
-import java.awt.*;
-
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicWorker;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompRotator;
+import com.logic.util.Constants;
+
+import java.awt.*;
 
 /**
  * An input component that toggles its state when its clickAction is fired
@@ -24,7 +23,7 @@ public class Switch extends IComponent {
 	public Switch(int x, int y) {
 		super(x, y, CompType.SWITCH);
 		drawer.setImages(new int[] {3, 4});
-		io.addConnection(80, 40, Connection.OUTPUT, CompRotator.RIGHT);
+		io.addConnection(80, 40, Connection.OUTPUT, Constants.RIGHT);
 		setClickAction(15, 15, 30, 50);
 	}
 	
@@ -51,7 +50,7 @@ public class Switch extends IComponent {
 	@Override
 	public LComponent makeCopy() {
 		Switch result = new Switch(x, y);
-		result.getRotator().setRotation(rotator.getRotation());
+		result.setRotation(rotation);
 		result.setName(getName());
 		result.setState(getState());
 		result.setShowLabel(isShowLabel());

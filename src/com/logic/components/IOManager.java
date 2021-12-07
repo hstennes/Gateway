@@ -1,14 +1,13 @@
 package com.logic.components;
 
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.io.Serializable;
-import java.util.ArrayList;
-
 import com.logic.engine.LogicEngine;
 import com.logic.ui.Renderer;
 import com.logic.util.ConnectionLayout;
 import com.logic.util.Deletable;
+
+import java.awt.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * This class organizes the connections used by a component and provides methods for accessing and editing them

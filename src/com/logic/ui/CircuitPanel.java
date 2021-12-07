@@ -1,27 +1,16 @@
 package com.logic.ui;
 
+import com.logic.components.*;
+import com.logic.input.Camera;
+import com.logic.input.CircuitEditor;
+import com.logic.main.Window;
+import com.logic.util.ActionUtils;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
-import com.logic.components.Connection;
-import com.logic.components.IComponent;
-import com.logic.components.LComponent;
-import com.logic.components.SComponent;
-import com.logic.components.Wire;
-import com.logic.input.Camera;
-import com.logic.input.CircuitEditor;
-import com.logic.main.LogicSimApp;
-import com.logic.main.Window;
-import com.logic.util.ActionUtils;
-import com.logic.util.Debug;
 
 /**
  * This class provides both a graphical representation of the circuit and a framework for adding components and wires

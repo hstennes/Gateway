@@ -1,15 +1,12 @@
 package com.logic.input;
 
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.util.HashMap;
-
-import com.logic.components.*;
-import com.logic.components.Button;
+import com.logic.components.LComponent;
 import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompDrawer;
 import com.logic.ui.InsertPanel;
 import com.logic.util.CompUtils;
+
+import java.awt.*;
+import java.awt.event.MouseEvent;
 
 /**
  * This class holds the code for adding components to the CircuitPanel

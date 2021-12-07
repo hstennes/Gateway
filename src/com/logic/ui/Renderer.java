@@ -1,8 +1,8 @@
 package com.logic.ui;
 
 import com.logic.components.*;
-import com.logic.input.Selection;
-import com.logic.util.Debug;
+import com.logic.util.CompUtils;
+import com.logic.util.Constants;
 import org.apache.batik.gvt.GraphicsNode;
 
 import java.awt.*;
@@ -30,6 +30,11 @@ public class Renderer {
      * The Color of the box around a component when it is selected
      */
     public static final Color SELECT_COLOR = new Color(66, 82, 255);
+
+    /**
+     * The amount of space between consecutive inputs on a BasicGate
+     */
+    public static final int BASIC_INPUT_SPACING = 50;
 
     /**
      * The x and y length of the divider lines drawn around the center rectangle
@@ -165,8 +170,8 @@ public class Renderer {
         }
 
         Point p = circuitToScreen(lcomp.getX(), lcomp.getY());
-        int rot = lcomp.getRotator().getRotation();
-        double radians = CompRotator.RAD_ROTATION[rot];
+        int rot = lcomp.getRotation();
+        double radians = CompUtils.RAD_ROTATION[rot];
 
         g2d.rotate(radians, p.x, p.y);
         g2d.drawImage(image,
@@ -254,19 +259,19 @@ public class Renderer {
         g2d.setStroke(new BasicStroke(3));
         int direction = c.getDirection();
         Point connectEnd = null;
-        if(direction == CompRotator.RIGHT) {
+        if(direction == Constants.RIGHT) {
             g2d.drawLine(p.x, p.y, p.x - 37, p.y);
             connectEnd = new Point(p.x - 37, p.y);
         }
-        if(direction == CompRotator.UP) {
+        if(direction == Constants.UP) {
             g2d.drawLine(p.x, p.y, p.x, p.y + 37);
             connectEnd = new Point(p.x, p.y + 37);
         }
-        if(direction == CompRotator.LEFT) {
+        if(direction == Constants.LEFT) {
             g2d.drawLine(p.x, p.y, p.x + 37, p.y);
             connectEnd = new Point(p.x + 37, p.y);
         }
-        if(direction == CompRotator.DOWN) {
+        if(direction == Constants.DOWN) {
             g2d.drawLine(p.x, p.y, p.x, p.y - 37);
             connectEnd = new Point(p.x, p.y - 37);
         }

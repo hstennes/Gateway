@@ -1,17 +1,10 @@
 package com.logic.ui;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.image.BufferedImage;
-import java.io.Serializable;
-
-import com.logic.components.*;
-import com.logic.input.Selection;
+import com.logic.components.LComponent;
 import com.logic.main.LogicSimApp;
-import org.apache.batik.ext.awt.image.renderable.AffineRable;
 import org.apache.batik.gvt.GraphicsNode;
+
+import java.io.Serializable;
 
 /**
  * A class possessed by every LComponent that provides the code for drawing the component
@@ -19,11 +12,6 @@ import org.apache.batik.gvt.GraphicsNode;
  *
  */
 public class CompDrawer implements Serializable {
-
-	/**
-	 * The amount of space between consecutive inputs on a BasicGate
-	 */
-	public static final int BASIC_INPUT_SPACING = 50;
 
 	/**
 	 * The indexes of the images that this component uses (in the IconLoader)

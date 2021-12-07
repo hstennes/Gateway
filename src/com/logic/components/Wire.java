@@ -1,19 +1,12 @@
 package com.logic.components;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import com.logic.ui.CircuitPanel;
+import com.logic.util.Constants;
+import com.logic.util.Deletable;
+
+import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.io.Serializable;
-
-import com.logic.input.Selection;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompRotator;
-import com.logic.ui.Renderer;
-import com.logic.util.Debug;
-import com.logic.util.Deletable;
 
 /**
  * A CircuitElement that holds a boolean signal and connects an output connection to an input connection
@@ -149,10 +142,10 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * @return
 	 */
 	private Point offsetInDirection(Point p, int offset, int direction) {
-		if(direction == CompRotator.UP) return new Point(p.x, p.y - offset);
-		else if(direction == CompRotator.RIGHT) return new Point(p.x + offset, p.y);
-		else if(direction == CompRotator.DOWN) return new Point(p.x, p.y + offset);
-		else if(direction == CompRotator.LEFT) return new Point(p.x - offset, p.y);
+		if(direction == Constants.UP) return new Point(p.x, p.y - offset);
+		else if(direction == Constants.RIGHT) return new Point(p.x + offset, p.y);
+		else if(direction == Constants.DOWN) return new Point(p.x, p.y + offset);
+		else if(direction == Constants.LEFT) return new Point(p.x - offset, p.y);
 		return new Point(p);
 	}
 	

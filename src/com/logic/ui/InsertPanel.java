@@ -1,15 +1,11 @@
 package com.logic.ui;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import com.logic.main.LogicSimApp;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-
-import com.logic.main.LogicSimApp;
 
 /**
  * The panel of buttons to insert LComponents

@@ -1,20 +1,16 @@
 package com.logic.ui;
 
 import com.logic.components.*;
-import com.logic.components.Button;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.bridge.*;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.svg.SVGDocument;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 /**
  * Loads and holds all of the images used by the program

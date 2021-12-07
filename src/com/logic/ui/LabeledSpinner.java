@@ -1,12 +1,9 @@
 package com.logic.ui;
 
-import java.awt.FlowLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-
 import com.logic.util.GraphicsUtils;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * A JPanel that holds a JSpinner and a JLabel
