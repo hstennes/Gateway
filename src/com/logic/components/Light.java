@@ -28,6 +28,12 @@ public class Light extends LabeledComponent {
 	
 	@Override
 	public void update(LogicEngine engine) {}
+
+	@Override
+	public int getActiveImageIndex(){
+		if(io.getInput(0)) return 1;
+		return 0;
+	}
 	
 	@Override
 	public LComponent makeCopy() {

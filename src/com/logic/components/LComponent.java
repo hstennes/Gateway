@@ -5,11 +5,14 @@ import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
 import com.logic.engine.LogicEngine;
+import com.logic.main.LogicSimApp;
 import com.logic.ui.CompDrawer;
 import com.logic.ui.CompProperties;
 import com.logic.ui.CompRotator;
+import com.logic.ui.IconLoader;
 import com.logic.util.Deletable;
 import com.logic.util.NameConverter;
+import org.apache.batik.gvt.GraphicsNode;
 
 /**
  * The superclass for all logic components (CircuitElements that have inputs, outputs, and perform logic)
@@ -100,8 +103,16 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * @return A bounding box for the component
 	 */
 	public Rectangle getBoundsRight() {
-		BufferedImage image = drawer.getActiveImage();
-		return new Rectangle(x, y, image.getWidth() / CompDrawer.RENDER_SCALE, image.getHeight() / CompDrawer.RENDER_SCALE);
+		int index = drawer.getImageIndex();
+		return new Rectangle(x, y, LogicSimApp.iconLoader.imageWidth[index], LogicSimApp.iconLoader.imageHeight[index]);
+	}
+
+	/**
+	 * Returns the index of the current image in the CompDrawer.images array. Subclasses should override if they use more than one image.
+	 * @return The active image index
+	 */
+	public int getActiveImageIndex(){
+		return 0;
 	}
 	
 	/**

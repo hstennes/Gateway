@@ -41,6 +41,12 @@ public class Switch extends IComponent {
 
 	@Override
 	public void notification(int type) { }
+
+	@Override
+	public int getActiveImageIndex(){
+		if(getState()) return 1;
+		return 0;
+	}
 	
 	@Override
 	public LComponent makeCopy() {

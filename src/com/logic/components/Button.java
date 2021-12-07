@@ -50,6 +50,12 @@ public class Button extends IComponent {
 			}
 		}
 	}
+
+	@Override
+	public int getActiveImageIndex(){
+		if(getState()) return 1;
+		return 0;
+	}
 	
 	@Override
 	public LComponent makeCopy() {

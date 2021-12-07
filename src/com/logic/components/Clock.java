@@ -89,6 +89,12 @@ public class Clock extends SComponent {
 		});
 		timer.start();
 	}
+
+	@Override
+	public int getActiveImageIndex(){
+		if(on) return 1;
+		return 0;
+	}
 	
 	/**
 	 * Stops the timer in this clock

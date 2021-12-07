@@ -119,16 +119,7 @@ public class CircuitPanel extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
-		//super.paintComponent(g);
-
-		/*g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		if(highQuality) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);*/
-
-		//editor.getHighlight().render(g);
-		//editor.getCustomCreator().render(g);
-
 		renderer.render(((Graphics2D) g), lcomps, wires, cam.getX(), cam.getY(), cam.getZoom());
-
 		//if(message != null) message.render(g);
 	}
 	

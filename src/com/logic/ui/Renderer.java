@@ -80,7 +80,7 @@ public class Renderer {
         renderComponents(g2d, lcomps, view);
         applyTransform(g2d);
         renderHighLight(g2d);
-        renderCustom(g2d);
+        renderCustomCreator(g2d);
         reverseTransform(g2d);
     }
 
@@ -118,7 +118,7 @@ public class Renderer {
         g2d.draw(bounds);
     }
 
-    private void renderCustom(Graphics2D g2d){
+    private void renderCustomCreator(Graphics2D g2d){
         if(!cp.getEditor().getCustomCreator().isActive()) return;
         Rectangle centerRect = cp.getEditor().getCustomCreator().getCenterRect();
         
@@ -205,13 +205,12 @@ public class Renderer {
             return image;
         }
 
-        GraphicsNode svg = lcomp.getDrawer().getActiveSVG();
+        GraphicsNode svg = lcomp.getDrawer().getActiveImage();
         int size = Math.max(lb.width, lb.height);
         float difference = Math.abs(lb.width - lb.height);
         if(lb.width <= lb.height) svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x - difference * 0.5, -cb.y));
         else svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x,  -cb.y - difference * 0.5));
         svg.paint(g2d);
-
 
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
         if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR) drawInverted(g2d, -cb.x, -cb.y);

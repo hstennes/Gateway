@@ -82,7 +82,6 @@ public class BasicGate extends LComponent implements BitFlexibleElement {
 			inverted = true;
 			function = 2;
 		}
-		drawer.setActiveImageIndex(0);
 
 		if(numInputs > MAX_INPUTS) numInputs = MAX_INPUTS;
 		else if(numInputs < MIN_INPUTS) numInputs = MIN_INPUTS;

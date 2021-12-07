@@ -56,33 +56,6 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	}
 	
 	/**
-	 * Calculates the distance between the two points
-	 * @param p1 The first point
-	 * @param p2 The second point
-	 * @return The Euclidian distance between the points in double precision
-	 */
-	private double calculateDist(Point p1, Point p2) {
-		int dx = p1.x - p2.x;
-		int dy = p1.y - p2.y;
-		return Math.cbrt(dx * dx + dy * dy);
-	}
-	
-	/**
-	 * Returns the point that is the specified distance away from the given point in the given CompRotator direction
-	 * @param p The original point
-	 * @param offset The offset to apply
-	 * @param direction The direction of the offset
-	 * @return
-	 */
-	private Point offsetInDirection(Point p, int offset, int direction) {
-		if(direction == CompRotator.UP) return new Point(p.x, p.y - offset);
-		else if(direction == CompRotator.RIGHT) return new Point(p.x + offset, p.y);
-		else if(direction == CompRotator.DOWN) return new Point(p.x, p.y + offset);
-		else if(direction == CompRotator.LEFT) return new Point(p.x - offset, p.y);
-		return new Point(p);
-	}
-	
-	/**
 	 * Returns the wire's signal (the least significant bit if there are multiple)
 	 * @return The wire's signal
 	 */
@@ -166,6 +139,21 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	private int wireOffset(Point p1, Point p2){
 		int dx = p1.x - p2.x, dy = p1.y - p2.y;
 		return (int) (0.2 * (Math.abs(dx) + Math.abs(dy)));
+	}
+
+	/**
+	 * Returns the point that is the specified distance away from the given point in the given CompRotator direction
+	 * @param p The original point
+	 * @param offset The offset to apply
+	 * @param direction The direction of the offset
+	 * @return
+	 */
+	private Point offsetInDirection(Point p, int offset, int direction) {
+		if(direction == CompRotator.UP) return new Point(p.x, p.y - offset);
+		else if(direction == CompRotator.RIGHT) return new Point(p.x + offset, p.y);
+		else if(direction == CompRotator.DOWN) return new Point(p.x, p.y + offset);
+		else if(direction == CompRotator.LEFT) return new Point(p.x - offset, p.y);
+		return new Point(p);
 	}
 	
 	/**
