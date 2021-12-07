@@ -1,11 +1,11 @@
 package com.logic.input;
 
-import java.awt.Point;
-
 import com.logic.components.Connection;
 import com.logic.components.Wire;
 import com.logic.engine.LogicWorker;
 import com.logic.ui.CircuitPanel;
+
+import java.awt.*;
 
 /**
  * Manages construction of wires by the user

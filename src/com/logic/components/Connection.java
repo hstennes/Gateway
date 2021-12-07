@@ -1,13 +1,13 @@
 package com.logic.components;
 
+import com.logic.ui.LabelDrawer;
+import com.logic.util.CompUtils;
+import com.logic.util.Constants;
+import com.logic.util.Deletable;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import com.logic.ui.CompDrawer;
-import com.logic.ui.CompRotator;
-import com.logic.ui.LabelDrawer;
-import com.logic.util.Deletable;
 
 /**
  * This class represents the inputs and outputs on an LComponent
@@ -58,26 +58,8 @@ public class Connection implements Deletable, Serializable {
 	 * The index of this connection in the list of input connections or output connections
 	 */
 	private int index;
-	
-	/**
-	 * The position of the connection in the LComponpent's image when the component has a CompRotator.RIGHT (default) rotation.
-	 */
-	private int x, y;
-	
-	/**
-	 * The position of the connection in the LComponpent's image when the component has a CompRotator.DOWN rotation.
-	 */
-	private int dx, dy;
-	
-	/**
-	 * The position of the connection in the LComponpent's image when the component has a CompRotator.LEFT rotation.
-	 */
-	private int lx, ly;
-	
-	/**
-	 * The position of the connection in the LComponpent's image when the component has a CompRotator.UP rotation.
-	 */
-	private int ux, uy;
+
+	private int[] pos;
 
 	/**
 	 * The bitWidth of this connection. Only wires with the same bit width can connect.
@@ -170,13 +152,13 @@ public class Connection implements Deletable, Serializable {
 		Point coord = getCoord();
 		LabelDrawer drawer = new LabelDrawer(labelFont, Color.WHITE, 3, 2);
 		int offset = 10;
-		if(getAbsoluteDirection() == CompRotator.LEFT)
+		if(getAbsoluteDirection() == Constants.LEFT)
 			drawer.render(((Graphics2D) g), coord.x - offset, coord.y, LabelDrawer.END, LabelDrawer.CENTER, label);
-		else if(getAbsoluteDirection() == CompRotator.UP)
+		else if(getAbsoluteDirection() == Constants.UP)
 			drawer.render(((Graphics2D) g), coord.x, coord.y - offset, LabelDrawer.CENTER, LabelDrawer.END, label);
-		else if(getAbsoluteDirection() == CompRotator.RIGHT)
+		else if(getAbsoluteDirection() == Constants.RIGHT)
 			drawer.render(((Graphics2D) g), coord.x + offset, coord.y, LabelDrawer.START, LabelDrawer.CENTER, label);
-		else if(getAbsoluteDirection() == CompRotator.DOWN)
+		else if(getAbsoluteDirection() == Constants.DOWN)
 			drawer.render(((Graphics2D) g), coord.x, coord.y + offset, LabelDrawer.CENTER, LabelDrawer.START, label);
 	}
 	
@@ -185,13 +167,8 @@ public class Connection implements Deletable, Serializable {
 	 * @return This connection's position
 	 */
 	public Point getCoord() {
-		int rotation = lcomp.getRotator().getRotation();
-		Point rotatedPoint = null;
-		if(rotation == CompRotator.RIGHT) rotatedPoint = new Point(x, y);
-		else if(rotation == CompRotator.DOWN) rotatedPoint = new Point(dx, dy);
-		else if(rotation == CompRotator.LEFT) rotatedPoint = new Point(lx, ly);
-		else if(rotation == CompRotator.UP) rotatedPoint = new Point(ux, uy);
-		Point p = new Point((int) (rotatedPoint.x), (int) (rotatedPoint.y));
+		int index = 2 * lcomp.getRotation();
+		Point p = new Point(pos[index], pos[index + 1]);
 		p.translate(lcomp.getX(), lcomp.getY());
 		return p;
 	}
@@ -250,7 +227,7 @@ public class Connection implements Deletable, Serializable {
 	 * @return The pixel x of this connection
 	 */
 	public int getX() {
-		return x;
+		return pos[0];
 	}
 	
 	/**
@@ -258,7 +235,7 @@ public class Connection implements Deletable, Serializable {
 	 * @return The pixel y of this connection
 	 */
 	public int getY() {
-		return y;
+		return pos[1];
 	}
 
 	/**
@@ -269,18 +246,11 @@ public class Connection implements Deletable, Serializable {
 	 * @param y The new pixel y position of this connection
 	 */
 	public void setXY(int x, int y) {
-		this.x = x;
-		this.y = y;
 		Rectangle bounds = lcomp.getBoundsRight();
-		Point down = CompRotator.withRotation(x, y, bounds.width, bounds.height, CompRotator.DOWN);
-		Point left = CompRotator.withRotation(x, y, bounds.width, bounds.height, CompRotator.LEFT);
-		Point up = CompRotator.withRotation(x, y, bounds.width, bounds.height, CompRotator.UP);
-		dx = down.x;
-		lx = left.x;
-		ux = up.x;
-		dy = down.y;
-		ly = left.y;
-		uy = up.y;
+		Point down = CompUtils.withRotation(x, y, bounds.width, bounds.height, Constants.DOWN);
+		Point left = CompUtils.withRotation(x, y, bounds.width, bounds.height, Constants.LEFT);
+		Point up = CompUtils.withRotation(x, y, bounds.width, bounds.height, Constants.UP);
+		pos = new int[] {x, y, down.x, down.y, left.x, left.y, up.x, up.y};
 	}
 
 	public int getDirection(){
@@ -293,7 +263,7 @@ public class Connection implements Deletable, Serializable {
 	 * @return The direction of this connection
 	 */
 	public int getAbsoluteDirection() {
-		return (direction + lcomp.getRotator().getRotation()) % 4;
+		return (direction + lcomp.getRotation()) % 4;
 	}
 	
 	/**

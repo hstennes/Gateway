@@ -1,14 +1,13 @@
 package com.logic.engine;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.SwingWorker;
-
 import com.logic.components.Connection;
 import com.logic.components.IOManager;
 import com.logic.components.LComponent;
 import com.logic.ui.CircuitPanel;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A SwingWorker subclass for running a LogicEngine on its own thread

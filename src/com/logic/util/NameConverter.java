@@ -1,7 +1,6 @@
 package com.logic.util;
 
 import com.logic.components.CompType;
-import com.logic.ui.CompRotator;
 
 /**
  * A class that holds static helper methods for converting between different ways of expressing values (a lot of else if statements all 
@@ -42,10 +41,10 @@ public class NameConverter {
 	 * @return The name of the rotation
 	 */
 	public static String rotationFromValue(int rotation) {
-		if(rotation == CompRotator.RIGHT) return "Right";
-		else if(rotation == CompRotator.DOWN) return "Down";
-		else if(rotation == CompRotator.LEFT) return "Left";
-		else if(rotation == CompRotator.UP) return "Up";
+		if(rotation == Constants.RIGHT) return "Right";
+		else if(rotation == Constants.DOWN) return "Down";
+		else if(rotation == Constants.LEFT) return "Left";
+		else if(rotation == Constants.UP) return "Up";
 		return "Invalid rotation";
 	}
 	
@@ -55,10 +54,10 @@ public class NameConverter {
 	 * @return The CompRotator rotation constant
 	 */
 	public static int rotationFromName(String name) {
-		if(name.equals("Down")) return CompRotator.DOWN;
-		else if(name.equals("Left")) return CompRotator.LEFT;
-		else if(name.equals("Up")) return CompRotator.UP;
-		else if(name.equals("Right")) return CompRotator.RIGHT;
+		if(name.equals("Down")) return Constants.DOWN;
+		else if(name.equals("Left")) return Constants.LEFT;
+		else if(name.equals("Up")) return Constants.UP;
+		else if(name.equals("Right")) return Constants.RIGHT;
 		return -1;
 	}
 	

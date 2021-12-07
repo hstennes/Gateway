@@ -1,15 +1,13 @@
 package com.logic.ui;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import com.logic.components.Clock;
 import com.logic.components.LComponent;
 import com.logic.input.Selection;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 
 /**
  * A LabeledSpinner subclass for editing the delay value of a Clock

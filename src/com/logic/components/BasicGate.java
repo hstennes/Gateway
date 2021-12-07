@@ -1,13 +1,12 @@
 package com.logic.components;
 
-import java.awt.*;
-
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicFunctions;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompDrawer;
-import com.logic.ui.CompRotator;
+import com.logic.ui.Renderer;
 import com.logic.util.ConnectionLayout;
+import com.logic.util.Constants;
+
+import java.awt.*;
 
 /**
  * The class that represents all basic logic gates, which include and, nand, or, nor, xor, and xnor
@@ -82,23 +81,14 @@ public class BasicGate extends LComponent implements BitFlexibleElement {
 			inverted = true;
 			function = 2;
 		}
-		drawer.setActiveImageIndex(0);
 
 		if(numInputs > MAX_INPUTS) numInputs = MAX_INPUTS;
 		else if(numInputs < MIN_INPUTS) numInputs = MIN_INPUTS;
 		Point[] connectionPositions = calcInputPositions(-25, numInputs);
 		for(Point p : connectionPositions){
-			io.addConnection(p.x, p.y, Connection.INPUT, CompRotator.LEFT);
+			io.addConnection(p.x, p.y, Connection.INPUT, Constants.LEFT);
 		}
-		io.addConnection(110, 40, Connection.OUTPUT, CompRotator.RIGHT);
-	}
-	                      
-	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		Graphics2D g2d = (Graphics2D) g;
-		drawer.draw(g);
-		if(type == CompType.XOR || type == CompType.XNOR) drawer.drawExclusive(g2d);
-		if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR) drawer.drawInverted(g2d);
+		io.addConnection(110, 40, Connection.OUTPUT, Constants.RIGHT);
 	}
 
 	@Override
@@ -120,7 +110,7 @@ public class BasicGate extends LComponent implements BitFlexibleElement {
 		int currentNum = io.getNumInputs();
 		if(numInputs > currentNum) {
 			for(int i = 0; i < numInputs - currentNum; i++){
-				io.addConnection(0, 0, Connection.INPUT, CompRotator.LEFT);
+				io.addConnection(0, 0, Connection.INPUT, Constants.LEFT);
 			}
 		}
 		else if(numInputs < currentNum){
@@ -129,7 +119,7 @@ public class BasicGate extends LComponent implements BitFlexibleElement {
 			}
 		}
 		Point[] positions = calcInputPositions(-25, numInputs);
-		io.setConnectionLayout(new ConnectionLayout(positions, CompRotator.LEFT, Connection.INPUT));
+		io.setConnectionLayout(new ConnectionLayout(positions, Constants.LEFT, Connection.INPUT));
 	}
 
 	/**
@@ -139,10 +129,10 @@ public class BasicGate extends LComponent implements BitFlexibleElement {
 	 * @return An array of points showing the input positions
 	 */
 	private Point[] calcInputPositions(int xPos, int numConnections){
-		int start = 80 / 2 - CompDrawer.BASIC_INPUT_SPACING / 2 * (numConnections - 1);
+		int start = 80 / 2 - Renderer.BASIC_INPUT_SPACING / 2 * (numConnections - 1);
 		Point[] positions = new Point[numConnections];
 		for(int i = 0; i < numConnections; i++){
-			positions[i] = new Point(xPos, start + i * CompDrawer.BASIC_INPUT_SPACING);
+			positions[i] = new Point(xPos, start + i * Renderer.BASIC_INPUT_SPACING);
 		}
 		return positions;
 	}
@@ -150,7 +140,7 @@ public class BasicGate extends LComponent implements BitFlexibleElement {
 	@Override
 	public LComponent makeCopy() {
 		BasicGate result = new BasicGate(x, y, io.getNumInputs(), type);
-		result.getRotator().setRotation(rotator.getRotation());
+		result.setRotation(rotation);
 		result.setName(getName());
 		result.bitWidth = bitWidth;
 		return result;

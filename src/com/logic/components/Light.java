@@ -1,10 +1,7 @@
 package com.logic.components;
 
-import java.awt.Graphics;
-
 import com.logic.engine.LogicEngine;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompRotator;
+import com.logic.util.Constants;
 
 /**
  * A simple output component that appears lit up when it receives a high signal and off when it receives a low signal
@@ -23,24 +20,22 @@ public class Light extends LabeledComponent {
 	public Light(int x, int y) {
 		super(x, y, CompType.LIGHT);
 		drawer.setImages(new int[] {7, 8});
-		io.addConnection(30, 100, Connection.INPUT, CompRotator.DOWN);
+		io.addConnection(30, 100, Connection.INPUT, Constants.DOWN);
 	}
 	
 	@Override
 	public void update(LogicEngine engine) {}
-	
+
 	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		if(io.getInput(0)) drawer.setActiveImageIndex(1);
-		else drawer.setActiveImageIndex(0);
-		drawer.draw(g);
-		renderLabel(g, (io.connectionAt(0, Connection.INPUT).getAbsoluteDirection() + 2) % 4);
+	public int getActiveImageIndex(){
+		if(io.getInput(0)) return 1;
+		return 0;
 	}
 	
 	@Override
 	public LComponent makeCopy() {
 		Light result = new Light(x, y);
-		result.getRotator().setRotation(rotator.getRotation());
+		result.setRotation(rotation);
 		result.setName(getName());
 		result.setShowLabel(isShowLabel());
 		return result;

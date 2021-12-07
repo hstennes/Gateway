@@ -1,20 +1,14 @@
 package com.logic.components;
 
+import com.logic.engine.LogicEngine;
+import com.logic.engine.LogicWorker;
+import com.logic.ui.CircuitPanel;
+import com.logic.util.*;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.logic.engine.LogicEngine;
-import com.logic.engine.LogicWorker;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompDrawer;
-import com.logic.ui.CompRotator;
-import com.logic.util.CompUtils;
-import com.logic.util.CustomHelper;
-import com.logic.util.CustomInput;
-import com.logic.util.CustomOutput;
-import com.logic.util.GraphicsUtils;
 
 /**
  * An LComponent that combines multiple other components into one (ex: a full adder)
@@ -86,7 +80,7 @@ public class Custom extends SComponent {
 		width = helper.chooseWidth(label, labelFont);
 		height = helper.chooseHeight();
 		
-		for(int s  = CompRotator.RIGHT; s <= CompRotator.UP; s++) {
+		for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
 			LComponent[] side = content[s];
 			if(side != null) initSide(side, s, helper);
 		}
@@ -107,27 +101,6 @@ public class Custom extends SComponent {
 			}
 		}
 		LogicWorker.startLogic(this);
-	}
-
-	/**
-	 * Renders this component by drawing a Rectangle of the appropriate size and using drawer.drawConnections to display connections
-	 */
-	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		drawer.drawConnections(g);
-		for(int i = 0; i < io.getNumInputs(); i++) io.connectionAt(i, Connection.INPUT).renderLabel(g, inputs.get(i).getLabel());
-		for(int i = 0; i < io.getNumOutputs(); i++) io.connectionAt(i, Connection.OUTPUT).renderLabel(g, outputs.get(i).getLabel());
-		Rectangle bounds = getBounds();
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.WHITE);
-		g2d.fill(bounds);
-		g2d.setColor(Color.BLACK);
-		g2d.setStroke(new BasicStroke(4));
-		g2d.draw(bounds);
-		g2d.setColor(Color.BLUE);
-		g2d.setStroke(new BasicStroke(2));
-		if(selected) g2d.drawRect(bounds.x - 1, bounds.y - 1, bounds.width + 2, bounds.height + 2);
-		drawLabel(g2d);
 	}
 	
 	/**
@@ -154,8 +127,7 @@ public class Custom extends SComponent {
 	 */
 	@Override
 	public Rectangle getBounds() {
-		int rotation = rotator.getRotation();
-		if(rotation == CompRotator.UP || rotation == CompRotator.DOWN) return new Rectangle(x, y, height, width);
+		if(rotation == Constants.UP || rotation == Constants.DOWN) return new Rectangle(x, y, height, width);
 		else return new Rectangle(x, y, width, height);
 	}
 	
@@ -201,9 +173,9 @@ public class Custom extends SComponent {
 		Rectangle bounds = getBounds();
 		AffineTransform orig = g2d.getTransform();
 		
-		if(rotator.getRotation() == CompRotator.UP) g2d.rotate(Math.PI * 3 / 2, bounds.width / 2 + x, bounds.height / 2 + y);
-		else if(rotator.getRotation() == CompRotator.LEFT) g2d.rotate(Math.PI, bounds.width / 2 + x, bounds.height / 2 + y);
-		else if(rotator.getRotation() == CompRotator.DOWN) g2d.rotate(Math.PI / 2, bounds.width / 2 + x, bounds.height / 2 + y);
+		if(rotation == Constants.UP) g2d.rotate(Math.PI * 3 / 2, bounds.width / 2 + x, bounds.height / 2 + y);
+		else if(rotation == Constants.LEFT) g2d.rotate(Math.PI, bounds.width / 2 + x, bounds.height / 2 + y);
+		else if(rotation == Constants.DOWN) g2d.rotate(Math.PI / 2, bounds.width / 2 + x, bounds.height / 2 + y);
 		
 		g2d.drawString(label, (bounds.width - stringWidth) / 2 + x, (bounds.height - stringHeight + 25) / 2 + y);
 		g2d.setTransform(orig);

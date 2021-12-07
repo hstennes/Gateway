@@ -1,19 +1,12 @@
 package com.logic.components;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import com.logic.ui.CircuitPanel;
+import com.logic.util.Constants;
+import com.logic.util.Deletable;
+
+import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.io.Serializable;
-
-import com.logic.input.Selection;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompRotator;
-import com.logic.ui.Renderer;
-import com.logic.util.Debug;
-import com.logic.util.Deletable;
 
 /**
  * A CircuitElement that holds a boolean signal and connects an output connection to an input connection
@@ -28,7 +21,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * A constant that represents how curved the wire is by specifying how far the second and third points on the bezier curve are from 
 	 * the first and fourth points, respectively
 	 */
-	private final int curveFactor = 6;
+	private final int curveFactor = 2;
 	
 	/**
 	 * The state of the wire
@@ -53,92 +46,6 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	public Wire(int bitWidth){
 		super(bitWidth);
 		signal = new boolean[bitWidth];
-	}
-	
-	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		Connection connectOne;
-		Connection connectTwo;
-		if(dest != null && source == null) {
-			connectOne = dest;
-			connectTwo = source;
-		}
-		else {
-			connectOne = source;
-			connectTwo = dest;
-		}
-		if(connectOne != null) {
-			Point p1 = connectOne.getCoord();
-			Point p4;
-			if(connectTwo != null) p4 = connectTwo.getCoord();
-			else p4 = cp.getEditor().getWireBuilder().getMousePoint();
-			
-			int offset = (int) (Math.sqrt(calculateDist(p1, p4)) * curveFactor);
-			Point p2 = offsetInDirection(p1, offset, connectOne.getAbsoluteDirection());
-			
-			Point p3;
-			if(connectTwo == null) p3 = cp.getEditor().getWireBuilder().getMousePoint();
-			else p3 = offsetInDirection(p4, offset, connectTwo.getAbsoluteDirection());
-			drawCurve(g, p1, p2, p3, p4);
-		}
-	}
-	
-	/**
-	 * Draws a curve using the specified points as control points
-	 * @param g The Graphics object
-	 * @param p1 The first control point (start of curve)
-	 * @param p2 The second control point (changes shape)
-	 * @param p3 The third control point (changes shape)
-	 * @param p4 The fourth control point (end of curve)
-	 */
-	private void drawCurve(Graphics g, Point p1, Point p2, Point p3, Point p4) {
-		curve = new CubicCurve2D.Double(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
-		Graphics2D g2d = (Graphics2D) g;
-		if(selected) {
-			g2d.setColor(Renderer.SELECT_COLOR);
-			g2d.setStroke(new BasicStroke(10));
-		}
-		else {
-			g2d.setColor(Color.BLACK);
-			g2d.setStroke(new BasicStroke(7));
-		}
-
-		g2d.draw(curve);
-		if(bitWidth == 1) {
-			if (signal[0]) g2d.setColor(Color.ORANGE);
-			else g2d.setColor(Color.WHITE);
-		}
-		else g2d.setColor(Color.GREEN);
-		g2d.setStroke(new BasicStroke(3));
-		g2d.draw(curve);
-	}
-	
-	/**
-	 * Calculates the distance between the two points
-	 * @param p1 The first point
-	 * @param p2 The second point
-	 * @return The Euclidian distance between the points in double precision
-	 */
-	private double calculateDist(Point p1, Point p2) {
-		int dx = p1.x - p2.x;
-		int dy = p1.y - p2.y;
-		double dist = Math.sqrt(dx * dx + dy * dy);
-		return dist;
-	}
-	
-	/**
-	 * Returns the point that is the specified distance away from the given point in the given CompRotator direction
-	 * @param p The original point
-	 * @param offset The offset to apply
-	 * @param direction The direction of the offset
-	 * @return
-	 */
-	private Point offsetInDirection(Point p, int offset, int direction) {
-		if(direction == CompRotator.UP) return new Point(p.x, p.y - offset);
-		else if(direction == CompRotator.RIGHT) return new Point(p.x + offset, p.y);
-		else if(direction == CompRotator.DOWN) return new Point(p.x, p.y + offset);
-		else if(direction == CompRotator.LEFT) return new Point(p.x - offset, p.y);
-		return new Point(p);
 	}
 	
 	/**
@@ -182,13 +89,64 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 		if(source == null && connect.getType() == Connection.OUTPUT) source = connect;
 		else if(dest == null && connect.getType() == Connection.INPUT) dest = connect;
 	}
+
+	public CubicCurve2D getCurve(){
+		return curve;
+	}
 	
 	/**
 	 * Returns the curve last drawn by this wire
 	 * @return The wire's curve
 	 */
-	public CubicCurve2D getCurve() {
+	public CubicCurve2D getCurveUpdate(CircuitPanel cp) {
+		Connection s = getSourceConnection(), d = getDestConnection();
+		Connection c1, c2;
+		if(d != null && s == null) {
+			c1 = d;
+			c2 = s;
+		}
+		else {
+			c1 = s;
+			c2 = d;
+		}
+		if(c1 == null) return null;
+
+		Point p1 = c1.getCoord();
+		Point p3, p4;
+		int offset;
+		if(c2 == null){
+			p4 = cp.getEditor().getWireBuilder().getMousePoint();
+			p3 = p4;
+			offset = wireOffset(p1, p4);
+		}
+		else{
+			p4 = c2.getCoord();
+			offset = wireOffset(p1, p4);
+			p3 = offsetInDirection(p4, offset, c2.getAbsoluteDirection());
+		}
+		Point p2 = offsetInDirection(p1, offset, c1.getAbsoluteDirection());
+		curve = new CubicCurve2D.Double(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
 		return curve;
+	}
+
+	private int wireOffset(Point p1, Point p2){
+		int dx = p1.x - p2.x, dy = p1.y - p2.y;
+		return (int) (0.2 * (Math.abs(dx) + Math.abs(dy)));
+	}
+
+	/**
+	 * Returns the point that is the specified distance away from the given point in the given CompRotator direction
+	 * @param p The original point
+	 * @param offset The offset to apply
+	 * @param direction The direction of the offset
+	 * @return
+	 */
+	private Point offsetInDirection(Point p, int offset, int direction) {
+		if(direction == Constants.UP) return new Point(p.x, p.y - offset);
+		else if(direction == Constants.RIGHT) return new Point(p.x + offset, p.y);
+		else if(direction == Constants.DOWN) return new Point(p.x, p.y + offset);
+		else if(direction == Constants.LEFT) return new Point(p.x - offset, p.y);
+		return new Point(p);
 	}
 	
 	/**

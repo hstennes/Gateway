@@ -1,11 +1,13 @@
 package com.logic.util;
 
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.*;
-
+import com.logic.components.Button;
 import com.logic.components.*;
-import com.logic.ui.CompRotator;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A class that holds static methods for performing various operations on lists of LComponents
@@ -13,6 +15,8 @@ import com.logic.ui.CompRotator;
  *
  */
 public class CompUtils {
+
+	public static final double[] RAD_ROTATION = new double[] {0, Math.PI / 2, Math.PI, -Math.PI / 2};
 
 	/**
 	 * Creates a component of the given type with the given coordinates (does not support custom components)
@@ -154,10 +158,10 @@ public class CompUtils {
 			LComponent oldComp = innerComps.get(i);
 			LComponent newComp = newInnerComps.get(i);
 			if(oldComp instanceof Light || oldComp instanceof Switch) {
-				if(Arrays.asList(content[CompRotator.LEFT]).contains(oldComp)) CompUtils.addInPlace(newComp, left, false);
-				else if(Arrays.asList(content[CompRotator.UP]).contains(oldComp)) CompUtils.addInPlace(newComp, top, true);
-				else if(Arrays.asList(content[CompRotator.RIGHT]).contains(oldComp)) CompUtils.addInPlace(newComp, right, false);
-				else if(Arrays.asList(content[CompRotator.DOWN]).contains(oldComp)) CompUtils.addInPlace(newComp, bottom, true);
+				if(Arrays.asList(content[Constants.LEFT]).contains(oldComp)) CompUtils.addInPlace(newComp, left, false);
+				else if(Arrays.asList(content[Constants.UP]).contains(oldComp)) CompUtils.addInPlace(newComp, top, true);
+				else if(Arrays.asList(content[Constants.RIGHT]).contains(oldComp)) CompUtils.addInPlace(newComp, right, false);
+				else if(Arrays.asList(content[Constants.DOWN]).contains(oldComp)) CompUtils.addInPlace(newComp, bottom, true);
 			}
 		}
 
@@ -167,7 +171,7 @@ public class CompUtils {
 				top.toArray(new LComponent[0])};
 		Custom result = new Custom(custom.getX(), custom.getY(), custom.getLabel(), newContent, newInnerComps, custom.getTypeID());
 		result.setName(custom.getName());
-		result.getRotator().setRotation(custom.getRotator().getRotation());
+		result.setRotation(custom.getRotation());
 		return result;
 	}
 	
@@ -182,19 +186,18 @@ public class CompUtils {
 		Rectangle bounds = getBoundingRectangle(lcomps);
 		int x = bounds.x, y = bounds.y, width = bounds.width, height = bounds.height;
 		int rotation;
-		if(direction == CompRotator.CLOCKWISE) rotation = CompRotator.DOWN;
-		else rotation = CompRotator.UP;
+		if(direction == Constants.CLOCKWISE) rotation = Constants.DOWN;
+		else rotation = Constants.UP;
 		for(int i = 0; i < lcomps.size(); i++) {
 			LComponent lcomp = lcomps.get(i);
-			Point rotPoint = CompRotator.withRotation(lcomp.getX() - x, lcomp.getY() - y, width, height, rotation);
-			CompRotator rotator = lcomp.getRotator();
-			if(direction == CompRotator.CLOCKWISE) {
-				rotator.setRotation(rotator.getRotation() + 1);
+			Point rotPoint = withRotation(lcomp.getX() - x, lcomp.getY() - y, width, height, rotation);
+			if(direction == Constants.CLOCKWISE) {
+				lcomp.setRotation(lcomp.getRotation() + 1);
 				lcomp.setX(rotPoint.x - lcomp.getBounds().width + x + 1);
 				lcomp.setY(rotPoint.y + y);
 			}
 			else {
-				rotator.setRotation(rotator.getRotation() - 1);
+				lcomp.setRotation(lcomp.getRotation() - 1);
 				lcomp.setX(rotPoint.x + x);
 				lcomp.setY(rotPoint.y - lcomp.getBounds().height + y + 1);
 			}
@@ -244,14 +247,10 @@ public class CompUtils {
 			if(xy) val = lcomp.getX();
 			else val = lcomp.getY();
 			boolean compAdded = false;
-			
+
 			for(int i = 0; i < lcomps.size(); i++) {
-				int above;
-				if(i >= lcomps.size()) above = Integer.MAX_VALUE;
-				else {
-					if(xy) above = lcomps.get(i).getX();
-					else above = lcomps.get(i).getY();
-				}
+				int above = xy ? lcomps.get(i).getX() : lcomps.get(i).getY();
+
 				int below;
 				if(i - 1 < 0) below = Integer.MIN_VALUE;
 				else {
@@ -266,5 +265,21 @@ public class CompUtils {
 			if(!compAdded) lcomps.add(lcomp);
 		}
 	}
-	
+
+	/**
+	 * Calculates the location of the given point in a rectangle of the given dimensions if the Rectangle (which starts with a RIGHT rotation)
+	 * is rotated to the specified rotation
+	 * @param x The x position of the point
+	 * @param y The y position of the point
+	 * @param width The width of the rectangle that contains the point
+	 * @param height The height of the rectangle that contains the point
+	 * @param rotation The new rotation of the rectangle
+	 * @return The rotated point
+	 */
+	public static Point withRotation(int x, int y, int width, int height, int rotation) {
+		if(rotation == Constants.DOWN) return new Point(height - y - 1, x);
+		else if(rotation == Constants.UP) return new Point(y, width - x - 1);
+		else if(rotation == Constants.LEFT) return new Point(width - x - 1, height - y - 1);
+		else return new Point(x, y);
+	}
 }

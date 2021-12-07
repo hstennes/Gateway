@@ -1,13 +1,13 @@
 package com.logic.files;
 
+import com.logic.components.LComponent;
+import com.logic.input.Camera;
+import com.logic.ui.CircuitPanel;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.logic.components.LComponent;
-import com.logic.input.Camera;
-import com.logic.ui.CircuitPanel;
 
 /**
  * The class that is serialized to save a gateway circuit. This class holds an array of LComponents, a camera zoom value, and a camera 

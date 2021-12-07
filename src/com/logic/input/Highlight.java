@@ -1,14 +1,10 @@
 package com.logic.input;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-
 import com.logic.components.LComponent;
 import com.logic.ui.CircuitPanel;
+
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * This class manages the creation of a highlight box by the user for the purpose of selecting LComponents

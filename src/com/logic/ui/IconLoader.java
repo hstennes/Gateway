@@ -1,20 +1,16 @@
 package com.logic.ui;
 
 import com.logic.components.*;
-import com.logic.components.Button;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.bridge.*;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.svg.SVGDocument;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 /**
  * Loads and holds all of the images used by the program
@@ -41,22 +37,17 @@ public class IconLoader {
 	/**
 	 * Shows the width of each logic image
 	 */
-	private final int[] imageWidth = new int[] {240, 240, 240, 180, 180, 240, 240, 180, 180, 180, 180, 240, 240, 300};
+	public final int[] imageWidth = new int[] {80, 80, 80, 60, 60, 80, 80, 60, 60, 60, 60, 80, 80, 100};
 
 	/**
 	 * Shows the height of each logic image
 	 */
-	private final int[] imageHeight = new int[] {240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 300};
-	
+	public final int[] imageHeight = new int[] {80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 100};
+
 	/**
 	 * The sprite sheet that contains all the images that the program uses
 	 */
 	public BufferedImage iconSheet;
-	
-	/**
-	 * The array of logic images
-	 */
-	public BufferedImage[] logicImages;
 
 	/**
 	 * The array of logic SVGs
@@ -78,7 +69,6 @@ public class IconLoader {
 	 */
 	public IconLoader() {
 		iconSheet = loadImage("/icons.png");
-		logicImages = new BufferedImage[numLogicImages];
 		logicSVGs = new GraphicsNode[numLogicImages];
 		logicIcons = new ImageIcon[numLogicIcons];
 		toolBarIcons = new ImageIcon[numToolBarIcons];
@@ -102,8 +92,6 @@ public class IconLoader {
 		logicSVGs[11] = loadSvg("/clock_off.svg");
 		logicSVGs[12] = loadSvg("/clock_on.svg");
 		logicSVGs[13] = loadSvg("/display.svg");
-
-		for(int i = 0; i < logicSVGs.length; i++) logicImages[i] = imageFromSvg(logicSVGs[i], imageWidth[i], imageHeight[i]);
 
 		toolBarIcons[0] = new ImageIcon(loadImage("/new_file.png"));
 		toolBarIcons[1] = new ImageIcon(loadImage("/open_file.png"));
@@ -145,7 +133,7 @@ public class IconLoader {
 	 * @return The icon based on the given LComponent
 	 */
 	private BufferedImage renderLogicIcon(LComponent model, int index){
-		BufferedImage image = new BufferedImage(70, 70, BufferedImage.TYPE_INT_ARGB);
+		/*BufferedImage image = new BufferedImage(70, 70, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) image.getGraphics();
 		Rectangle bounds = model.getBounds();
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -156,7 +144,9 @@ public class IconLoader {
 				(int) ((InsertPanel.BUTTON_SIZE - bounds.height * scale) / 2 / scale));
 		model.getDrawer().setUseSVG(true);
 		model.render(g2d, null);
-		g2d.dispose();
+		g2d.dispose();*/
+
+		BufferedImage image = new Renderer(null).renderComponentImage(model, 0.40f);
 		return image;
 	}
 
@@ -196,26 +186,5 @@ public class IconLoader {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	/**
-	 * Converts an SVG to a BufferedImage with the specified dimensions
-	 * @param svg The SVG to convert
-	 * @param width The width
-	 * @param height The height
-	 * @return The BufferedImage
-	 */
-	private BufferedImage imageFromSvg(GraphicsNode svg, int width, int height){
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2d = (Graphics2D) image.getGraphics();
-		int size = Math.max(width, height);
-		float difference = Math.abs(width - height);
-		if(width <= height)
-			svg.setTransform(new AffineTransform(size, 0, 0, size, -difference / 2, 0));
-		else
-			svg.setTransform(new AffineTransform(size, 0, 0, size, 0,  -difference / 2));
-		svg.paint(g2d);
-		g2d.dispose();
-		return image;
 	}
 }

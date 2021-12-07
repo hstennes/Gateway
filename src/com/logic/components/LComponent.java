@@ -1,15 +1,15 @@
 package com.logic.components;
 
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.io.Serializable;
-
 import com.logic.engine.LogicEngine;
+import com.logic.main.LogicSimApp;
 import com.logic.ui.CompDrawer;
 import com.logic.ui.CompProperties;
-import com.logic.ui.CompRotator;
+import com.logic.util.Constants;
 import com.logic.util.Deletable;
 import com.logic.util.NameConverter;
+
+import java.awt.*;
+import java.io.Serializable;
 
 /**
  * The superclass for all logic components (CircuitElements that have inputs, outputs, and perform logic)
@@ -17,13 +17,16 @@ import com.logic.util.NameConverter;
  *
  */
 public abstract class LComponent extends CircuitElement implements Deletable, Serializable {
-	
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The position of the component in the CircuitPanel
 	 */
 	protected int x, y;
+
+	/**
+	 * The current rotation
+	 */
+	protected int rotation;
 	
 	/**
 	 * The type of component (ex CompType.AND, CompType.SWITCH)
@@ -39,11 +42,6 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * The CompDrawer, which has methods for drawing the component in the CircuitPanel
 	 */
 	protected CompDrawer drawer;
-	
-	/**
-	 * The CompRotator, which is used to rotate the component
-	 */
-	protected CompRotator rotator;
 	
 	/**
 	 * The component's name, which is displayed in the CompProperties panel
@@ -64,10 +62,10 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	public LComponent(int x, int y, CompType type) {
 		this.x = x;
 		this.y = y;
+		rotation = Constants.RIGHT;
 		this.type = type;
 		drawer = new CompDrawer(this);
 		io = new IOManager(this);
-		rotator = new CompRotator();
 		name = CompProperties.defaultName;
 		comments = CompProperties.defaultComments;
 	}
@@ -90,7 +88,7 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 */
 	public Rectangle getBounds() {
 		Rectangle boundsRight = getBoundsRight();
-		if(rotator.getRotation() == CompRotator.UP || rotator.getRotation() == CompRotator.DOWN)
+		if(rotation == Constants.UP ||rotation == Constants.DOWN)
 			return new Rectangle(x, y, boundsRight.height, boundsRight.width);
 		return new Rectangle(x, y, boundsRight.width, boundsRight.height);
 	}
@@ -100,8 +98,16 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * @return A bounding box for the component
 	 */
 	public Rectangle getBoundsRight() {
-		BufferedImage image = drawer.getActiveImage();
-		return new Rectangle(x, y, image.getWidth() / CompDrawer.RENDER_SCALE, image.getHeight() / CompDrawer.RENDER_SCALE);
+		int index = drawer.getImageIndex();
+		return new Rectangle(x, y, LogicSimApp.iconLoader.imageWidth[index], LogicSimApp.iconLoader.imageHeight[index]);
+	}
+
+	/**
+	 * Returns the index of the current image in the CompDrawer.images array. Subclasses should override if they use more than one image.
+	 * @return The active image index
+	 */
+	public int getActiveImageIndex(){
+		return 0;
 	}
 	
 	/**
@@ -135,6 +141,23 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	public void setY(int y) {
 		this.y = y;
 	}
+
+	/**
+	 * Returns the current rotation of the component
+	 * @return The current rotation, expressed as one of the four rotation constants
+	 */
+	public int getRotation() {
+		return rotation;
+	}
+
+	/**
+	 * Sets the rotation of the component
+	 * @param rotation The new rotation
+	 */
+	public void setRotation(int rotation) {
+		//java is inane
+		this.rotation = ((rotation % 4) + 4) % 4;
+	}
 	
 	/**
 	 * Returns the type of component (not necessarily the subclass, some subclasses use multiple types)
@@ -150,14 +173,6 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 */
 	public IOManager getIO() {
 		return io;
-	}
-	
-	/**
-	 * Returns the CompRotator
-	 * @return the CompRotator for this component
-	 */
-	public CompRotator getRotator() {
-		return rotator;
 	}
 	
 	/**

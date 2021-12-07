@@ -1,17 +1,13 @@
 package com.logic.ui;
 
+import com.logic.files.FileManager;
+import com.logic.main.LogicSimApp;
+import com.logic.util.Constants;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-
-import com.logic.files.FileManager;
-import com.logic.main.LogicSimApp;
-import com.logic.test.JacksonTest;
 
 /**
  * A tool bar for the program
@@ -146,8 +142,8 @@ public class LToolBar extends JToolBar implements ActionListener {
 		else if(command.equals("Cut")) cp.getEditor().getSelection().cut();
 		else if(command.equals("Copy")) cp.getEditor().getSelection().copy();
 		else if(command.equals("Paste")) cp.getEditor().paste();
-		else if(command.equals("Rotate Counter-Clockwise")) cp.getEditor().getSelection().rotate(CompRotator.COUNTER_CLOCKWISE);
-		else if(command.equals("Rotate Clockwise")) cp.getEditor().getSelection().rotate(CompRotator.CLOCKWISE);
+		else if(command.equals("Rotate Counter-Clockwise")) cp.getEditor().getSelection().rotate(Constants.COUNTER_CLOCKWISE);
+		else if(command.equals("Rotate Clockwise")) cp.getEditor().getSelection().rotate(Constants.CLOCKWISE);
 		else if(command.equals("Undo")) cp.getEditor().getRevision().undo();
 		else if(command.equals("Redo")) cp.getEditor().getRevision().redo();
 		else if(command.equals("New")) LogicSimApp.newWindow(null);

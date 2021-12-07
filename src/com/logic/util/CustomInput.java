@@ -1,9 +1,9 @@
 package com.logic.util;
 
-import java.util.ArrayList;
-
 import com.logic.components.LComponent;
 import com.logic.components.Switch;
+
+import java.util.ArrayList;
 
 /**
  * A CustomNode for managing an input

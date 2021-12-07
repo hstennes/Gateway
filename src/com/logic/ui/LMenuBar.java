@@ -1,21 +1,14 @@
 package com.logic.ui;
 
-import java.awt.Toolkit;
+import com.logic.files.FileManager;
+import com.logic.main.LogicSimApp;
+import com.logic.util.Constants;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.KeyStroke;
-
-import com.logic.files.FileManager;
-import com.logic.main.LogicSimApp;
 
 /**
  * A menu bar for the program
@@ -220,8 +213,8 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 		else if(command.equals("Save")) fileManager.save();
 		else if(command.equals("Save as")) fileManager.saveAs();
 		else if(command.equals("Delete")) cp.getEditor().deleteElements();
-		else if(command.equals("Clockwise")) cp.getEditor().getSelection().rotate(CompRotator.CLOCKWISE);
-		else if(command.equals("Counter")) cp.getEditor().getSelection().rotate(CompRotator.COUNTER_CLOCKWISE);
+		else if(command.equals("Clockwise")) cp.getEditor().getSelection().rotate(Constants.CLOCKWISE);
+		else if(command.equals("Counter")) cp.getEditor().getSelection().rotate(Constants.COUNTER_CLOCKWISE);
 		else if(command.equals("Custom")) cp.getEditor().getCustomCreator().createCustom();
 	}
 	

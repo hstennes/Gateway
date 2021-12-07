@@ -1,10 +1,9 @@
 package com.logic.util;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import javax.swing.AbstractAction;
 
 public class ActionUtils {
 

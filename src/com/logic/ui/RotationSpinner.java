@@ -1,11 +1,11 @@
 package com.logic.ui;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import com.logic.input.CircuitState;
 import com.logic.input.Selection;
 import com.logic.util.NameConverter;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * A LabeledSpinner designed for editing the rotation of an LComponent
@@ -46,7 +46,7 @@ public class RotationSpinner extends LabeledSpinner implements ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if(selection.size() == 1) {
-			selection.get(0).getRotator().setRotation(NameConverter.rotationFromName((String) spinner.getValue()));
+			selection.get(0).setRotation(NameConverter.rotationFromName((String) spinner.getValue()));
 			cp.repaint();
 			cp.getEditor().getRevision().saveState(new CircuitState(cp));
 		}

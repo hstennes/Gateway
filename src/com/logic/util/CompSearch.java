@@ -1,13 +1,13 @@
 package com.logic.util;
 
-import java.awt.Point;
-import java.awt.geom.CubicCurve2D;
-
 import com.logic.components.Connection;
 import com.logic.components.IComponent;
 import com.logic.components.LComponent;
 import com.logic.components.Wire;
 import com.logic.ui.CircuitPanel;
+
+import java.awt.*;
+import java.awt.geom.CubicCurve2D;
 
 /**
  * A class for searching through all of the components in the CircuitPanel to determine what a mouse press is touching

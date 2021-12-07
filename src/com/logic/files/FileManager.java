@@ -1,12 +1,5 @@
 package com.logic.files;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logic.input.Camera;
@@ -17,6 +10,12 @@ import com.logic.ui.CircuitPanel;
 import com.logic.ui.LMenuBar;
 import com.logic.ui.UserMessage;
 import org.apache.commons.io.FilenameUtils;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * A class that manages file saving and opening operations

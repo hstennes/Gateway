@@ -1,14 +1,13 @@
 package com.logic.input;
 
-import java.awt.*;
-import java.util.ArrayList;
-
 import com.logic.components.LComponent;
 import com.logic.engine.LogicWorker;
 import com.logic.ui.CircuitPanel;
 import com.logic.util.CompUtils;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * A class for handling copying and pasting of LComponents

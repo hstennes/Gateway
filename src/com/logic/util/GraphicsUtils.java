@@ -1,11 +1,7 @@
 package com.logic.util;
 
-import java.awt.Color;
-import java.awt.Font;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * A class that holds static helper methods for GUI

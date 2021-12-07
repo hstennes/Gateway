@@ -1,10 +1,9 @@
 package com.logic.ui;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.Timer;
 
 /**
  * A message that can be displayed in the CircuitPanel

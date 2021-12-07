@@ -1,10 +1,10 @@
 package com.logic.util;
 
-import java.io.Serializable;
-
 import com.logic.components.LComponent;
 import com.logic.components.Light;
 import com.logic.components.Switch;
+
+import java.io.Serializable;
 
 /**
  * A class that manages the internal information required for each connection that a custom component has

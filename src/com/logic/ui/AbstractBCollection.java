@@ -1,9 +1,7 @@
 package com.logic.ui;
 
+import javax.swing.*;
 import java.util.ArrayList;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
 
 /**
  * A group of abstract buttons that provides functionality for managing them, including a ButtonGroup

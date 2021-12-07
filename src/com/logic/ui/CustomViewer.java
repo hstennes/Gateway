@@ -1,12 +1,12 @@
 package com.logic.ui;
 
-import java.awt.Rectangle;
-import java.util.ArrayList;
-
 import com.logic.components.Custom;
 import com.logic.components.LComponent;
 import com.logic.input.Camera;
 import com.logic.util.CompUtils;
+
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * A class that displays the components that make up custom components

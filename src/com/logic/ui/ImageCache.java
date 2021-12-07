@@ -2,7 +2,6 @@ package com.logic.ui;
 
 import com.logic.components.*;
 
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Set;
 

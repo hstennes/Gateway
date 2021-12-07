@@ -1,14 +1,13 @@
 package com.logic.main;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-
-import javax.swing.*;
-
 import com.logic.engine.LogicFunctions;
 import com.logic.ui.FontLoader;
 import com.logic.ui.IconLoader;
+
+import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 /**
  * A digital logic simulator meant as an alternative to applications like Logicly and Boolr.

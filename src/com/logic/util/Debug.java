@@ -1,10 +1,6 @@
 package com.logic.util;
 
-import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 import com.logic.components.BasicGate;
-import com.logic.components.CompType;
-import com.logic.components.Connection;
-import com.logic.components.Wire;
 import com.logic.ui.CircuitPanel;
 
 import java.util.HashMap;

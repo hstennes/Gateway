@@ -1,17 +1,14 @@
 package com.logic.ui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
 import com.logic.components.*;
 import com.logic.input.Selection;
 import com.logic.util.GraphicsUtils;
 import com.logic.util.NameConverter;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
 
 /**
  * A panel containing GUI for editing the properties of LComponents
@@ -247,7 +244,7 @@ public class CompProperties extends JPanel {
 			location.setPoint(new Point(lcomp.getX(), lcomp.getY()));
 			inputSpinner.getSpinner().setValue(lcomp.getIO().getNumInputs());
 			inputSpinner.getSpinner().setEnabled(lcomp instanceof BasicGate);
-			rotationSpinner.getSpinner().setValue(NameConverter.rotationFromValue(lcomp.getRotator().getRotation()));
+			rotationSpinner.getSpinner().setValue(NameConverter.rotationFromValue(lcomp.getRotation()));
 			connectionLabel.setText(makeConnectionList(lcomp));
 			commentArea.setText(lcomp.getComments());
 		}

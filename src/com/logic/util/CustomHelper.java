@@ -1,15 +1,10 @@
 package com.logic.util;
 
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.Rectangle;
+import com.logic.components.LComponent;
+
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
-
-import com.logic.components.LComponent;
-import com.logic.ui.CompDrawer;
-import com.logic.ui.CompRotator;
 
 /**
  * A class that provides helper methods for the setup and functioning of a Custom component
@@ -54,7 +49,7 @@ public class CustomHelper {
 	 * @return The width of the Custom component
 	 */
 	public int chooseWidth(String label, Font labelFont) {
-		int firstDimension = findDimension(content[CompRotator.UP], content[CompRotator.DOWN]);
+		int firstDimension = findDimension(content[Constants.UP], content[Constants.DOWN]);
 		FontRenderContext frc = new FontRenderContext(labelFont.getTransform(), true, true);
 		Rectangle2D bounds = labelFont.getStringBounds(label, frc);
 		int secondDimension = (int) (Math.floor(bounds.getWidth()) + 20);
@@ -67,7 +62,7 @@ public class CustomHelper {
 	 * @return
 	 */
 	public int chooseHeight() {
-		return findDimension(content[CompRotator.LEFT], content[CompRotator.RIGHT]);
+		return findDimension(content[Constants.LEFT], content[Constants.RIGHT]);
 	}
 	
 	/**
@@ -83,14 +78,14 @@ public class CustomHelper {
 		Point[] points = new Point[num];
 		int connectionSpace = num + (num - 1) * connectionSpacing;	
 		int pos;
-		if(sideNum == CompRotator.LEFT || sideNum == CompRotator.RIGHT) pos = ((height) - connectionSpace) / 2;
+		if(sideNum == Constants.LEFT || sideNum == Constants.RIGHT) pos = ((height) - connectionSpace) / 2;
 		else pos = ((width) - connectionSpace) / 2;
 		
 		for(int i = 0; i < points.length; i++) {
-			if(sideNum == CompRotator.LEFT) points[i] = new Point(-connectionLength, pos);
-			else if(sideNum == CompRotator.UP) points[i] = new Point(pos, -connectionLength);
-			else if(sideNum == CompRotator.DOWN) points[i] = new Point(pos, height + connectionLength);
-			else if(sideNum == CompRotator.RIGHT) points[i] = new Point(width + connectionLength, pos);
+			if(sideNum == Constants.LEFT) points[i] = new Point(-connectionLength, pos);
+			else if(sideNum == Constants.UP) points[i] = new Point(pos, -connectionLength);
+			else if(sideNum == Constants.DOWN) points[i] = new Point(pos, height + connectionLength);
+			else if(sideNum == Constants.RIGHT) points[i] = new Point(width + connectionLength, pos);
 			pos += connectionSpacing + 1;
 		}
 		return points;

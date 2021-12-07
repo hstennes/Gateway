@@ -1,11 +1,10 @@
 package com.logic.components;
 
-import java.awt.*;
-
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicWorker;
-import com.logic.ui.CircuitPanel;
-import com.logic.ui.CompRotator;
+import com.logic.util.Constants;
+
+import java.awt.*;
 
 /**
  * This class represents a button that outputs HIGH when pressed and LOW when not pressed, and requires the mouse to remain down in order to 
@@ -25,17 +24,9 @@ public class Button extends IComponent {
 	public Button(int x, int y) {
 		super(x, y, CompType.BUTTON);
 		drawer.setImages(new int[] {5, 6});
-		io.addConnection(100, 40, Connection.OUTPUT, CompRotator.RIGHT);
+		io.addConnection(100, 40, Connection.OUTPUT, Constants.RIGHT);
 		setClickAction(20, 20, 40, 40);
 		setNotificationType(RELEASED);
-	}
-	
-	@Override
-	public void render(Graphics g, CircuitPanel cp) {
-		if(getState()) drawer.setActiveImageIndex(1);
-		else drawer.setActiveImageIndex(0);
-		drawer.draw(g);
-		renderLabel(g, (io.connectionAt(0, Connection.OUTPUT).getAbsoluteDirection() + 2) % 4);
 	}
 	
 	@Override
@@ -58,11 +49,17 @@ public class Button extends IComponent {
 			}
 		}
 	}
+
+	@Override
+	public int getActiveImageIndex(){
+		if(getState()) return 1;
+		return 0;
+	}
 	
 	@Override
 	public LComponent makeCopy() {
 		Button result = new Button(x, y);
-		result.getRotator().setRotation(rotator.getRotation());
+		result.setRotation(rotation);
 		result.setName(getName());
 		result.setShowLabel(isShowLabel());
 		return result;

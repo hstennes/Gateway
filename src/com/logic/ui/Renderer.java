@@ -1,12 +1,13 @@
 package com.logic.ui;
 
 import com.logic.components.*;
-import com.logic.input.Selection;
-import com.logic.util.Debug;
+import com.logic.util.CompUtils;
+import com.logic.util.Constants;
 import org.apache.batik.gvt.GraphicsNode;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
@@ -29,6 +30,11 @@ public class Renderer {
      * The Color of the box around a component when it is selected
      */
     public static final Color SELECT_COLOR = new Color(66, 82, 255);
+
+    /**
+     * The amount of space between consecutive inputs on a BasicGate
+     */
+    public static final int BASIC_INPUT_SPACING = 50;
 
     /**
      * The x and y length of the divider lines drawn around the center rectangle
@@ -79,7 +85,7 @@ public class Renderer {
         renderComponents(g2d, lcomps, view);
         applyTransform(g2d);
         renderHighLight(g2d);
-        renderCustom(g2d);
+        renderCustomCreator(g2d);
         reverseTransform(g2d);
     }
 
@@ -94,10 +100,10 @@ public class Renderer {
 
     private void renderWires(Graphics2D g2d, ArrayList<Wire> wires, Rectangle view){
         for (Wire wire : wires) {
-            if (!wire.isComplete()) wire.render(g2d, cp);
+            if (!wire.isComplete()) renderWire(g2d, wire);
             else if (view.contains(wire.getSourceConnection().getCoord()) ||
                     view.contains(wire.getDestConnection().getCoord())) {
-                wire.render(g2d, cp);
+                renderWire(g2d, wire);
             }
         }
     }
@@ -117,7 +123,7 @@ public class Renderer {
         g2d.draw(bounds);
     }
 
-    private void renderCustom(Graphics2D g2d){
+    private void renderCustomCreator(Graphics2D g2d){
         if(!cp.getEditor().getCustomCreator().isActive()) return;
         Rectangle centerRect = cp.getEditor().getCustomCreator().getCenterRect();
         
@@ -135,16 +141,37 @@ public class Renderer {
         g2d.setStroke(new BasicStroke(1));
     }
 
+    private void renderWire(Graphics2D g2d, Wire wire){
+        CubicCurve2D curve = wire.getCurveUpdate(cp);
+        if(wire.isSelected()) {
+            g2d.setColor(Renderer.SELECT_COLOR);
+            g2d.setStroke(new BasicStroke(10));
+        }
+        else {
+            g2d.setColor(Color.BLACK);
+            g2d.setStroke(new BasicStroke(7));
+        }
+
+        g2d.draw(curve);
+        if(wire.getBitWidth() == 1) {
+            if (wire.getSignal()) g2d.setColor(Color.ORANGE);
+            else g2d.setColor(Color.WHITE);
+        }
+        else g2d.setColor(Color.GREEN);
+        g2d.setStroke(new BasicStroke(3));
+        g2d.draw(curve);
+    }
+
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
         CachedImage image = cache.get(lcomp);
         if(image == null){
-            image = renderComponentImage(lcomp);
+            image = renderComponentImage(lcomp, zoom);
             cache.add(lcomp, image);
         }
 
         Point p = circuitToScreen(lcomp.getX(), lcomp.getY());
-        int rot = lcomp.getRotator().getRotation();
-        double radians = CompRotator.RAD_ROTATION[rot];
+        int rot = lcomp.getRotation();
+        double radians = CompUtils.RAD_ROTATION[rot];
 
         g2d.rotate(radians, p.x, p.y);
         g2d.drawImage(image,
@@ -154,7 +181,7 @@ public class Renderer {
         g2d.rotate(-radians, p.x, p.y);
     }
 
-    private CachedImage renderComponentImage(LComponent lcomp){
+    public CachedImage renderComponentImage(LComponent lcomp, float zoom){
         Rectangle lb = lcomp.getBoundsRight();
         Rectangle cb = lcomp.getIO().getConnectionBounds();
         CompType type = lcomp.getType();
@@ -183,13 +210,12 @@ public class Renderer {
             return image;
         }
 
-        GraphicsNode svg = lcomp.getDrawer().getActiveSVG();
+        GraphicsNode svg = lcomp.getDrawer().getActiveImage();
         int size = Math.max(lb.width, lb.height);
         float difference = Math.abs(lb.width - lb.height);
         if(lb.width <= lb.height) svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x - difference * 0.5, -cb.y));
         else svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x,  -cb.y - difference * 0.5));
         svg.paint(g2d);
-
 
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
         if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR) drawInverted(g2d, -cb.x, -cb.y);
@@ -233,19 +259,19 @@ public class Renderer {
         g2d.setStroke(new BasicStroke(3));
         int direction = c.getDirection();
         Point connectEnd = null;
-        if(direction == CompRotator.RIGHT) {
+        if(direction == Constants.RIGHT) {
             g2d.drawLine(p.x, p.y, p.x - 37, p.y);
             connectEnd = new Point(p.x - 37, p.y);
         }
-        if(direction == CompRotator.UP) {
+        if(direction == Constants.UP) {
             g2d.drawLine(p.x, p.y, p.x, p.y + 37);
             connectEnd = new Point(p.x, p.y + 37);
         }
-        if(direction == CompRotator.LEFT) {
+        if(direction == Constants.LEFT) {
             g2d.drawLine(p.x, p.y, p.x + 37, p.y);
             connectEnd = new Point(p.x + 37, p.y);
         }
-        if(direction == CompRotator.DOWN) {
+        if(direction == Constants.DOWN) {
             g2d.drawLine(p.x, p.y, p.x, p.y - 37);
             connectEnd = new Point(p.x, p.y - 37);
         }
