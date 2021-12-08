@@ -23,7 +23,7 @@ public class Button extends IComponent {
 	 */
 	public Button(int x, int y) {
 		super(x, y, CompType.BUTTON);
-		drawer.setImages(new int[] {5, 6});
+		setImages(new int[] {5, 6});
 		io.addConnection(100, 40, Connection.OUTPUT, Constants.RIGHT);
 		setClickAction(20, 20, 40, 40);
 		setNotificationType(RELEASED);

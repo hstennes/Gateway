@@ -28,7 +28,7 @@ public class SingleInputGate extends LComponent {
 		super(x, y, type);
 		if(type == CompType.BUFFER) function = 1;
 		else if(type == CompType.NOT) function = 0;
-		drawer.setImages(new int[] {0});
+		setImages(new int[] {0});
 
 		io.addConnection(-25, 40, Connection.INPUT, Constants.LEFT);
 		io.addConnection(105, 40, Connection.OUTPUT, Constants.RIGHT);

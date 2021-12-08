@@ -20,8 +20,8 @@ public class Constant extends LComponent {
 	 */
 	public Constant(int x, int y, CompType type) {
 		super(x, y, type);
-		if(type == CompType.ONE) drawer.setImages(new int[] {10});
-		else if(type == CompType.ZERO) drawer.setImages(new int[] {9});
+		if(type == CompType.ONE) setImages(new int[] {10});
+		else if(type == CompType.ZERO) setImages(new int[] {9});
 		io.addConnection(80, 40, Connection.OUTPUT, Constants.RIGHT);
 	}
 	

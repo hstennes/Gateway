@@ -24,7 +24,7 @@ public class Display extends LComponent {
 	 */
 	public Display(int x, int y) {
 		super(x, y, CompType.DISPLAY);
-		drawer.setImages(new int[] {13});
+		setImages(new int[] {13});
 		io.addConnection(-20, 2, Connection.INPUT, Constants.LEFT);
 		io.addConnection(-20, 34, Connection.INPUT, Constants.LEFT);
 		io.addConnection(-20, 66, Connection.INPUT, Constants.LEFT);

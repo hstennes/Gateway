@@ -210,7 +210,7 @@ public class Renderer {
             return image;
         }
 
-        GraphicsNode svg = lcomp.getDrawer().getActiveImage();
+        GraphicsNode svg = lcomp.getActiveImage();
         int size = Math.max(lb.width, lb.height);
         float difference = Math.abs(lb.width - lb.height);
         if(lb.width <= lb.height) svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x - difference * 0.5, -cb.y));
@@ -218,7 +218,7 @@ public class Renderer {
         svg.paint(g2d);
 
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
-        if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR) drawInverted(g2d, -cb.x, -cb.y);
+        if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR || type == CompType.NOT) drawInverted(g2d, -cb.x, -cb.y);
         return image;
     }
 

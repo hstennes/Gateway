@@ -52,32 +52,32 @@ public class BasicGate extends LComponent implements BitFlexibleElement {
 	public BasicGate(int x, int y, int numInputs, CompType type) {
 		super(x, y, type);
 		if(type == CompType.AND) {
-			drawer.setImages(new int[]{1});
+			setImages(new int[]{1});
 			inverted = false;
 			function = 0;
 		}
 		else if(type == CompType.NAND) {
-			drawer.setImages(new int[]{1});
+			setImages(new int[]{1});
 			inverted = true;
 			function = 0;
 		}
 		else if(type == CompType.OR) {
-			drawer.setImages(new int[]{2});
+			setImages(new int[]{2});
 			inverted = false;
 			function = 1;
 		}
 		else if(type == CompType.NOR) {
-			drawer.setImages(new int[]{2});
+			setImages(new int[]{2});
 			inverted = true;
 			function = 1;
 		}
 		else if(type == CompType.XOR) {
-			drawer.setImages(new int[]{2});
+			setImages(new int[]{2});
 			inverted = false;
 			function = 2;
 		}
 		else if(type == CompType.XNOR) {
-			drawer.setImages(new int[]{2});
+			setImages(new int[]{2});
 			inverted = true;
 			function = 2;
 		}

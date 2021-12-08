@@ -2,11 +2,11 @@ package com.logic.components;
 
 import com.logic.engine.LogicEngine;
 import com.logic.main.LogicSimApp;
-import com.logic.ui.CompDrawer;
 import com.logic.ui.CompProperties;
 import com.logic.util.Constants;
 import com.logic.util.Deletable;
 import com.logic.util.NameConverter;
+import org.apache.batik.gvt.GraphicsNode;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -32,16 +32,16 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * The type of component (ex CompType.AND, CompType.SWITCH)
 	 */
 	protected CompType type;
+
+	/**
+	 * The indexes of the images that this component uses in the IconLoader
+	 */
+	protected int[] images;
 	
 	/**
 	 * The IOManager, which holds all of the connections
 	 */
 	protected IOManager io;
-	
-	/**
-	 * The CompDrawer, which has methods for drawing the component in the CircuitPanel
-	 */
-	protected CompDrawer drawer;
 	
 	/**
 	 * The component's name, which is displayed in the CompProperties panel
@@ -64,7 +64,6 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 		this.y = y;
 		rotation = Constants.RIGHT;
 		this.type = type;
-		drawer = new CompDrawer(this);
 		io = new IOManager(this);
 		name = CompProperties.defaultName;
 		comments = CompProperties.defaultComments;
@@ -98,7 +97,7 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * @return A bounding box for the component
 	 */
 	public Rectangle getBoundsRight() {
-		int index = drawer.getImageIndex();
+		int index = images[getActiveImageIndex()];
 		return new Rectangle(x, y, LogicSimApp.iconLoader.imageWidth[index], LogicSimApp.iconLoader.imageHeight[index]);
 	}
 
@@ -106,8 +105,16 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * Returns the index of the current image in the CompDrawer.images array. Subclasses should override if they use more than one image.
 	 * @return The active image index
 	 */
-	public int getActiveImageIndex(){
+	protected int getActiveImageIndex(){
 		return 0;
+	}
+
+	/**
+	 * Returns the SVG that should be used for the component based on its current state
+	 * @return The active image
+	 */
+	public GraphicsNode getActiveImage(){
+		return LogicSimApp.iconLoader.logicSVGs[images[getActiveImageIndex()]];
 	}
 	
 	/**
@@ -166,6 +173,14 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	public CompType getType() {
 		return type;
 	}
+
+	/**
+	 * Sets the images that the component can use
+	 * @param images The image indexes in IconLoader
+	 */
+	protected void setImages(int[] images){
+		this.images = images;
+	}
 	
 	/**
 	 * Returns the IOManager
@@ -173,14 +188,6 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 */
 	public IOManager getIO() {
 		return io;
-	}
-	
-	/**
-	 * Returns the CompDrawer
-	 * @return The CompDrawer for this component
-	 */
-	public CompDrawer getDrawer() {
-		return drawer;
 	}
 	
 	/**
