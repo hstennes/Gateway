@@ -22,7 +22,7 @@ public class Custom extends SComponent {
 	/**
 	 * The font used to display the label of the component
 	 */
-	private final Font labelFont = new Font("Arial", Font.PLAIN, 15);
+	public static final Font LABEL_FONT = new Font("Arial", Font.PLAIN, 15);
 	
 	/**
 	 * Maps input indexes to input nodes 
@@ -77,7 +77,7 @@ public class Custom extends SComponent {
 		inputs = new HashMap<Integer, CustomInput>();
 		outputs = new HashMap<Integer, CustomOutput>();
 		CustomHelper helper = new CustomHelper(content);
-		width = helper.chooseWidth(label, labelFont);
+		width = helper.chooseWidth(label, LABEL_FONT);
 		height = helper.chooseHeight();
 		
 		for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
@@ -165,20 +165,7 @@ public class Custom extends SComponent {
 	 * @param g2d The Graphics object to use
 	 */
 	private void drawLabel(Graphics2D g2d) {
-		g2d.setFont(labelFont);
-		g2d.setColor(Color.BLACK);
-		FontMetrics metrics = g2d.getFontMetrics(labelFont);
-		int stringWidth = metrics.stringWidth(label);
-		int stringHeight = metrics.getHeight();
-		Rectangle bounds = getBounds();
-		AffineTransform orig = g2d.getTransform();
-		
-		if(rotation == Constants.UP) g2d.rotate(Math.PI * 3 / 2, bounds.width / 2 + x, bounds.height / 2 + y);
-		else if(rotation == Constants.LEFT) g2d.rotate(Math.PI, bounds.width / 2 + x, bounds.height / 2 + y);
-		else if(rotation == Constants.DOWN) g2d.rotate(Math.PI / 2, bounds.width / 2 + x, bounds.height / 2 + y);
-		
-		g2d.drawString(label, (bounds.width - stringWidth) / 2 + x, (bounds.height - stringHeight + 25) / 2 + y);
-		g2d.setTransform(orig);
+
 	}
 
 	/**

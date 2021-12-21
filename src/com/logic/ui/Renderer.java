@@ -215,13 +215,7 @@ public class Renderer {
         drawConnections(g2d, lcomp, -cb.x, -cb.y);
 
         if(type == CompType.CUSTOM) {
-            Rectangle bounds = lcomp.getBoundsRight();
-            bounds.translate(-cb.x, -cb.y);
-            g2d.setColor(Color.WHITE);
-            g2d.fill(bounds);
-            g2d.setColor(Color.BLACK);
-            g2d.setStroke(new BasicStroke(4));
-            g2d.draw(bounds);
+            drawCustomBody(g2d, (Custom) lcomp, -cb.x, -cb.y);
             return image;
         }
 
@@ -235,6 +229,22 @@ public class Renderer {
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
         if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR || type == CompType.NOT) drawInverted(g2d, -cb.x, -cb.y);
         return image;
+    }
+
+    public void drawCustomBody(Graphics2D g2d, Custom custom, int dx, int dy){
+        Rectangle bounds = custom.getBoundsRight();
+        bounds.translate(dx, dy);
+        g2d.setColor(Color.WHITE);
+        g2d.fill(bounds);
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(4));
+        g2d.draw(bounds);
+
+        g2d.setFont(Custom.LABEL_FONT);
+        FontMetrics metrics = g2d.getFontMetrics(Custom.LABEL_FONT);
+        int stringWidth = metrics.stringWidth(custom.getLabel());
+        int stringHeight = metrics.getHeight();
+        g2d.drawString(custom.getLabel(), (bounds.width - stringWidth) / 2 + dx, (bounds.height - stringHeight) / 2 + dy + stringHeight);
     }
 
     /**
