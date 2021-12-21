@@ -53,6 +53,8 @@ public class Renderer {
      */
     private float cx, cy, zoom;
 
+    private final LabelDrawer userMessageDrawer;
+
     /**
      * Inverse zoom, used to optimize dividing by zoom
      */
@@ -61,6 +63,7 @@ public class Renderer {
     public Renderer(CircuitPanel cp){
         this.cp = cp;
         cache = new ImageCache();
+        userMessageDrawer = new LabelDrawer(UserMessage.MESSAGE_FONT, UserMessage.MESSAGE_COLOR, UserMessage.X_MARGIN, UserMessage.Y_MARGIN);
     }
 
     public void render(Graphics2D g2d, ArrayList<LComponent> lcomps, ArrayList<Wire> wires, float cx, float cy, float zoom){
@@ -87,6 +90,7 @@ public class Renderer {
         renderHighLight(g2d);
         renderCustomCreator(g2d);
         reverseTransform(g2d);
+        renderUserMessage(g2d);
     }
 
     private void renderGrid(Graphics2D g2d, Rectangle view){
@@ -139,6 +143,17 @@ public class Renderer {
         g2d.drawLine(x2, y2, x2 + CUSTOM_DIVIDER_SIZE, y2 + CUSTOM_DIVIDER_SIZE);
         g2d.drawLine(x, y2, x - CUSTOM_DIVIDER_SIZE, y2 + CUSTOM_DIVIDER_SIZE);
         g2d.setStroke(new BasicStroke(1));
+    }
+
+    private void renderUserMessage(Graphics2D g2d){
+        UserMessage message = cp.getUserMessage();
+        if(message == null) return;
+        userMessageDrawer.render(g2d,
+                cp.getWidth() / 2,
+                UserMessage.Y_OFFSET,
+                LabelDrawer.CENTER,
+                LabelDrawer.START,
+                message.getText());
     }
 
     private void renderWire(Graphics2D g2d, Wire wire){

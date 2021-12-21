@@ -15,27 +15,27 @@ public class UserMessage implements ActionListener {
 	/**
 	 * The font of the message
 	 */
-	private final Font labelFont = new Font("Arial", Font.PLAIN, 20);
+	public static final Font MESSAGE_FONT = new Font("Arial", Font.PLAIN, 20);
 	
 	/**
 	 * The background color of the message
 	 */
-	private final Color labelColor = new Color(255, 244, 179);
+	public static final Color MESSAGE_COLOR = new Color(255, 244, 179);
 	
 	/**
 	 * The margin inside the label on each side
 	 */
-	private final int xMargin = 10;
+	public static final int X_MARGIN = 10;
 	
 	/**
 	 * The margin inside the label on the top and bottom
 	 */
-	private final int yMargin = 3;
+	public static final int Y_MARGIN = 3;
 	
 	/**
 	 * The offset of the label from the top of the CircuitPanel
 	 */
-	private final int offset = 20;
+	public static final int Y_OFFSET = 20;
 
 	/**
 	 * The text to display
@@ -46,11 +46,6 @@ public class UserMessage implements ActionListener {
 	 * The timer that is used to clear the message, if this message is timed
 	 */
 	private Timer timer;
-
-	/**
-	 * The LabelDrawer instance
-	 */
-	private LabelDrawer drawer;
 	
 	/**
 	 * The CircuitPanel
@@ -65,7 +60,6 @@ public class UserMessage implements ActionListener {
 	public UserMessage(CircuitPanel cp, String text) {
 		this.cp = cp;
 		this.text = text;
-		drawer = new LabelDrawer(labelFont, labelColor, xMargin, yMargin);
 	}
 	
 	/**
@@ -78,7 +72,6 @@ public class UserMessage implements ActionListener {
 		this.cp = cp;
 		this.text = text;
 		timer = new Timer(duration, this);
-		drawer = new LabelDrawer(labelFont, labelColor, xMargin, yMargin);
 	}
 	
 	/**
@@ -86,14 +79,6 @@ public class UserMessage implements ActionListener {
 	 */
 	public void start() {
 		if(timer != null) timer.start();
-	}
-	
-	/**
-	 * Renders the message at the top center of the CircuitPanel
-	 * @param g The Graphics object to use
-	 */
-	public void render(Graphics g) {
-		drawer.render(((Graphics2D) g), cp.getWidth() / 2, offset, LabelDrawer.CENTER, LabelDrawer.START, text);
 	}
 
 	/**
@@ -104,5 +89,12 @@ public class UserMessage implements ActionListener {
 		cp.clearMessage();
 		timer.stop();
 	}
-	
+
+	/**
+	 * Returns the message text
+	 * @return The message text
+	 */
+	public String getText(){
+		return text;
+	}
 }
