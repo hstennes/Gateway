@@ -88,7 +88,7 @@ public class FileComponent {
         IOManager io = lcomp.getIO();
         input = new int[io.getNumInputs()][topLevel ? 3 : 2];
         for(int i = 0; i < io.getNumInputs(); i++){
-            Connection conn = io.connectionAt(i, Connection.INPUT);
+            Connection conn = io.inputConnection(i);
             if(conn.numWires() > 0) {
                 Wire w = conn.getWire();
                 Connection source = w.getSourceConnection();
@@ -158,10 +158,10 @@ public class FileComponent {
                 int[] input = fc.input[x];
                 if(input.length == 0) continue;
                 Wire wire = new Wire();
-                Connection source = lcomps.get(input[0]).getIO().connectionAt(input[1], Connection.OUTPUT);
+                Output source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
                 source.setSignal(cData.get(realCDataId)[i][x] == 1);
                 source.addWire(wire);
-                lcomps.get(i).getIO().connectionAt(x, Connection.INPUT).addWire(wire);
+                lcomps.get(i).getIO().inputConnection(x).addWire(wire);
             }
         }
         return applyProperties(new Custom(pos[0], pos[1], b.label, content, lcomps, cTypeId));

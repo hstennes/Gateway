@@ -115,7 +115,7 @@ public class BasicGate extends LComponent {
 		}
 		else if(numInputs < currentNum){
 			for(int i = 0; i < currentNum - numInputs; i++){
-				io.removeConnection(io.connectionAt(io.getNumInputs() - 1, Connection.INPUT));
+				io.removeConnection(io.inputConnection(io.getNumInputs() - 1));
 			}
 		}
 		Point[] positions = calcInputPositions(-25, numInputs);

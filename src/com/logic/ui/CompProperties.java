@@ -333,7 +333,7 @@ public class CompProperties extends JPanel {
 		IOManager io = lcomp.getIO();
 		String s = "<html>";
 		for(int i = 0; i < io.getNumInputs(); i++) {
-			Connection c = io.connectionAt(i, Connection.INPUT);
+			Connection c = io.inputConnection(i);
 			s = s + "Input " + c.getIndex() + ":";
 			if(c.numWires() == 0 || c.getWire(0).getSourceConnection() == null) s = s + " Empty<br>";
 			else {
@@ -343,7 +343,7 @@ public class CompProperties extends JPanel {
 			}
 		}
 		for(int i = 0; i < io.getNumOutputs(); i++) {
-			Connection c = io.connectionAt(i, Connection.OUTPUT);
+			Connection c = io.outputConnection(i);
 			s = s + "Output " + c.getIndex() + ":";
 			if(c.numWires() == 0 || c.getWire(0).getDestConnection() == null) s = s + " Empty<br>";
 			else if(c.numWires() == 1) {

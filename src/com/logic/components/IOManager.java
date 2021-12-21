@@ -115,17 +115,6 @@ public class IOManager implements Deletable, Serializable {
 			c.setDirection(direction);
 		}
 	}
-	
-	/**
-	 * Returns the connections at the specified input or output index
-	 * @param index The index of the connection
-	 * @param type The type of the connection (Connection.INPUT, Connection.OUTPUT)
-	 * @return The connection at the specified input or output index
-	 */
-	public Connection connectionAt(int index, int type) {
-		if(type == Connection.INPUT) return inputs.get(index);
-		return outputs.get(index);
-	}
 
 	public Input inputConnection(int index){
 		return inputs.get(index);

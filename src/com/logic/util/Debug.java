@@ -49,7 +49,7 @@ public class Debug {
 				if(includeWires && lastGate != null){
 					Wire w = new Wire();
 					lastGate.getIO().connectionAt(0, Connection.OUTPUT).addWire(w);
-					newGate.getIO().connectionAt(0, Connection.INPUT).addWire(w);
+					newGate.getIO().connectionAt(0).addWire(w);
 					cp.addWire(w);
 				}
 				cp.addLComp(newGate);

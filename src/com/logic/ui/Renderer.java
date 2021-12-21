@@ -253,12 +253,12 @@ public class Renderer {
         IOManager io = lcomp.getIO();
         Point barStart = null, barStop = null;
         for(int i = 0; i < io.getNumInputs(); i++) {
-            Point result = drawConnection(g2d, io.connectionAt(i, Connection.INPUT), dx, dy);
+            Point result = drawConnection(g2d, io.inputConnection(i), dx, dy);
             if(i == 0) barStart = result;
             if(i == io.getNumInputs() - 1) barStop = result;
         }
         for(int i = 0; i < io.getNumOutputs(); i++) {
-            drawConnection(g2d, io.connectionAt(i, Connection.OUTPUT), dx, dy);
+            drawConnection(g2d, io.outputConnection(i), dx, dy);
         }
 
         if(lcomp instanceof BasicGate && io.getNumInputs() > 2) {

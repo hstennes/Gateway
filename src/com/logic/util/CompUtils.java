@@ -117,7 +117,7 @@ public class CompUtils {
 			oldToNew.put(oldComp, newComp);
 			newComps.add(newComp);
 			for(int c = 0; c < oldIO.getNumInputs(); c++) {
-				Connection connection = oldIO.connectionAt(c, Connection.INPUT);
+				Connection connection = oldIO.inputConnection(c);
 				if(connection.numWires() == 1) {
 					Wire oldWire = connection.getWire();
 					Connection source = oldWire.getSourceConnection();
@@ -132,8 +132,8 @@ public class CompUtils {
 			Input oldDestConnection = oldWire.getDestConnection();
 			LComponent newSourceComp = oldToNew.get(oldSourceConnection.getLcomp());
 			LComponent newDestComp = oldToNew.get(oldDestConnection.getLcomp());
-			Connection newSourceConnection = newSourceComp.getIO().connectionAt(oldSourceConnection.getIndex(), Connection.OUTPUT);
-			Connection newDestConnection = newDestComp.getIO().connectionAt(oldDestConnection.getIndex(), Connection.INPUT);
+			Output newSourceConnection = newSourceComp.getIO().outputConnection(oldSourceConnection.getIndex());
+			Input newDestConnection = newDestComp.getIO().inputConnection(oldDestConnection.getIndex());
 			Wire newWire = new Wire();
 			newSourceConnection.setSignal(oldSourceConnection.getSignal());
 			newSourceConnection.addWire(newWire);

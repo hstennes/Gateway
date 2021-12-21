@@ -176,6 +176,10 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 		return pos[1];
 	}
 
+	public int getType(){
+		return this instanceof Input ? INPUT : OUTPUT;
+	}
+
 	/**
 	 * Sets the pixel position of this connection and computes its possible position under all rotations. The given position is interpreted
 	 * as being part of a right facing component. This method should be called even if the Connection is not to be moved if the size of the 

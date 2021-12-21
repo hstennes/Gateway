@@ -129,7 +129,7 @@ public class CircuitPanel extends JPanel {
 		for(int i = 0; i < newComps.size(); i++) {
 			LComponent lcomp = newComps.get(i);
 			for(int x = 0; x < lcomp.getIO().getNumInputs(); x++) {
-				Connection connect = lcomp.getIO().connectionAt(x, Connection.INPUT);
+				Connection connect = lcomp.getIO().inputConnection(x);
 				if(connect.numWires() > 0) addWire(connect.getWire(0));
 			}
 			addLComp(lcomp);

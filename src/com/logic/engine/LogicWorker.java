@@ -72,7 +72,7 @@ public class LogicWorker extends SwingWorker<Integer, Void>{
 			if(io.getNumInputs() == 0) startingComps.add(lcomp);
 			else {
 				for(int c = 0; c < io.getNumInputs(); c++) {
-					if(io.connectionAt(c, Connection.INPUT).numWires() == 0) {
+					if(io.inputConnection(c).numWires() == 0) {
 						startingComps.add(lcomp);
 						break;
 					}
