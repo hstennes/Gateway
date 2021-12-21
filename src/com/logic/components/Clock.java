@@ -44,7 +44,7 @@ public class Clock extends SComponent {
 	 */
 	public Clock(int x, int y) {
 		super(x, y, CompType.CLOCK);
-		drawer.setImages(new int[] {11, 12});
+		setImages(new int[] {11, 12});
 		io.addConnection(100, 40, Connection.OUTPUT, Constants.RIGHT);
 		delay = DEFAULT_DELAY;
 	}

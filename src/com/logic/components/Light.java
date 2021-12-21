@@ -19,7 +19,7 @@ public class Light extends LabeledComponent {
 	 */
 	public Light(int x, int y) {
 		super(x, y, CompType.LIGHT);
-		drawer.setImages(new int[] {7, 8});
+		setImages(new int[] {7, 8});
 		io.addConnection(30, 100, Connection.INPUT, Constants.DOWN);
 	}
 	

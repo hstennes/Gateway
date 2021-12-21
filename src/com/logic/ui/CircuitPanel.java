@@ -109,7 +109,6 @@ public class CircuitPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		renderer.render(((Graphics2D) g), lcomps, wires, cam.getX(), cam.getY(), cam.getZoom());
-		//if(message != null) message.render(g);
 	}
 	
 	/**
@@ -233,6 +232,10 @@ public class CircuitPanel extends JPanel {
 	 */
 	public CompProperties getProperties() {
 		return properties;
+	}
+
+	public UserMessage getUserMessage(){
+		return message;
 	}
 
 	/**

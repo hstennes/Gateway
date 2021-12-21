@@ -53,6 +53,8 @@ public class Renderer {
      */
     private float cx, cy, zoom;
 
+    private final LabelDrawer userMessageDrawer;
+
     /**
      * Inverse zoom, used to optimize dividing by zoom
      */
@@ -61,6 +63,7 @@ public class Renderer {
     public Renderer(CircuitPanel cp){
         this.cp = cp;
         cache = new ImageCache();
+        userMessageDrawer = new LabelDrawer(UserMessage.MESSAGE_FONT, UserMessage.MESSAGE_COLOR, UserMessage.X_MARGIN, UserMessage.Y_MARGIN);
     }
 
     public void render(Graphics2D g2d, ArrayList<LComponent> lcomps, ArrayList<Wire> wires, float cx, float cy, float zoom){
@@ -87,6 +90,7 @@ public class Renderer {
         renderHighLight(g2d);
         renderCustomCreator(g2d);
         reverseTransform(g2d);
+        renderUserMessage(g2d);
     }
 
     private void renderGrid(Graphics2D g2d, Rectangle view){
@@ -139,6 +143,17 @@ public class Renderer {
         g2d.drawLine(x2, y2, x2 + CUSTOM_DIVIDER_SIZE, y2 + CUSTOM_DIVIDER_SIZE);
         g2d.drawLine(x, y2, x - CUSTOM_DIVIDER_SIZE, y2 + CUSTOM_DIVIDER_SIZE);
         g2d.setStroke(new BasicStroke(1));
+    }
+
+    private void renderUserMessage(Graphics2D g2d){
+        UserMessage message = cp.getUserMessage();
+        if(message == null) return;
+        userMessageDrawer.render(g2d,
+                cp.getWidth() / 2,
+                UserMessage.Y_OFFSET,
+                LabelDrawer.CENTER,
+                LabelDrawer.START,
+                message.getText());
     }
 
     private void renderWire(Graphics2D g2d, Wire wire){
@@ -200,17 +215,11 @@ public class Renderer {
         drawConnections(g2d, lcomp, -cb.x, -cb.y);
 
         if(type == CompType.CUSTOM) {
-            Rectangle bounds = lcomp.getBoundsRight();
-            bounds.translate(-cb.x, -cb.y);
-            g2d.setColor(Color.WHITE);
-            g2d.fill(bounds);
-            g2d.setColor(Color.BLACK);
-            g2d.setStroke(new BasicStroke(4));
-            g2d.draw(bounds);
+            drawCustomBody(g2d, (Custom) lcomp, -cb.x, -cb.y);
             return image;
         }
 
-        GraphicsNode svg = lcomp.getDrawer().getActiveImage();
+        GraphicsNode svg = lcomp.getActiveImage();
         int size = Math.max(lb.width, lb.height);
         float difference = Math.abs(lb.width - lb.height);
         if(lb.width <= lb.height) svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x - difference * 0.5, -cb.y));
@@ -218,8 +227,24 @@ public class Renderer {
         svg.paint(g2d);
 
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
-        if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR) drawInverted(g2d, -cb.x, -cb.y);
+        if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR || type == CompType.NOT) drawInverted(g2d, -cb.x, -cb.y);
         return image;
+    }
+
+    public void drawCustomBody(Graphics2D g2d, Custom custom, int dx, int dy){
+        Rectangle bounds = custom.getBoundsRight();
+        bounds.translate(dx, dy);
+        g2d.setColor(Color.WHITE);
+        g2d.fill(bounds);
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(4));
+        g2d.draw(bounds);
+
+        g2d.setFont(Custom.LABEL_FONT);
+        FontMetrics metrics = g2d.getFontMetrics(Custom.LABEL_FONT);
+        int stringWidth = metrics.stringWidth(custom.getLabel());
+        int stringHeight = metrics.getHeight();
+        g2d.drawString(custom.getLabel(), (bounds.width - stringWidth) / 2 + dx, (bounds.height - stringHeight) / 2 + dy + stringHeight);
     }
 
     /**

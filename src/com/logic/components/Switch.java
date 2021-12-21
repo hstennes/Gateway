@@ -22,7 +22,7 @@ public class Switch extends IComponent {
 	 */
 	public Switch(int x, int y) {
 		super(x, y, CompType.SWITCH);
-		drawer.setImages(new int[] {3, 4});
+		setImages(new int[] {3, 4});
 		io.addConnection(80, 40, Connection.OUTPUT, Constants.RIGHT);
 		setClickAction(15, 15, 30, 50);
 	}
