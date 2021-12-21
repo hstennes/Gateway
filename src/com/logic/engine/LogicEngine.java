@@ -33,8 +33,8 @@ public class LogicEngine {
 		while(activeComps.size() > 0) {
 			ArrayList<LComponent> lcomps = activeComps;
 			activeComps = new ArrayList<LComponent>();
-			for(int i = 0; i < lcomps.size(); i++) {
-				lcomps.get(i).update(this);
+			for (LComponent lcomp : lcomps) {
+				lcomp.update(this);
 			}
 			iterations++;
 		}

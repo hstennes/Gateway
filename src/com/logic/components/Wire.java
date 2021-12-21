@@ -21,11 +21,17 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * The path that the wire follows in the CircuitPanel
 	 */
 	private CubicCurve2D curve;
-	
+
+
 	/**
-	 * The two connections that the wire is attached to
+	 * The output connection the wire is attached to
 	 */
-	private Connection source, dest;
+	private Output source;
+
+	/**
+	 * The input connection the wire is attached to
+	 */
+	private Input dest;
 	
 	/**
 	 * Returns the wire's signal (the least significant bit if there are multiple)
@@ -40,7 +46,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * Returns the Connection that can set this wire's signal
 	 * @return The source connection
 	 */
-	public Connection getSourceConnection() {
+	public Output getSourceConnection() {
 		return source;
 	}
 	
@@ -48,7 +54,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * Returns the Connection that uses this wire's signal as input
 	 * @return The destination connection
 	 */
-	public Connection getDestConnection() {
+	public Input getDestConnection() {
 		return dest;
 	}
 	
@@ -57,8 +63,8 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * @param connect The connection to add
 	 */
 	public void fillConnection(Connection connect) {
-		if(source == null && connect.getType() == Connection.OUTPUT) source = connect;
-		else if(dest == null && connect.getType() == Connection.INPUT) dest = connect;
+		if(source == null && connect instanceof Output) source = (Output) connect;
+		else if(dest == null && connect instanceof Input) dest = (Input) connect;
 	}
 
 	public CubicCurve2D getCurve(){

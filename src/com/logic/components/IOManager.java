@@ -17,11 +17,10 @@ import java.util.ArrayList;
 public class IOManager implements Deletable, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * Lists of all input and output Connections being used by this component
-	 */
-	private ArrayList<Connection> inputs, outputs;
+
+	private ArrayList<Input> inputs;
+
+	private ArrayList<Output> outputs;
 	
 	/**
 	 * The LComponent using this ConnectionManager
@@ -34,8 +33,8 @@ public class IOManager implements Deletable, Serializable {
 	 */
 	public IOManager(LComponent lcomp) {
 		this.lcomp = lcomp;
-		inputs = new ArrayList<Connection>();
-		outputs = new ArrayList<Connection>();
+		inputs = new ArrayList<>();
+		outputs = new ArrayList<>();
 	}
 	
 	/**
@@ -61,7 +60,7 @@ public class IOManager implements Deletable, Serializable {
 	 * @param engine The LogicEngine instance that was passed to the update method that called this method
 	 */
 	public void setOutput(int index, boolean signal, LogicEngine engine) {
-		Connection c = outputs.get(index);
+		Output c = outputs.get(index);
 		if(c.getSignal() != signal) {
 			c.setSignal(signal);
 			for(int i = 0; i < c.numWires(); i++) {
@@ -80,11 +79,14 @@ public class IOManager implements Deletable, Serializable {
 	 * @return The index that the connection was placed at in the input or output list
 	 */
 	public int addConnection(int x, int y, int type, int direction) {
-		ArrayList<Connection> arr;
-		if(type == Connection.INPUT) arr = inputs;
-		else arr = outputs;
-		arr.add(new Connection(lcomp, x, y, type, arr.size(), direction));
-		return arr.size() - 1;
+		if(type == Connection.INPUT) {
+			inputs.add(new Input(lcomp, x, y, inputs.size(), direction, 1));
+			return inputs.size() - 1;
+		}
+		else {
+			outputs.add(new Output(lcomp, x, y, outputs.size(), direction, 1));
+			return outputs.size() - 1;
+		}
 	}
 	
 	/**
@@ -122,6 +124,14 @@ public class IOManager implements Deletable, Serializable {
 	 */
 	public Connection connectionAt(int index, int type) {
 		if(type == Connection.INPUT) return inputs.get(index);
+		return outputs.get(index);
+	}
+
+	public Input inputConnection(int index){
+		return inputs.get(index);
+	}
+
+	public Output outputConnection(int index){
 		return outputs.get(index);
 	}
 

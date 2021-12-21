@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @author Hank Stennes
  *
  */
-public class Connection implements Deletable, Serializable {
+public abstract class Connection implements Deletable, BitWidthEntity {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -34,11 +34,6 @@ public class Connection implements Deletable, Serializable {
 	public static final int DETECT_RANGE = 12;
 	
 	/**
-	 * The font used to label the connection is renderLabel is called
-	 */
-	private final Font labelFont = new Font("Arial", Font.PLAIN, 15);
-	
-	/**
 	 * The LComponent that uses this connection
 	 */
 	private final LComponent lcomp;
@@ -47,12 +42,7 @@ public class Connection implements Deletable, Serializable {
 	 * An ArrayList of all the wires that are connected to this connection (if this connection is an input, the maximum size of this list
 	 * is 1)
 	 */
-	private final ArrayList<Wire> wires;
-	
-	/**
-	 * The type of connection, either Connection.INPUT or Connection.OUTPUT
-	 */
-	private final int type;
+	protected final ArrayList<Wire> wires;
 	
 	/**
 	 * The index of this connection in the list of input connections or output connections
@@ -73,50 +63,22 @@ public class Connection implements Deletable, Serializable {
 	private int direction;
 
 	/**
-	 * The signal being sent by this connection. Only applies to output connections.
-	 */
-	private boolean signal;
-
-	/**
 	 * Constructs a new Connection
 	 * @param lcomp The LComponent that will use this connection
 	 * @param x The x position of the connection (see Connection.x)
 	 * @param y The y position of the connection (see Connection.y)
-	 * @param type The type of connection (see Connection.type)
 	 * @param index The index of the connection (see Connection.index)
 	 * @param direction The directions of the connection (see Connection.direction)
 	 */
-	public Connection(LComponent lcomp, int x, int y, int type, int index, int direction) {
+	public Connection(LComponent lcomp, int x, int y, int index, int direction) {
 		wires = new ArrayList<>();
 		this.lcomp = lcomp;
 		setXY(x, y);
-		this.type = type;
 		this.index = index;
 		this.direction = direction;
 	}
-	
-	/**
-	 * Adds the given wire to this connection so that its signal can either be used as an input value or set as an output value
-	 * @param wire The wire to add
-	 * @return True if the wire was successfully added, false if it was rejected (this happens if a second wire is added to an input that
-	 * already has a wire)
-	 */
-	public boolean addWire(Wire wire) {
-		if(type == OUTPUT) {
-			initWire(wire);
-			return true;
-		}
-		else {
-			if(wires.size() == 0) {
-				initWire(wire);
-				return true;
-			}
-			else {
-				wire.delete();
-				return false;
-			}
-		}
-	}
+
+	public abstract boolean addWire(Wire wire);
 	
 	/**
 	 * Removes the given wire from the connection
@@ -131,7 +93,7 @@ public class Connection implements Deletable, Serializable {
 	 * to its connections, and setting the wire's initial signal
 	 * @param wire The wire to add
 	 */
-	private void initWire(Wire wire) {
+	protected void initWire(Wire wire) {
 		wires.add(wire);
 		wire.fillConnection(this);
 	}
@@ -144,25 +106,6 @@ public class Connection implements Deletable, Serializable {
 			wires.get(i).delete();
 		}
 		wires.clear();
-	}
-	
-	/**
-	 * Renders the given label next to this connection.
-	 * @param g The Graphics object
-	 * @param label The label to display
-	 */
-	public void renderLabel(Graphics g, String label) {
-		Point coord = getCoord();
-		LabelDrawer drawer = new LabelDrawer(labelFont, Color.WHITE, 3, 2);
-		int offset = 10;
-		if(getAbsoluteDirection() == Constants.LEFT)
-			drawer.render(((Graphics2D) g), coord.x - offset, coord.y, LabelDrawer.END, LabelDrawer.CENTER, label);
-		else if(getAbsoluteDirection() == Constants.UP)
-			drawer.render(((Graphics2D) g), coord.x, coord.y - offset, LabelDrawer.CENTER, LabelDrawer.END, label);
-		else if(getAbsoluteDirection() == Constants.RIGHT)
-			drawer.render(((Graphics2D) g), coord.x + offset, coord.y, LabelDrawer.START, LabelDrawer.CENTER, label);
-		else if(getAbsoluteDirection() == Constants.DOWN)
-			drawer.render(((Graphics2D) g), coord.x, coord.y + offset, LabelDrawer.CENTER, LabelDrawer.START, label);
 	}
 	
 	/**
@@ -207,14 +150,6 @@ public class Connection implements Deletable, Serializable {
 	 */
 	public LComponent getLcomp() {
 		return lcomp;
-	}
-
-	/**
-	 * Returns the type of this connection
-	 * @return The type of this connection
-	 */
-	public int getType() {
-		return type;
 	}
 
 	/**
@@ -275,14 +210,6 @@ public class Connection implements Deletable, Serializable {
 	 */
 	public void setDirection(int direction) {
 		this.direction = direction;
-	}
-
-	public boolean getSignal() {
-		return signal;
-	}
-
-	public void setSignal(boolean signal) {
-		this.signal = signal;
 	}
 
 	@Override
