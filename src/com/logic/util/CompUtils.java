@@ -135,7 +135,7 @@ public class CompUtils {
 			Connection newSourceConnection = newSourceComp.getIO().connectionAt(oldSourceConnection.getIndex(), Connection.OUTPUT);
 			Connection newDestConnection = newDestComp.getIO().connectionAt(oldDestConnection.getIndex(), Connection.INPUT);
 			Wire newWire = new Wire();
-			newWire.setSignal(oldWire.getSignal());
+			newSourceConnection.setSignal(oldSourceConnection.getSignal());
 			newSourceConnection.addWire(newWire);
 			newDestConnection.addWire(newWire);
 		}

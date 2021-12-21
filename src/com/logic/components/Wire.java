@@ -18,17 +18,6 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * A constant that represents how curved the wire is by specifying how far the second and third points on the bezier curve are from 
-	 * the first and fourth points, respectively
-	 */
-	private final int curveFactor = 2;
-	
-	/**
-	 * The state of the wire
-	 */
-	private boolean[] signal;
-	
-	/**
 	 * The path that the wire follows in the CircuitPanel
 	 */
 	private CubicCurve2D curve;
@@ -37,32 +26,14 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * The two connections that the wire is attached to
 	 */
 	private Connection source, dest;
-
-	public Wire(){
-		super(1);
-		signal = new boolean[1];
-	}
-
-	public Wire(int bitWidth){
-		super(bitWidth);
-		signal = new boolean[bitWidth];
-	}
 	
 	/**
 	 * Returns the wire's signal (the least significant bit if there are multiple)
 	 * @return The wire's signal
 	 */
 	public synchronized boolean getSignal() {
-		return signal[0];
-	}
-	
-	/**
-	 * Changes the wire's signal (the least significant bit if there are multiple). This method is safe to call from the EDT
-	 * and LogicWorker thread.
-	 * @param signal The new boolean signal
-	 */
-	public synchronized void setSignal(boolean signal) {
-		this.signal[0] = signal;
+		if(source == null) return false;
+		return source.getSignal();
 	}
 	
 	/**

@@ -62,11 +62,10 @@ public class IOManager implements Deletable, Serializable {
 	 */
 	public void setOutput(int index, boolean signal, LogicEngine engine) {
 		Connection c = outputs.get(index);
-		if(c.numWires() > 0 && c.getWire(0).getSignal() != signal) {
+		if(c.getSignal() != signal) {
+			c.setSignal(signal);
 			for(int i = 0; i < c.numWires(); i++) {
-				Wire w = c.getWire(i);
-				w.setSignal(signal);
-				Connection dest = w.getDestConnection();
+				Connection dest = c.getWire(i).getDestConnection();
 				if(dest != null) engine.mark(dest.getLcomp());
 			}
 		}

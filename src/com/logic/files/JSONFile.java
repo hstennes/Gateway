@@ -133,8 +133,9 @@ public class JSONFile {
                 int[] input = fc.input[x];
                 if(input.length == 0) continue;
                 Wire wire = new Wire();
-                wire.setSignal(input[2] == 1);
-                lcomps.get(input[0]).getIO().connectionAt(input[1], Connection.OUTPUT).addWire(wire);
+                Connection source = lcomps.get(input[0]).getIO().connectionAt(input[1], Connection.OUTPUT);
+                source.setSignal(input[2] == 1);
+                source.addWire(wire);
                 lcomps.get(i).getIO().connectionAt(x, Connection.INPUT).addWire(wire);
             }
         }

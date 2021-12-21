@@ -41,30 +41,29 @@ public class Connection implements Deletable, Serializable {
 	/**
 	 * The LComponent that uses this connection
 	 */
-	private LComponent lcomp;
+	private final LComponent lcomp;
 	
 	/**
 	 * An ArrayList of all the wires that are connected to this connection (if this connection is an input, the maximum size of this list
 	 * is 1)
 	 */
-	private ArrayList<Wire> wires;
+	private final ArrayList<Wire> wires;
 	
 	/**
 	 * The type of connection, either Connection.INPUT or Connection.OUTPUT
 	 */
-	private int type;
+	private final int type;
 	
 	/**
 	 * The index of this connection in the list of input connections or output connections
 	 */
-	private int index;
-
-	private int[] pos;
+	private final int index;
 
 	/**
-	 * The bitWidth of this connection. Only wires with the same bit width can connect.
+	 * Holds rotated positions of the connection relative to the component in the order {x, y, down x, down y, left x, left y,
+	 * up x, up y}
 	 */
-	private int bitWidth;
+	private int[] pos;
 	
 	/**
 	 * The direction that this connection is facing, which determines how wires appear when connected to it. Valid values are 
@@ -72,6 +71,11 @@ public class Connection implements Deletable, Serializable {
 	 * so use getTrueDirection() method to get the absolute direction with component rotation taken into account.
 	 */
 	private int direction;
+
+	/**
+	 * The signal being sent by this connection. Only applies to output connections.
+	 */
+	private boolean signal;
 
 	/**
 	 * Constructs a new Connection
@@ -83,7 +87,7 @@ public class Connection implements Deletable, Serializable {
 	 * @param direction The directions of the connection (see Connection.direction)
 	 */
 	public Connection(LComponent lcomp, int x, int y, int type, int index, int direction) {
-		wires = new ArrayList<Wire>();
+		wires = new ArrayList<>();
 		this.lcomp = lcomp;
 		setXY(x, y);
 		this.type = type;
@@ -125,12 +129,11 @@ public class Connection implements Deletable, Serializable {
 	/**
 	 * Performs all necessary operations when adding a wire, which include adding it to the ArrayList of wires, updating the wire's references
 	 * to its connections, and setting the wire's initial signal
-	 * @param wire
+	 * @param wire The wire to add
 	 */
 	private void initWire(Wire wire) {
 		wires.add(wire);
 		wire.fillConnection(this);
-		if(type == OUTPUT) if(wires.size() > 1) wire.setSignal(wires.get(0).getSignal());
 	}
 
 	/**
@@ -273,27 +276,17 @@ public class Connection implements Deletable, Serializable {
 	public void setDirection(int direction) {
 		this.direction = direction;
 	}
-	
+
+	public boolean getSignal() {
+		return signal;
+	}
+
+	public void setSignal(boolean signal) {
+		this.signal = signal;
+	}
+
 	@Override
 	public void delete() {
 		clearWires();
-	}
-
-	/**
-	 * Sets the new bit width of this connection. If the width has changed, all wires are deleted.
-	 * @param width The new bit width
-	 */
-	public void setBitWidth(int width){
-		if(width == bitWidth) return;
-		if(wires.size() > 0) clearWires();
-		bitWidth = width;
-	}
-
-	/**
-	 * Returns the bit width
-	 * @return the bit width
-	 */
-	public int getBitWidth(){
-		return bitWidth;
 	}
 }

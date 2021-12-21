@@ -13,7 +13,7 @@ import java.awt.*;
  * @author Hank Stennes
  *
  */
-public class BasicGate extends LComponent implements BitFlexibleElement {
+public class BasicGate extends LComponent {
 		
 	private static final long serialVersionUID = 1L;
 
@@ -142,13 +142,6 @@ public class BasicGate extends LComponent implements BitFlexibleElement {
 		BasicGate result = new BasicGate(x, y, io.getNumInputs(), type);
 		result.setRotation(rotation);
 		result.setName(getName());
-		result.bitWidth = bitWidth;
 		return result;
-	}
-
-	@Override
-	public void changeBitWidth(int bitWidth) {
-		this.bitWidth = bitWidth;
-
 	}
 }
