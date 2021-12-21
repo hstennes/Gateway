@@ -11,7 +11,7 @@ import java.awt.*;
  * @author Hank Stennes
  *
  */
-public class Switch extends IComponent {
+public class Switch extends IComponent implements BitWidthEntity {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -55,5 +55,15 @@ public class Switch extends IComponent {
 		result.setState(getState());
 		result.setShowLabel(isShowLabel());
 		return result;
+	}
+
+	@Override
+	public int getBitWidth() {
+		return io.outputConnection(0).getBitWidth();
+	}
+
+	@Override
+	public void changeBitWidth(int bitWidth) {
+
 	}
 }

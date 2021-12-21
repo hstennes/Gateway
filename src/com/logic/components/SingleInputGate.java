@@ -9,7 +9,7 @@ import com.logic.util.Constants;
  * @author Hank Stennes
  *
  */
-public class SingleInputGate extends LComponent {
+public class SingleInputGate extends LComponent implements BitWidthEntity{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -45,5 +45,15 @@ public class SingleInputGate extends LComponent {
 		result.setRotation(rotation);
 		result.setName(getName());
 		return result;
+	}
+
+	@Override
+	public int getBitWidth() {
+		return io.outputConnection(0).getBitWidth();
+	}
+
+	@Override
+	public void changeBitWidth(int bitWidth) {
+
 	}
 }

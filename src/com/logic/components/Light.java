@@ -8,7 +8,7 @@ import com.logic.util.Constants;
  * @author Hank Stennes
  *
  */
-public class Light extends LabeledComponent {
+public class Light extends LabeledComponent implements BitWidthEntity {
 	
 	private static final long serialVersionUID = 1L;
 		
@@ -39,5 +39,15 @@ public class Light extends LabeledComponent {
 		result.setName(getName());
 		result.setShowLabel(isShowLabel());
 		return result;
+	}
+
+	@Override
+	public int getBitWidth() {
+		return io.inputConnection(0).getBitWidth();
+	}
+
+	@Override
+	public void changeBitWidth(int bitWidth) {
+
 	}
 }

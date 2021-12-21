@@ -59,6 +59,8 @@ public class CompProperties extends JPanel {
 	 */
 	private RotationSpinner rotationSpinner;
 
+	private BitWidthSpinner bitWidthSpinner;
+
 	/**
 	 * The checkbox to set if the component shows a label
 	 */
@@ -143,6 +145,7 @@ public class CompProperties extends JPanel {
 		
 		inputSpinner = new InputSpinner();
 		rotationSpinner = new RotationSpinner();
+		bitWidthSpinner = new BitWidthSpinner();
 		
 		JPanel spinnerPanel = new JPanel();
 		FlowLayout spinnerPanelLayout = new FlowLayout(FlowLayout.LEFT);
@@ -157,6 +160,9 @@ public class CompProperties extends JPanel {
 		spinnerPanel.add(spacerPanel);
 		spinnerPanel.add(rotationSpinner);
 		singlePanel.add(spinnerPanel);
+
+		bitWidthSpinner.setAlignmentX(alignmentX);
+		singlePanel.add(bitWidthSpinner);
 
 		labelCheck = new JCheckBox("Show label", false);
 		labelCheck.setMargin(new Insets(0, 0, 10, 0));
@@ -240,6 +246,11 @@ public class CompProperties extends JPanel {
 				labelCheck.setSelected(((LabeledComponent) lcomp).isShowLabel());
 			}
 			else labelCheck.setVisible(false);
+			if(lcomp instanceof BitWidthEntity){
+				bitWidthSpinner.setVisible(true);
+				bitWidthSpinner.getSpinner().setValue(((BitWidthEntity) lcomp).getBitWidth());
+			}
+			else bitWidthSpinner.setVisible(false);
 			nameField.setText(lcomp.getName());
 			location.setPoint(new Point(lcomp.getX(), lcomp.getY()));
 			inputSpinner.getSpinner().setValue(lcomp.getIO().getNumInputs());
@@ -389,6 +400,7 @@ public class CompProperties extends JPanel {
 		location.setCircuitPanel(cp);
 		inputSpinner.setCircuitPanel(cp);
 		rotationSpinner.setCircuitPanel(cp);
+		bitWidthSpinner.setCircuitPanel(cp);
 		delay.setCircuitPanel(cp);
 		selection = cp.getEditor().getSelection();
 		this.cp = cp;

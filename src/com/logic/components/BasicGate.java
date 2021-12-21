@@ -13,7 +13,7 @@ import java.awt.*;
  * @author Hank Stennes
  *
  */
-public class BasicGate extends LComponent {
+public class BasicGate extends LComponent implements BitWidthEntity {
 		
 	private static final long serialVersionUID = 1L;
 
@@ -143,5 +143,15 @@ public class BasicGate extends LComponent {
 		result.setRotation(rotation);
 		result.setName(getName());
 		return result;
+	}
+
+	@Override
+	public int getBitWidth(){
+		return io.outputConnection(0).getBitWidth();
+	}
+
+	@Override
+	public void changeBitWidth(int bitWidth){
+
 	}
 }
