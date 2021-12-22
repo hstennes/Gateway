@@ -1,13 +1,13 @@
 package com.logic.components;
 
-public class Output extends Connection{
+public class OutputPin extends Connection{
 
     /**
      * The signal being sent by this output connection
      */
     private boolean[] signal;
 
-    public Output(LComponent lcomp, int x, int y, int index, int direction, int bitWidth){
+    public OutputPin(LComponent lcomp, int x, int y, int index, int direction, int bitWidth){
         super(lcomp, x, y, index, direction);
         signal = new boolean[bitWidth];
     }
@@ -20,7 +20,7 @@ public class Output extends Connection{
 
     @Override
     public int getBitWidth() {
-        return 0;
+        return signal.length;
     }
 
     @Override

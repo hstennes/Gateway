@@ -64,6 +64,6 @@ public class Switch extends IComponent implements BitWidthEntity {
 
 	@Override
 	public void changeBitWidth(int bitWidth) {
-
+		io.outputConnection(0).changeBitWidth(bitWidth);
 	}
 }

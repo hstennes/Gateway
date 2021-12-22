@@ -2,6 +2,7 @@ package com.logic.ui;
 
 import com.logic.components.BasicGate;
 import com.logic.components.LComponent;
+import com.logic.engine.LogicWorker;
 import com.logic.input.CircuitState;
 import com.logic.input.Selection;
 
@@ -40,18 +41,23 @@ public class InputSpinner extends LabeledSpinner implements ChangeListener {
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		if(selection.size() == 1){
-			LComponent lcomp = selection.get(0);
-			if(lcomp instanceof BasicGate) {
-				BasicGate gate = (BasicGate) lcomp;
-				int value = (int) spinner.getValue();
-				if(value > BasicGate.MAX_INPUTS) value = BasicGate.MAX_INPUTS;
-				else if(value < BasicGate.MIN_INPUTS) value = BasicGate.MIN_INPUTS;
-				spinner.setValue(value);
-				gate.setNumInputs(value);
-				cp.getEditor().getRevision().saveState(new CircuitState(cp));
-				cp.repaint();
-			}
+		if(selection.size() != 1) return;
+		LComponent lcomp = selection.get(0);
+		if(!(lcomp instanceof BasicGate)) return;
+
+		BasicGate gate = (BasicGate) lcomp;
+		int value = (int) spinner.getValue();
+		if(value > BasicGate.MAX_INPUTS) value = BasicGate.MAX_INPUTS;
+		else if(value < BasicGate.MIN_INPUTS) value = BasicGate.MIN_INPUTS;
+		spinner.setValue(value);
+
+		int currentInputs = gate.getIO().getNumInputs();
+		if(value != currentInputs) {
+			gate.setNumInputs(value);
+			if(value < currentInputs) cp.cleanWires();
+			LogicWorker.startLogic(gate);
+			cp.getEditor().getRevision().saveState(new CircuitState(cp));
+			cp.repaint();
 		}
 	}
 
@@ -63,5 +69,4 @@ public class InputSpinner extends LabeledSpinner implements ChangeListener {
 		this.cp = cp;
 		selection = cp.getEditor().getSelection();
 	}
-
 }

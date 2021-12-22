@@ -33,18 +33,20 @@ public class BitWidthSpinner extends LabeledSpinner implements ChangeListener {
      */
     @Override
     public void stateChanged(ChangeEvent e) {
-        if(selection.size() == 1){
-            LComponent lcomp = selection.get(0);
-            if(lcomp instanceof BitWidthEntity) {
-                BitWidthEntity gate = (BitWidthEntity) lcomp;
-                int value = (int) spinner.getValue();
-                if(value > BitWidthEntity.MAX_BITS) value = BitWidthEntity.MAX_BITS;
-                else if(value < BitWidthEntity.MIN_BITS) value = BitWidthEntity.MIN_BITS;
-                spinner.setValue(value);
-                gate.changeBitWidth(value);
-                cp.getEditor().getRevision().saveState(new CircuitState(cp));
-                cp.repaint();
-            }
+        if(selection.size() != 1) return;
+        LComponent lcomp = selection.get(0);
+        if(!(lcomp instanceof BitWidthEntity)) return;
+
+        BitWidthEntity gate = (BitWidthEntity) lcomp;
+        int value = (int) spinner.getValue();
+        if(value > BitWidthEntity.MAX_BITS) value = BitWidthEntity.MAX_BITS;
+        else if(value < BitWidthEntity.MIN_BITS) value = BitWidthEntity.MIN_BITS;
+        spinner.setValue(value);
+
+        if(value != gate.getBitWidth()) {
+            gate.changeBitWidth(value);
+            cp.getEditor().getRevision().saveState(new CircuitState(cp));
+            cp.repaint();
         }
     }
 

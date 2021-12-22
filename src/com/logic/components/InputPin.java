@@ -1,10 +1,10 @@
 package com.logic.components;
 
-public class Input extends Connection{
+public class InputPin extends Connection{
 
     private int bitWidth;
 
-    public Input(LComponent lcomp, int x, int y, int index, int direction, int bitWidth){
+    public InputPin(LComponent lcomp, int x, int y, int index, int direction, int bitWidth){
         super(lcomp, x, y, index, direction);
         this.bitWidth = bitWidth;
     }

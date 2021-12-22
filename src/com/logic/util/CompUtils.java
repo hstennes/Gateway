@@ -128,12 +128,12 @@ public class CompUtils {
 
 		for(int w = 0; w < oldWires.size(); w++) {
 			Wire oldWire = oldWires.get(w);
-			Output oldSourceConnection = oldWire.getSourceConnection();
-			Input oldDestConnection = oldWire.getDestConnection();
+			OutputPin oldSourceConnection = oldWire.getSourceConnection();
+			InputPin oldDestConnection = oldWire.getDestConnection();
 			LComponent newSourceComp = oldToNew.get(oldSourceConnection.getLcomp());
 			LComponent newDestComp = oldToNew.get(oldDestConnection.getLcomp());
-			Output newSourceConnection = newSourceComp.getIO().outputConnection(oldSourceConnection.getIndex());
-			Input newDestConnection = newDestComp.getIO().inputConnection(oldDestConnection.getIndex());
+			OutputPin newSourceConnection = newSourceComp.getIO().outputConnection(oldSourceConnection.getIndex());
+			InputPin newDestConnection = newDestComp.getIO().inputConnection(oldDestConnection.getIndex());
 			Wire newWire = new Wire();
 			newSourceConnection.setSignal(oldSourceConnection.getSignal());
 			newSourceConnection.addWire(newWire);

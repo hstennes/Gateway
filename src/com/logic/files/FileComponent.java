@@ -158,7 +158,7 @@ public class FileComponent {
                 int[] input = fc.input[x];
                 if(input.length == 0) continue;
                 Wire wire = new Wire();
-                Output source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
+                OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
                 source.setSignal(cData.get(realCDataId)[i][x] == 1);
                 source.addWire(wire);
                 lcomps.get(i).getIO().inputConnection(x).addWire(wire);

@@ -1,12 +1,10 @@
 package com.logic.components;
 
-import com.logic.ui.LabelDrawer;
 import com.logic.util.CompUtils;
 import com.logic.util.Constants;
 import com.logic.util.Deletable;
 
 import java.awt.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -177,7 +175,7 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 	}
 
 	public int getType(){
-		return this instanceof Input ? INPUT : OUTPUT;
+		return this instanceof InputPin ? INPUT : OUTPUT;
 	}
 
 	/**

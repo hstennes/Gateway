@@ -18,9 +18,9 @@ public class IOManager implements Deletable, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private ArrayList<Input> inputs;
+	private ArrayList<InputPin> inputs;
 
-	private ArrayList<Output> outputs;
+	private ArrayList<OutputPin> outputs;
 	
 	/**
 	 * The LComponent using this ConnectionManager
@@ -60,7 +60,7 @@ public class IOManager implements Deletable, Serializable {
 	 * @param engine The LogicEngine instance that was passed to the update method that called this method
 	 */
 	public void setOutput(int index, boolean signal, LogicEngine engine) {
-		Output c = outputs.get(index);
+		OutputPin c = outputs.get(index);
 		if(c.getSignal() != signal) {
 			c.setSignal(signal);
 			for(int i = 0; i < c.numWires(); i++) {
@@ -80,22 +80,24 @@ public class IOManager implements Deletable, Serializable {
 	 */
 	public int addConnection(int x, int y, int type, int direction) {
 		if(type == Connection.INPUT) {
-			inputs.add(new Input(lcomp, x, y, inputs.size(), direction, 1));
+			inputs.add(new InputPin(lcomp, x, y, inputs.size(), direction, 1));
 			return inputs.size() - 1;
 		}
 		else {
-			outputs.add(new Output(lcomp, x, y, outputs.size(), direction, 1));
+			outputs.add(new OutputPin(lcomp, x, y, outputs.size(), direction, 1));
 			return outputs.size() - 1;
 		}
 	}
-	
+
 	/**
-	 * Removes the given Connection from this IOManager and deletes it (which will delete its wires)
-	 * @param c The Connection to remove
+	 * Removes the given Connection and deleted it (which deletes its wires)
+	 * @param index The index of the connection in its respective list
+	 * @param type INPUT or OUTPUT
 	 */
-	public void removeConnection(Connection c) {
-		if(inputs.contains(c)) inputs.remove(c);
-		else if(outputs.contains(c)) outputs.remove(c);
+	public void removeConnection(int index, int type){
+		Connection c;
+		if(type == Connection.INPUT) c = inputs.remove(index);
+		else c = outputs.remove(index);
 		c.delete();
 	}
 	
@@ -116,11 +118,11 @@ public class IOManager implements Deletable, Serializable {
 		}
 	}
 
-	public Input inputConnection(int index){
+	public InputPin inputConnection(int index){
 		return inputs.get(index);
 	}
 
-	public Output outputConnection(int index){
+	public OutputPin outputConnection(int index){
 		return outputs.get(index);
 	}
 

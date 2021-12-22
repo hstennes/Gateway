@@ -115,7 +115,7 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 		}
 		else if(numInputs < currentNum){
 			for(int i = 0; i < currentNum - numInputs; i++){
-				io.removeConnection(io.inputConnection(io.getNumInputs() - 1));
+				io.removeConnection(io.getNumInputs() - 1, Connection.INPUT);
 			}
 		}
 		Point[] positions = calcInputPositions(-25, numInputs);
@@ -152,6 +152,7 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 
 	@Override
 	public void changeBitWidth(int bitWidth){
-
+		for(int i = 0; i < io.getNumInputs(); i++) io.inputConnection(i).changeBitWidth(bitWidth);
+		for(int i = 0; i < io.getNumOutputs(); i++) io.outputConnection(i).changeBitWidth(bitWidth);
 	}
 }
