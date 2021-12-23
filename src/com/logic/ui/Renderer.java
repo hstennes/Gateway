@@ -36,6 +36,9 @@ public class Renderer {
      */
     public static final int BASIC_INPUT_SPACING = 50;
 
+
+    public static final int CONNECT_LENGTH = 37;
+
     /**
      * The x and y length of the divider lines drawn around the center rectangle
      */
@@ -217,11 +220,14 @@ public class Renderer {
         }
 
         GraphicsNode svg = lcomp.getActiveImage();
-        int size = Math.max(lb.width, lb.height);
-        float difference = Math.abs(lb.width - lb.height);
-        if(lb.width <= lb.height) svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x - difference * 0.5, -cb.y));
-        else svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x,  -cb.y - difference * 0.5));
-        svg.paint(g2d);
+        if(svg != null) {
+            int size = Math.max(lb.width, lb.height);
+            float difference = Math.abs(lb.width - lb.height);
+            if (lb.width <= lb.height)
+                svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x - difference * 0.5, -cb.y));
+            else svg.setTransform(new AffineTransform(size, 0, 0, size, -cb.x, -cb.y - difference * 0.5));
+            svg.paint(g2d);
+        }
 
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
         if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR || type == CompType.NOT) drawInverted(g2d, -cb.x, -cb.y);
@@ -282,20 +288,20 @@ public class Renderer {
         int direction = c.getDirection();
         Point connectEnd = null;
         if(direction == Constants.RIGHT) {
-            g2d.drawLine(p.x, p.y, p.x - 37, p.y);
-            connectEnd = new Point(p.x - 37, p.y);
+            g2d.drawLine(p.x, p.y, p.x - CONNECT_LENGTH, p.y);
+            connectEnd = new Point(p.x - CONNECT_LENGTH, p.y);
         }
         if(direction == Constants.UP) {
-            g2d.drawLine(p.x, p.y, p.x, p.y + 37);
-            connectEnd = new Point(p.x, p.y + 37);
+            g2d.drawLine(p.x, p.y, p.x, p.y + CONNECT_LENGTH);
+            connectEnd = new Point(p.x, p.y + CONNECT_LENGTH);
         }
         if(direction == Constants.LEFT) {
-            g2d.drawLine(p.x, p.y, p.x + 37, p.y);
-            connectEnd = new Point(p.x + 37, p.y);
+            g2d.drawLine(p.x, p.y, p.x + CONNECT_LENGTH, p.y);
+            connectEnd = new Point(p.x + CONNECT_LENGTH, p.y);
         }
         if(direction == Constants.DOWN) {
-            g2d.drawLine(p.x, p.y, p.x, p.y - 37);
-            connectEnd = new Point(p.x, p.y - 37);
+            g2d.drawLine(p.x, p.y, p.x, p.y - CONNECT_LENGTH);
+            connectEnd = new Point(p.x, p.y - CONNECT_LENGTH);
         }
         g2d.setColor(SELECT_COLOR);
         g2d.fillOval(p.x - 9, p.y - 9, 18, 18);

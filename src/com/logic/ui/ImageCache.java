@@ -57,6 +57,7 @@ public class ImageCache {
         else if(lcomp instanceof Clock) ext = ((Clock) lcomp).isOn() ? "1" : "0";
         else if(lcomp instanceof Custom) ext = ((Custom) lcomp).getLabel();
         return lcomp.getType().toString() + ext;
+        //TODO add correct caching for Splitter, Display
     }
 
     public void printContents(){

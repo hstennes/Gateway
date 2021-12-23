@@ -2,6 +2,7 @@ package com.logic.components;
 
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicFunctions;
+import com.logic.ui.Renderer;
 import com.logic.util.CompUtils;
 import com.logic.util.ConnectionLayout;
 import com.logic.util.Constants;
@@ -86,7 +87,7 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 
 		if(numInputs > MAX_INPUTS) numInputs = MAX_INPUTS;
 		else if(numInputs < MIN_INPUTS) numInputs = MIN_INPUTS;
-		Point[] connectionPositions = CompUtils.calcEvenConnectionPositions(-25, numInputs);
+		Point[] connectionPositions = calcInputPositions(-25, numInputs);
 		for(Point p : connectionPositions){
 			io.addConnection(p.x, p.y, Connection.INPUT, Constants.LEFT);
 		}
@@ -120,7 +121,7 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 				io.removeConnection(io.getNumInputs() - 1, Connection.INPUT);
 			}
 		}
-		Point[] positions = CompUtils.calcEvenConnectionPositions(-25, numInputs);
+		Point[] positions = calcInputPositions(-25, numInputs);
 		io.setConnectionLayout(new ConnectionLayout(positions, Constants.LEFT, Connection.INPUT));
 	}
 
@@ -141,5 +142,20 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 	public void changeBitWidth(int bitWidth){
 		for(int i = 0; i < io.getNumInputs(); i++) io.inputConnection(i).changeBitWidth(bitWidth);
 		for(int i = 0; i < io.getNumOutputs(); i++) io.outputConnection(i).changeBitWidth(bitWidth);
+	}
+
+	/**
+	 * Calculates the positions of each connection so that they are centered and equally spaced in the y direction
+	 * @param xPos The x position that all of the inputs will have
+	 * @param numConnections The number of inputs the component will have
+	 * @return An array of points showing the input positions
+	 */
+	public static Point[] calcInputPositions(int xPos, int numConnections){
+		int start = 80 / 2 - Renderer.BASIC_INPUT_SPACING / 2 * (numConnections - 1);
+		Point[] positions = new Point[numConnections];
+		for(int i = 0; i < numConnections; i++){
+			positions[i] = new Point(xPos, start + i * Renderer.BASIC_INPUT_SPACING);
+		}
+		return positions;
 	}
 }

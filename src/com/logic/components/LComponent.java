@@ -93,7 +93,7 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	}
 	
 	/**
-	 * Returns a bounding box for the component when it is facing in a rightward direction (the component's default bounds)
+	 * Returns a bounding box for the component when it is facing in a rightward direction (the default direction)
 	 * @return A bounding box for the component
 	 */
 	public Rectangle getBoundsRight() {
@@ -114,6 +114,7 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * @return The active image
 	 */
 	public GraphicsNode getActiveImage(){
+		if(images == null) return null;
 		return LogicSimApp.iconLoader.logicSVGs[images[getActiveImageIndex()]];
 	}
 	

@@ -16,18 +16,22 @@ public class Splitter extends LComponent{
      */
     private int[] split;
 
+    private int height;
+
     public Splitter(int x, int y, CompType type, int[] split) {
         super(x, y, type);
         this.split = split;
-        setImages(new int[] {0});
+        //setImages(new int[] {0});
 
-        Point[] connectionPositions = CompUtils.calcEvenConnectionPositions(25, split.length);
+        Point[] connectionPositions = calcOutputPositions(50, split.length);
         for(Point p : connectionPositions){
             io.addConnection(p.x, p.y, Connection.OUTPUT, Constants.RIGHT);
         }
 
-        io.addConnection(-25, 40, Connection.INPUT, Constants.LEFT);
+        io.addConnection(-10, 0, Connection.INPUT, Constants.LEFT);
         io.inputConnection(0).changeBitWidth(IntStream.of(split).sum());
+
+        height = (split.length - 1) * Renderer.BASIC_INPUT_SPACING;
     }
 
     @Override
@@ -45,5 +49,18 @@ public class Splitter extends LComponent{
         result.setRotation(rotation);
         result.setName(getName());
         return result;
+    }
+
+    public static Point[] calcOutputPositions(int xPos, int numConnections){
+        Point[] positions = new Point[numConnections];
+        for(int i = 0; i < numConnections; i++){
+            positions[i] = new Point(xPos, i * Renderer.BASIC_INPUT_SPACING);
+        }
+        return positions;
+    }
+
+    @Override
+    public Rectangle getBoundsRight(){
+        return new Rectangle(x, y, 40, height);
     }
 }
