@@ -51,7 +51,7 @@ public class Clock extends SComponent {
 	
 	@Override
 	public void update(LogicEngine engine) {
-		io.setOutput(0, on, engine);
+		io.setOutputOld(0, on, engine);
 	}
 	
 	@Override

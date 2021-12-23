@@ -29,7 +29,7 @@ public class Switch extends IComponent implements BitWidthEntity {
 	
 	@Override
 	public void update(LogicEngine engine) {
-		io.setOutput(0, getState(), engine);
+		io.setOutputOld(0, getState(), engine);
 	}
 
 	@Override

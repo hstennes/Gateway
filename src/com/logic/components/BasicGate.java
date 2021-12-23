@@ -30,7 +30,14 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 	/**
 	 * Shows if the gate is a "not" variant of the normal gate
 	 */
-	private boolean inverted;
+	@Deprecated
+	private boolean invertedOld;
+
+	private int inverted;
+
+	private final int normalMask = 0;
+
+	private final int invertedMask = -1;
 
 	/**
 	 * Constructs a new BasicGate with the default number of inputs
@@ -53,32 +60,32 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 		super(x, y, type);
 		if(type == CompType.AND) {
 			setImages(new int[]{1});
-			inverted = false;
+			inverted = normalMask;
 			function = 0;
 		}
 		else if(type == CompType.NAND) {
 			setImages(new int[]{1});
-			inverted = true;
+			inverted = invertedMask;
 			function = 0;
 		}
 		else if(type == CompType.OR) {
 			setImages(new int[]{2});
-			inverted = false;
+			inverted = normalMask;
 			function = 1;
 		}
 		else if(type == CompType.NOR) {
 			setImages(new int[]{2});
-			inverted = true;
+			inverted = invertedMask;
 			function = 1;
 		}
 		else if(type == CompType.XOR) {
 			setImages(new int[]{2});
-			inverted = false;
+			inverted = normalMask;
 			function = 2;
 		}
 		else if(type == CompType.XNOR) {
 			setImages(new int[]{2});
-			inverted = true;
+			inverted = invertedMask;
 			function = 2;
 		}
 
@@ -94,11 +101,11 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 	@Override
 	public void update(LogicEngine engine) {
 		int inputs = io.getNumInputs();
-		boolean output = io.getInput(0);
+		int output = io.getInput(0);
 		for(int i = 1; i < inputs; i++){
-			output = LogicFunctions.func2s.get(function).apply(output, io.getInput(i));
+			output = LogicFunctions.twoInput.get(function).apply(output, io.getInput(i));
 		}
-		io.setOutput(0, inverted != output, engine);
+		io.setOutput(0, inverted ^ output, engine);
 	}
 
 	/**

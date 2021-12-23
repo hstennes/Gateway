@@ -6,7 +6,6 @@ import com.logic.ui.CircuitPanel;
 import com.logic.util.*;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -110,7 +109,7 @@ public class Custom extends SComponent {
 	@Override
 	public void update(LogicEngine engine) {
 		ArrayList<LComponent> startingComps = new ArrayList<LComponent>();
-		for(int i = 0; i < io.getNumInputs(); i++) inputs.get(i).addIfNecessary(io.getInput(i), startingComps);
+		for(int i = 0; i < io.getNumInputs(); i++) inputs.get(i).addIfNecessary(io.getInputOld(i), startingComps);
 		for(int i = 0; i < innerComps.size(); i++) {
 			LComponent lcomp = innerComps.get(i);
 			if(lcomp instanceof SComponent) startingComps.add(lcomp);
@@ -118,7 +117,7 @@ public class Custom extends SComponent {
 		
 		LogicEngine le = new LogicEngine(startingComps);
 		le.doLogic();
-		for(int i = 0; i < io.getNumOutputs(); i++) io.setOutput(i, outputs.get(i).getState(), engine);                             
+		for(int i = 0; i < io.getNumOutputs(); i++) io.setOutputOld(i, outputs.get(i).getState(), engine);
 	}
 	
 	/**

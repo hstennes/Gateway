@@ -10,26 +10,26 @@ import java.util.function.Function;
  *
  */
 public class LogicFunctions {
-	
+
 	/**
-	 * The list of all functions that accept one boolean input. See setFunctions() for info.
+	 * The list of all functions that accept one input. See setFunctions() for info.
 	 */
-	public static ArrayList<Function<Boolean, Boolean>> func1s = new ArrayList<Function<Boolean, Boolean>>();
-	
+	public static ArrayList<Function<Integer, Integer>> singleInput = new ArrayList<>();
+
 	/**
-	 * The list of all functions that accept two boolean inputs. See setFunctions() for info.
+	 * The list of all functions that accept two inputs. See setFunctions() for info.
 	 */
-	public static ArrayList<BiFunction<Boolean, Boolean, Boolean>> func2s = new ArrayList<BiFunction<Boolean, Boolean, Boolean>>();
+	public static ArrayList<BiFunction<Integer, Integer, Integer>> twoInput = new ArrayList<>();
 	
 	/**
 	 * Initializes all logic functions. Single input functions are loaded in the order NOT, BUFFER, and multi-input functions are loaded in 
 	 * the order AND, NAND, OR, NOR, XOR, XNOR. This is the order that the functions appear in their respective arrays.
 	 */
 	public static void setFunctions() {
-		func1s.add(a -> !a);
-		func1s.add(a -> a);
-		func2s.add((a, b) -> a & b);
-		func2s.add((a, b) -> a | b);
-		func2s.add((a, b) -> a ^ b);
+		singleInput.add(a -> ~a);
+		singleInput.add(a -> a);
+		twoInput.add((a, b) -> a & b);
+		twoInput.add((a, b) -> a | b);
+		twoInput.add((a, b) -> a ^ b);
 	}
 }

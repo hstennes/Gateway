@@ -2,11 +2,8 @@ package com.logic.components;
 
 public class InputPin extends Connection{
 
-    private int bitWidth;
-
     public InputPin(LComponent lcomp, int x, int y, int index, int direction, int bitWidth){
-        super(lcomp, x, y, index, direction);
-        this.bitWidth = bitWidth;
+        super(lcomp, x, y, index, direction, bitWidth);
     }
 
     public boolean addWire(Wire wire){
@@ -18,15 +15,5 @@ public class InputPin extends Connection{
             wire.delete();
             return false;
         }
-    }
-
-    @Override
-    public int getBitWidth() {
-        return bitWidth;
-    }
-
-    @Override
-    public void changeBitWidth(int bitWidth) {
-        this.bitWidth = bitWidth;
     }
 }

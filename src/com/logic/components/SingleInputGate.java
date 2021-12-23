@@ -36,7 +36,7 @@ public class SingleInputGate extends LComponent implements BitWidthEntity{
 	
 	@Override
 	public void update(LogicEngine engine) {
-		io.setOutput(0, LogicFunctions.func1s.get(function).apply(io.getInput(0)), engine);
+		io.setOutput(0, LogicFunctions.singleInput.get(function).apply(io.getInput(0)), engine);
 	}
 	
 	@Override

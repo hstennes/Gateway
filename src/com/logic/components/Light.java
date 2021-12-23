@@ -28,7 +28,7 @@ public class Light extends LabeledComponent implements BitWidthEntity {
 
 	@Override
 	public int getActiveImageIndex(){
-		if(io.getInput(0)) return 1;
+		if(io.getInputOld(0)) return 1;
 		return 0;
 	}
 	
@@ -48,6 +48,6 @@ public class Light extends LabeledComponent implements BitWidthEntity {
 
 	@Override
 	public void changeBitWidth(int bitWidth) {
-
+		io.inputConnection(0).changeBitWidth(bitWidth);
 	}
 }

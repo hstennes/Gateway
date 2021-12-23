@@ -18,9 +18,9 @@ public class IOManager implements Deletable, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private ArrayList<InputPin> inputs;
+	private final ArrayList<InputPin> inputs;
 
-	private ArrayList<OutputPin> outputs;
+	private final ArrayList<OutputPin> outputs;
 	
 	/**
 	 * The LComponent using this ConnectionManager
@@ -42,12 +42,19 @@ public class IOManager implements Deletable, Serializable {
 	 * @param index The index of the input to get
 	 * @return The signal of the specified input
 	 */
-	public boolean getInput(int index) {
+	@Deprecated
+	public boolean getInputOld(int index) {
 		if(index < inputs.size()) {
 			Connection input = inputs.get(index);
-			if(input.numWires() > 0) return input.getWire(0).getSignal();
+			if(input.numWires() > 0) return input.getWire(0).getSignalOld();
 		}
 		return false;
+	}
+
+	public int getInput(int index){
+		Connection input = inputs.get(index);
+		if(input.numWires() > 0) return input.getWire(0).getSignal();
+		return 0;
 	}
 	
 	/**
@@ -59,11 +66,23 @@ public class IOManager implements Deletable, Serializable {
 	 * @param signal The signal to set the connected wires to
 	 * @param engine The LogicEngine instance that was passed to the update method that called this method
 	 */
-	public void setOutput(int index, boolean signal, LogicEngine engine) {
+	@Deprecated
+	public void setOutputOld(int index, boolean signal, LogicEngine engine) {
 		OutputPin c = outputs.get(index);
-		if(c.getSignal() != signal) {
-			c.setSignal(signal);
+		if(c.getSignalOld() != signal) {
+			c.setSignalOld(signal);
 			for(int i = 0; i < c.numWires(); i++) {
+				Connection dest = c.getWire(i).getDestConnection();
+				if(dest != null) engine.mark(dest.getLcomp());
+			}
+		}
+	}
+
+	public void setOutput(int index, int signal, LogicEngine engine){
+		OutputPin c = outputs.get(index);
+		if(c.getSignal() != signal){
+			c.setSignal(signal);
+			for(int i = 0; i < c.numWires(); i++){
 				Connection dest = c.getWire(i).getDestConnection();
 				if(dest != null) engine.mark(dest.getLcomp());
 			}

@@ -30,7 +30,7 @@ public class CustomOutput extends CustomNode {
 	 * @return The state of the light (its input at index 0)
 	 */
 	public boolean getState() {
-		return lt.getIO().getInput(0);
+		return lt.getIO().getInputOld(0);
 	}
 	
 }

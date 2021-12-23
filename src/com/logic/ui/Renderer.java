@@ -168,7 +168,7 @@ public class Renderer {
         }
 
         g2d.draw(curve);
-        if (wire.getSignal()) g2d.setColor(Color.ORANGE);
+        if (wire.getSignalOld()) g2d.setColor(Color.ORANGE);
         else g2d.setColor(Color.WHITE);
         g2d.setStroke(new BasicStroke(3));
         g2d.draw(curve);

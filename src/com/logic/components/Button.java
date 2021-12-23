@@ -31,7 +31,7 @@ public class Button extends IComponent {
 	
 	@Override
 	public void update(LogicEngine engine) {
-		io.setOutput(0, getState(), engine);
+		io.setOutputOld(0, getState(), engine);
 	}
 
 	@Override

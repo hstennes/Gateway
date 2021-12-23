@@ -29,6 +29,7 @@ public class LogicEngine {
 	 * @Return The number of iterations it took to complete the logic
 	 */
 	public int doLogic() {
+		long time = System.currentTimeMillis();
 		int iterations = 0;
 		while(activeComps.size() > 0) {
 			ArrayList<LComponent> lcomps = activeComps;
@@ -38,7 +39,9 @@ public class LogicEngine {
 			}
 			iterations++;
 		}
+		System.out.println("time: " + (System.currentTimeMillis() - time));
 		return iterations;
+
 	}
 	
 	/**

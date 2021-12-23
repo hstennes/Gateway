@@ -32,13 +32,25 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * The input connection the wire is attached to
 	 */
 	private InputPin dest;
+
+	/**
+	 * A wire is consistent if the source and dest connections have the same bit width. If the source or dest connection
+	 * is null (the wire is still being drawn, or the wire is dead), then the wire is consistent.
+	 */
+	private boolean consistent;
 	
 	/**
 	 * Returns the wire's signal (the least significant bit if there are multiple)
 	 * @return The wire's signal
 	 */
-	public synchronized boolean getSignal() {
+	@Deprecated
+	public synchronized boolean getSignalOld() {
 		if(source == null) return false;
+		return source.getSignalOld();
+	}
+
+	public synchronized int getSignal(){
+		if(source == null) return 0;
 		return source.getSignal();
 	}
 	
@@ -132,6 +144,15 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 */
 	public boolean isComplete() {
 		return source != null && dest != null;
+	}
+
+	public void checkConsistent(){
+		if(source == null || dest == null) consistent = true;
+		else consistent = source.getBitWidth() == dest.getBitWidth();
+	}
+
+	public boolean isConsistent(){
+		return consistent;
 	}
 	
 	@Override

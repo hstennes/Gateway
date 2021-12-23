@@ -5,11 +5,10 @@ public class OutputPin extends Connection{
     /**
      * The signal being sent by this output connection
      */
-    private boolean[] signal;
+    private int signal;
 
     public OutputPin(LComponent lcomp, int x, int y, int index, int direction, int bitWidth){
-        super(lcomp, x, y, index, direction);
-        signal = new boolean[bitWidth];
+        super(lcomp, x, y, index, direction, bitWidth);
     }
 
     @Override
@@ -18,21 +17,21 @@ public class OutputPin extends Connection{
         return true;
     }
 
-    @Override
-    public int getBitWidth() {
-        return signal.length;
+    @Deprecated
+    public boolean getSignalOld() {
+        return (signal & 1) == 1;
     }
 
-    @Override
-    public void changeBitWidth(int bitWidth) {
-        signal = new boolean[bitWidth];
+    public void setSignalOld(boolean signal) {
+        if(signal) this.signal |= 1;
+        else this.signal &= ~1;
     }
 
-    public boolean getSignal() {
-        return signal[0];
+    public int getSignal(){
+        return signal;
     }
 
-    public void setSignal(boolean signal) {
-        this.signal[0] = signal;
+    public void setSignal(int signal){
+        this.signal = signal;
     }
 }

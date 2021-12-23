@@ -27,8 +27,8 @@ public class Constant extends LComponent implements BitWidthEntity{
 	
 	@Override
 	public void update(LogicEngine engine) {
-		if(type == CompType.ONE) io.setOutput(0, true, engine);
-		else io.setOutput(0, false, engine);
+		if(type == CompType.ONE) io.setOutputOld(0, true, engine);
+		else io.setOutputOld(0, false, engine);
 	}
 	
 	@Override

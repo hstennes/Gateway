@@ -162,6 +162,7 @@ public class CompProperties extends JPanel {
 		singlePanel.add(spinnerPanel);
 
 		bitWidthSpinner.setAlignmentX(alignmentX);
+		bitWidthSpinner.setPreferredSize(new Dimension(250, 30));
 		singlePanel.add(bitWidthSpinner);
 
 		labelCheck = new JCheckBox("Show label", false);
@@ -350,7 +351,7 @@ public class CompProperties extends JPanel {
 			else {
 				Wire wire = c.getWire(0);
 				Connection connect = wire.getSourceConnection();
-				s = s + " " + connect.getLcomp().toString() + ", " + NameConverter.nameFromSignal(wire.getSignal()) + "<br>";
+				s = s + " " + connect.getLcomp().toString() + ", " + NameConverter.nameFromSignal(wire.getSignalOld()) + "<br>";
 			}
 		}
 		for(int i = 0; i < io.getNumOutputs(); i++) {
@@ -360,7 +361,7 @@ public class CompProperties extends JPanel {
 			else if(c.numWires() == 1) {
 				Wire wire = c.getWire(0);
 				Connection connect = wire.getDestConnection();
-				s = s + " " + connect.getLcomp().toString() + ", " + NameConverter.nameFromSignal(wire.getSignal()) + "<br>";
+				s = s + " " + connect.getLcomp().toString() + ", " + NameConverter.nameFromSignal(wire.getSignalOld()) + "<br>";
 			}
 			else {
 				s = s + "<ul>";
@@ -369,7 +370,7 @@ public class CompProperties extends JPanel {
 					Connection connect = wire.getDestConnection();
 					if(connect != null) {
 						s = s + "<li>" + connect.getLcomp().toString() + ", " + 
-								NameConverter.nameFromSignal(wire.getSignal()) + "</li>";
+								NameConverter.nameFromSignal(wire.getSignalOld()) + "</li>";
 					}
 				}
 				s = s + "</ul>";

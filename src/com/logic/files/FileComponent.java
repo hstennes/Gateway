@@ -94,7 +94,7 @@ public class FileComponent {
                 Connection source = w.getSourceConnection();
                 input[i][0] = compIndex.get(source.getLcomp());
                 input[i][1] = source.getIndex();
-                if(topLevel) input[i][2] = w.getSignal() ? 1 : 0;
+                if(topLevel) input[i][2] = w.getSignalOld() ? 1 : 0;
             }
             else input[i] = new int[] {};
         }
@@ -159,7 +159,7 @@ public class FileComponent {
                 if(input.length == 0) continue;
                 Wire wire = new Wire();
                 OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
-                source.setSignal(cData.get(realCDataId)[i][x] == 1);
+                source.setSignalOld(cData.get(realCDataId)[i][x] == 1);
                 source.addWire(wire);
                 lcomps.get(i).getIO().inputConnection(x).addWire(wire);
             }

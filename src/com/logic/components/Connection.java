@@ -60,6 +60,8 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 	 */
 	private int direction;
 
+	private int bitWidth;
+
 	/**
 	 * Constructs a new Connection
 	 * @param lcomp The LComponent that will use this connection
@@ -68,12 +70,13 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 	 * @param index The index of the connection (see Connection.index)
 	 * @param direction The directions of the connection (see Connection.direction)
 	 */
-	public Connection(LComponent lcomp, int x, int y, int index, int direction) {
+	public Connection(LComponent lcomp, int x, int y, int index, int direction, int bitWidth) {
 		wires = new ArrayList<>();
 		this.lcomp = lcomp;
 		setXY(x, y);
 		this.index = index;
 		this.direction = direction;
+		this.bitWidth = bitWidth;
 	}
 
 	public abstract boolean addWire(Wire wire);
@@ -212,6 +215,17 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 	 */
 	public void setDirection(int direction) {
 		this.direction = direction;
+	}
+
+	@Override
+	public int getBitWidth() {
+		return bitWidth;
+	}
+
+	@Override
+	public void changeBitWidth(int bitWidth) {
+		this.bitWidth = bitWidth;
+		//TODO might need to check if wire is consistent
 	}
 
 	@Override
