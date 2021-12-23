@@ -5,6 +5,7 @@ import com.logic.input.Camera;
 import com.logic.input.CircuitEditor;
 import com.logic.main.Window;
 import com.logic.util.ActionUtils;
+import com.logic.util.Debug;
 
 import javax.swing.*;
 import java.awt.*;
@@ -99,6 +100,7 @@ public class CircuitPanel extends JPanel {
 
 		renderer = new Renderer(this);
 		//Debug.loadTestCircuit(this, true);
+		Debug.testCircuit2(this);
 	}
 
 	/**

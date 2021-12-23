@@ -22,6 +22,7 @@ public enum CompType {
 	ZERO(),
 	ONE(),
 	DISPLAY(),
-	CUSTOM();
-	
+	CUSTOM(),
+	SPLIT_OUT(),
+	SPLIT_IN();
 }

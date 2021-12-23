@@ -1,6 +1,8 @@
 package com.logic.util;
 
 import com.logic.components.BasicGate;
+import com.logic.components.CompType;
+import com.logic.components.Splitter;
 import com.logic.ui.CircuitPanel;
 
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class Debug {
 	 * @param cp The CircuitPanel
 	 * @param includeWires Add a wire connecting each gate to the next
 	 */
-	public static void loadTestCircuit(CircuitPanel cp, boolean includeWires){
+	public static void testCircuit1(CircuitPanel cp, boolean includeWires){
 
 		BasicGate lastGate = null;
 
@@ -56,5 +58,9 @@ public class Debug {
 				lastGate = newGate;
 			}
 		}*/
+	}
+
+	public static void testCircuit2(CircuitPanel cp){
+		cp.addLComp(new Splitter(0, 0, CompType.SPLIT_OUT, new int[] {1, 2, 3, 1}));
 	}
 }

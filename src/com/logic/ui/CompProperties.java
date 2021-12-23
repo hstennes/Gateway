@@ -351,7 +351,7 @@ public class CompProperties extends JPanel {
 			else {
 				Wire wire = c.getWire(0);
 				Connection connect = wire.getSourceConnection();
-				s = s + " " + connect.getLcomp().toString() + ", " + NameConverter.nameFromSignal(wire.getSignalOld()) + "<br>";
+				s = s + " " + connect.getLcomp().toString() + ", " + NameConverter.nameFromSignal(wire.getSignal()) + "<br>";
 			}
 		}
 		for(int i = 0; i < io.getNumOutputs(); i++) {
@@ -361,7 +361,7 @@ public class CompProperties extends JPanel {
 			else if(c.numWires() == 1) {
 				Wire wire = c.getWire(0);
 				Connection connect = wire.getDestConnection();
-				s = s + " " + connect.getLcomp().toString() + ", " + NameConverter.nameFromSignal(wire.getSignalOld()) + "<br>";
+				s = s + " " + connect.getLcomp().toString() + ", " + NameConverter.nameFromSignal(wire.getSignal()) + "<br>";
 			}
 			else {
 				s = s + "<ul>";
@@ -370,7 +370,7 @@ public class CompProperties extends JPanel {
 					Connection connect = wire.getDestConnection();
 					if(connect != null) {
 						s = s + "<li>" + connect.getLcomp().toString() + ", " + 
-								NameConverter.nameFromSignal(wire.getSignalOld()) + "</li>";
+								NameConverter.nameFromSignalOld(wire.getSignalOld()) + "</li>";
 					}
 				}
 				s = s + "</ul>";

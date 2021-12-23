@@ -66,9 +66,14 @@ public class NameConverter {
 	 * @param signal The boolean signal
 	 * @return The name of the signal
 	 */
-	public static String nameFromSignal(boolean signal) {
+	@Deprecated
+	public static String nameFromSignalOld(boolean signal) {
 		if(signal) return "High";
 		return "Low";
+	}
+
+	public static String nameFromSignal(int signal){
+		return Integer.toString(signal);
 	}
 	
 }

@@ -5,6 +5,7 @@ import com.logic.engine.LogicWorker;
 import com.logic.util.Constants;
 
 import java.awt.*;
+import java.util.Random;
 
 /**
  * An input component that toggles its state when its clickAction is fired
@@ -29,7 +30,8 @@ public class Switch extends IComponent implements BitWidthEntity {
 	
 	@Override
 	public void update(LogicEngine engine) {
-		io.setOutputOld(0, getState(), engine);
+		//io.setOutputOld(0, getState(), engine);
+		io.setOutput(0, 106, engine);
 	}
 
 	@Override

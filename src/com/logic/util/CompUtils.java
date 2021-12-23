@@ -2,6 +2,7 @@ package com.logic.util;
 
 import com.logic.components.Button;
 import com.logic.components.*;
+import com.logic.ui.Renderer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -281,5 +282,20 @@ public class CompUtils {
 		else if(rotation == Constants.UP) return new Point(y, width - x - 1);
 		else if(rotation == Constants.LEFT) return new Point(width - x - 1, height - y - 1);
 		else return new Point(x, y);
+	}
+
+	/**
+	 * Calculates the positions of each connection so that they are centered and equally spaced in the y direction
+	 * @param xPos The x position that all of the inputs will have
+	 * @param numConnections The number of inputs the component will have
+	 * @return An array of points showing the input positions
+	 */
+	public static Point[] calcEvenConnectionPositions(int xPos, int numConnections){
+		int start = 80 / 2 - Renderer.BASIC_INPUT_SPACING / 2 * (numConnections - 1);
+		Point[] positions = new Point[numConnections];
+		for(int i = 0; i < numConnections; i++){
+			positions[i] = new Point(xPos, start + i * Renderer.BASIC_INPUT_SPACING);
+		}
+		return positions;
 	}
 }
