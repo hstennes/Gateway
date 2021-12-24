@@ -260,14 +260,20 @@ public class Renderer {
         Point barStart = null, barStop = null;
         for(int i = 0; i < io.getNumInputs(); i++) {
             Point result = drawConnection(g2d, io.inputConnection(i), dx, dy);
-            if(i == 0) barStart = result;
-            if(i == io.getNumInputs() - 1) barStop = result;
+            if(lcomp instanceof BasicGate | lcomp instanceof SplitIn) {
+                if (i == 0) barStart = result;
+                if (i == io.getNumInputs() - 1) barStop = result;
+            }
         }
         for(int i = 0; i < io.getNumOutputs(); i++) {
-            drawConnection(g2d, io.outputConnection(i), dx, dy);
+            Point result = drawConnection(g2d, io.outputConnection(i), dx, dy);
+            if(lcomp instanceof SplitOut) {
+                if (i == 0) barStart = result;
+                if (i == io.getNumOutputs() - 1) barStop = result;
+            }
         }
 
-        if(lcomp instanceof BasicGate && io.getNumInputs() > 2) {
+        if(lcomp instanceof BasicGate && io.getNumInputs() > 2 || lcomp instanceof Splitter) {
             g2d.setColor(Color.BLACK);
             g2d.drawLine(barStart.x, barStart.y, barStop.x, barStop.y);
         }

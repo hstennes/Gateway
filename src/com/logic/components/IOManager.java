@@ -25,7 +25,7 @@ public class IOManager implements Deletable, Serializable {
 	/**
 	 * The LComponent using this ConnectionManager
 	 */
-	private LComponent lcomp;
+	private final LComponent lcomp;
 	
 	/**
 	 * Constructs a new IOManager
@@ -38,8 +38,9 @@ public class IOManager implements Deletable, Serializable {
 	}
 	
 	/**
-	 * Returns the signal coming into the input at the specified index.
-	 * @param index The index of the input to get
+	 * Returns the first bit of the signal being received at the specified index. Exists for compatibility with one-bit
+	 * parts of the application.
+	 * @param index The index of the input
 	 * @return The signal of the specified input
 	 */
 	@Deprecated
@@ -51,10 +52,25 @@ public class IOManager implements Deletable, Serializable {
 		return false;
 	}
 
+	/**
+	 * Gets the signal being received at the specified index, or 0 if no wire is connected. The signal is correct up to
+	 * the bit width of the previous output connection, but may contain random bits after that point.
+	 * @param index The index of the input
+	 * @return The signal of the specified input
+	 */
 	public int getInput(int index){
 		Connection input = inputs.get(index);
 		if(input.numWires() > 0) return input.getWire(0).getSignal();
 		return 0;
+	}
+
+	/**
+	 * Same as getInput, but overwrites all extraneous bits in the integer with 0s to guarantee that the bit width is accurate.
+	 * @param index The index of the input
+	 * @return The signal of the specified input
+	 */
+	public int getInputStrict(int index){
+		return getInput(index) & (1 << inputs.get(index).getBitWidth()) - 1;
 	}
 	
 	/**
@@ -123,7 +139,7 @@ public class IOManager implements Deletable, Serializable {
 	/**
 	 * Moves all connections to the positions specified in the given ConnectionLayout. The order in which the positions are applied to the
 	 * connections matches the order in which the connections were originally added to the manager
-	 * @param layout
+	 * @param layout The connection layout
 	 */
 	public void setConnectionLayout(ConnectionLayout layout) {
 		for(int i = 0; i < layout.getNumConnections(); i++) {
@@ -137,10 +153,20 @@ public class IOManager implements Deletable, Serializable {
 		}
 	}
 
+	/**
+	 * Returns the input connection at the specified index
+	 * @param index The index
+	 * @return The input connection
+	 */
 	public InputPin inputConnection(int index){
 		return inputs.get(index);
 	}
 
+	/**
+	 * Returns the output connection at the specified index
+	 * @param index The index
+	 * @return The output connection
+	 */
 	public OutputPin outputConnection(int index){
 		return outputs.get(index);
 	}
@@ -170,9 +196,8 @@ public class IOManager implements Deletable, Serializable {
 	}
 
 	/**
-	 * Gets the full bounding area of the component, including connections. This is different from LComponent.getBounds,
-	 * which includes only the space taken up by the main component image.
-	 * TODO Improve this documentation
+	 * Returns the rectangle that fits around all connections, relative to the origin of the component. The width and height are always positive,
+	 * but the x position is often negative because input connections are present on the left side of the component.
 	 * @return The connection bounds
 	 */
 	public Rectangle getConnectionBounds(){
@@ -200,12 +225,8 @@ public class IOManager implements Deletable, Serializable {
 
 	@Override
 	public void delete() {
-		for(int i = 0; i < inputs.size(); i++) {
-			inputs.get(i).delete();
-		}
-		for(int i = 0; i < outputs.size(); i++) {
-			outputs.get(i).delete();
-		}
+		for (InputPin input : inputs) input.delete();
+		for (OutputPin output : outputs) output.delete();
 	}
 
 	/**

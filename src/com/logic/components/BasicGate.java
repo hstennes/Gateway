@@ -150,7 +150,7 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 	 * @param numConnections The number of inputs the component will have
 	 * @return An array of points showing the input positions
 	 */
-	public static Point[] calcInputPositions(int xPos, int numConnections){
+	private Point[] calcInputPositions(int xPos, int numConnections){
 		int start = 80 / 2 - Renderer.BASIC_INPUT_SPACING / 2 * (numConnections - 1);
 		Point[] positions = new Point[numConnections];
 		for(int i = 0; i < numConnections; i++){

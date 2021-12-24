@@ -1,8 +1,6 @@
 package com.logic.util;
 
-import com.logic.components.BasicGate;
-import com.logic.components.CompType;
-import com.logic.components.Splitter;
+import com.logic.components.*;
 import com.logic.ui.CircuitPanel;
 
 import java.util.HashMap;
@@ -61,6 +59,8 @@ public class Debug {
 	}
 
 	public static void testCircuit2(CircuitPanel cp){
-		cp.addLComp(new Splitter(0, 0, CompType.SPLIT_OUT, new int[] {1, 2, 3, 1}));
+		cp.addLComp(new SplitOut(0, 0, new int[] {1, 1, 1, 1, 1, 1, 1}));
+
+		cp.addLComp(new SplitIn(300, 0, new int[] {1, 1, 1, 2}));
 	}
 }
