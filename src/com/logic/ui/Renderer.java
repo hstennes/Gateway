@@ -15,6 +15,9 @@ public class Renderer {
 
     public final static int CONNECT_RAD = 9;
 
+    /**
+     * Don't remember how this worked
+     */
     public final static int[][] rotationAnchorTranslate = new int[][]{
             new int[] {0, 1},
             new int[]{0, 3},
@@ -36,14 +39,34 @@ public class Renderer {
      */
     public static final int BASIC_INPUT_SPACING = 50;
 
-
+    /**
+     * The length of the line extending from each connection
+     */
     public static final int CONNECT_LENGTH = 37;
 
     /**
-     * The x and y length of the divider lines drawn around the center rectangle
+     * The spacing of bits within a multi bit switch
+     */
+    public static final int SWITCH_BIT_SPACING = 55;
+
+    /**
+     * The font used to display the label of the component
+     */
+    public static final Font CUSTOM_LABEL_FONT = new Font("Arial", Font.PLAIN, 15);
+
+    /**
+     * The font used for multi bit switches
+     */
+    public static final Font SWITCH_FONT = new Font("Arial", Font.PLAIN, 40);
+
+    /**
+     * The x and y length of the divider lines drawn around the center rectangle in the custom builder
      */
     private static final int CUSTOM_DIVIDER_SIZE = 1000;
 
+    /**
+     * The CircuitPanel instance
+     */
     private CircuitPanel cp;
 
     /**
@@ -197,10 +220,10 @@ public class Renderer {
     }
 
     public CachedImage renderComponentImage(LComponent lcomp, float zoom){
+        //set up BufferedImage and graphics object, same for all components
         Rectangle lb = lcomp.getBoundsRight();
         Rectangle cb = lcomp.getIO().getConnectionBounds();
         CompType type = lcomp.getType();
-
         CachedImage image = new CachedImage(
                 (int) (cb.width * zoom),
                 (int) (cb.height * zoom),
@@ -212,13 +235,20 @@ public class Renderer {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.scale(zoom, zoom);
 
+        //Draw connections, same for all components
         drawConnections(g2d, lcomp, -cb.x, -cb.y);
 
+        //Special rendering currently for Custom components and multi bit swithces
         if(type == CompType.CUSTOM) {
             drawCustomBody(g2d, (Custom) lcomp, -cb.x, -cb.y);
             return image;
         }
+        if(type == CompType.SWITCH && ((Switch) lcomp).getBitWidth() > 1){
+            drawSwitch(g2d, (Switch) lcomp, -cb.x, -cb.y);
+            return image;
+        }
 
+        //Otherwise render component image if there is one
         GraphicsNode svg = lcomp.getActiveImage();
         if(svg != null) {
             int size = Math.max(lb.width, lb.height);
@@ -229,12 +259,13 @@ public class Renderer {
             svg.paint(g2d);
         }
 
+        //Final step of adding marks for basic gates
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
         if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR || type == CompType.NOT) drawInverted(g2d, -cb.x, -cb.y);
         return image;
     }
 
-    public void drawCustomBody(Graphics2D g2d, Custom custom, int dx, int dy){
+    private void drawCustomBody(Graphics2D g2d, Custom custom, int dx, int dy){
         Rectangle bounds = custom.getBoundsRight();
         bounds.translate(dx, dy);
         g2d.setColor(Color.WHITE);
@@ -243,11 +274,31 @@ public class Renderer {
         g2d.setStroke(new BasicStroke(4));
         g2d.draw(bounds);
 
-        g2d.setFont(Custom.LABEL_FONT);
-        FontMetrics metrics = g2d.getFontMetrics(Custom.LABEL_FONT);
-        int stringWidth = metrics.stringWidth(custom.getLabel());
-        int stringHeight = metrics.getHeight();
-        g2d.drawString(custom.getLabel(), (bounds.width - stringWidth) / 2 + dx, (bounds.height - stringHeight) / 2 + dy + stringHeight);
+        g2d.setFont(CUSTOM_LABEL_FONT);
+        FontMetrics metrics = g2d.getFontMetrics(CUSTOM_LABEL_FONT);
+        g2d.drawString(custom.getLabel(),
+                (bounds.width - metrics.stringWidth(custom.getLabel())) / 2 + dx,
+                (bounds.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
+    }
+
+    private void drawSwitch(Graphics2D g2d, Switch sw, int dx, int dy){
+        Rectangle bounds = sw.getBoundsRight();
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(dx, dy, bounds.width, bounds.height);
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(6));
+        g2d.drawRect(dx, dy, bounds.width, bounds.height);
+
+        g2d.setFont(SWITCH_FONT);
+        FontMetrics metrics = g2d.getFontMetrics(SWITCH_FONT);
+
+        int state = sw.getState();
+        for(int i = 0; i < sw.getBitWidth(); i++){
+            int bit = (state >> i) & 1;
+            g2d.drawString(Integer.toString(bit),
+                    bounds.width - SWITCH_BIT_SPACING * i - 40,
+                    (bounds.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
+        }
     }
 
     /**
@@ -255,7 +306,7 @@ public class Renderer {
      * @param g2d The graphics object to use
      * @param lcomp The LComponent
      */
-    public void drawConnections(Graphics2D g2d, LComponent lcomp, int dx, int dy){
+    private void drawConnections(Graphics2D g2d, LComponent lcomp, int dx, int dy){
         IOManager io = lcomp.getIO();
         Point barStart = null, barStop = null;
         for(int i = 0; i < io.getNumInputs(); i++) {
@@ -318,7 +369,7 @@ public class Renderer {
      * Draws a curved line to show that a gate is an XOR or an XNOR
      * @param g2d The Graphics2D object to use
      */
-    public void drawExclusive(Graphics2D g2d, int dx, int dy){
+    private void drawExclusive(Graphics2D g2d, int dx, int dy){
         GeneralPath shape = new GeneralPath();
         shape.moveTo(dx - 8, dy + 3);
         shape.curveTo(dx + 5, dy + 30, dx + 5, dy + 50, dx - 8, dy + 77);
@@ -331,7 +382,7 @@ public class Renderer {
      * Draws a dot to indicate that the gate is a "not" variant
      * @param g2d The Graphics2D object to use
      */
-    public void drawInverted(Graphics2D g2d, int dx, int dy){
+    private void drawInverted(Graphics2D g2d, int dx, int dy){
         g2d.setStroke(new BasicStroke(2));
         g2d.setColor(Color.WHITE);
         g2d.fillOval(dx + 75, dy + 33, 14, 14);

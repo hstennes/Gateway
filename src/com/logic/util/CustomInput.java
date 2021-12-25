@@ -31,7 +31,7 @@ public class CustomInput extends CustomNode {
 	public CustomInput(Switch sw) {
 		super(sw);
 		this.sw = sw;
-		prevState = sw.getState();
+		prevState = sw.getStateOld();
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class CustomInput extends CustomNode {
 	 */
 	public void addIfNecessary(boolean state, ArrayList<LComponent> startingComps) {
 		if(state != prevState) {
-			sw.setState(state);
+			sw.setStateOld(state);
 			startingComps.add(sw);
 			prevState = state;
 		}

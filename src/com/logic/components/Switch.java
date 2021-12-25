@@ -2,10 +2,10 @@ package com.logic.components;
 
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicWorker;
+import com.logic.ui.Renderer;
 import com.logic.util.Constants;
 
 import java.awt.*;
-import java.util.Random;
 
 /**
  * An input component that toggles its state when its clickAction is fired
@@ -30,13 +30,13 @@ public class Switch extends IComponent implements BitWidthEntity {
 	
 	@Override
 	public void update(LogicEngine engine) {
-		//io.setOutputOld(0, getState(), engine);
-		io.setOutput(0, 107, engine);
+		io.setOutputOld(0, getStateOld(), engine);
+		//io.setOutput(0, 107, engine);
 	}
 
 	@Override
 	public void clickAction(Point p) {
-		setState(!getState());
+		setStateOld(!getStateOld());
 		LogicWorker.startLogic(this);
 	}
 
@@ -45,7 +45,7 @@ public class Switch extends IComponent implements BitWidthEntity {
 
 	@Override
 	public int getActiveImageIndex(){
-		if(getState()) return 1;
+		if(getStateOld()) return 1;
 		return 0;
 	}
 	
@@ -54,18 +54,30 @@ public class Switch extends IComponent implements BitWidthEntity {
 		Switch result = new Switch(x, y);
 		result.setRotation(rotation);
 		result.setName(getName());
-		result.setState(getState());
+		result.setStateOld(getStateOld());
 		result.setShowLabel(isShowLabel());
 		return result;
 	}
 
 	@Override
 	public int getBitWidth() {
-		return io.outputConnection(0).getBitWidth();
+		if(io.getNumOutputs() == 1) return io.outputConnection(0).getBitWidth();
+		return 1;
+	}
+	
+	@Override
+	public Rectangle getBoundsRight(){
+		Rectangle imageBounds = super.getBoundsRight();
+		imageBounds.setBounds(imageBounds.x, imageBounds.y, Renderer.SWITCH_BIT_SPACING * getBitWidth(), imageBounds.height);
+		return imageBounds;
 	}
 
 	@Override
 	public void changeBitWidth(int bitWidth) {
-		io.outputConnection(0).changeBitWidth(bitWidth);
+		Connection c = io.outputConnection(0);
+		x += Renderer.SWITCH_BIT_SPACING * (c.getBitWidth() - bitWidth);
+		c.changeBitWidth(bitWidth);
+		Rectangle bounds = getBoundsRight();
+		setClickAction(15, 15, bounds.width - 30, bounds.height - 30);
 	}
 }

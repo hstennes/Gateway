@@ -22,7 +22,7 @@ public class IconLoader {
 	/**
 	 * The number of images used for drawing circuits
 	 */
-	private final int numLogicImages = 14;
+	private final int numLogicImages = 15;
 
 	/**
 	 * The number of component icons used in the insert toolbar
@@ -37,12 +37,12 @@ public class IconLoader {
 	/**
 	 * Shows the width of each logic image
 	 */
-	public final int[] imageWidth = new int[] {80, 80, 80, 60, 60, 80, 80, 60, 60, 60, 60, 80, 80, 100};
+	public final int[] imageWidth = new int[] {80, 80, 80, 60, 60, 80, 80, 60, 60, 60, 60, 80, 80, 100, 80};
 
 	/**
 	 * Shows the height of each logic image
 	 */
-	public final int[] imageHeight = new int[] {80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 100};
+	public final int[] imageHeight = new int[] {80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 100, 60};
 
 	/**
 	 * The sprite sheet that contains all the images that the program uses
@@ -92,6 +92,7 @@ public class IconLoader {
 		logicSVGs[11] = loadSvg("/clock_off.svg");
 		logicSVGs[12] = loadSvg("/clock_on.svg");
 		logicSVGs[13] = loadSvg("/display.svg");
+		logicSVGs[14] = loadSvg("/drawing.svg");
 
 		toolBarIcons[0] = new ImageIcon(loadImage("/new_file.png"));
 		toolBarIcons[1] = new ImageIcon(loadImage("/open_file.png"));

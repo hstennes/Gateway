@@ -54,9 +54,10 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	private Rectangle upClickBounds;
 	
 	/**
-	 * The on or off state of this IComponent, which should only be accessed through synchronized getter and setter methods
+	 * The state of this IComponent, which should only be accessed through synchronized getter and setter methods. Valid state values
+	 * are determined by the subclass.
 	 */
-	private boolean state;
+	private int state;
 	
 	/**
 	 * Constructs a new IComponent
@@ -160,15 +161,26 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	 * Returns the state of this IComponent
 	 * @return The state
 	 */
-	public synchronized boolean getState() {
-		return state;
+	@Deprecated
+	public synchronized boolean getStateOld() {
+		return (state & 1) == 1;
 	}
 
 	/**
 	 * Sets the state of this IComponent
 	 * @param state The new state
 	 */
-	public synchronized void setState(boolean state) {
+	@Deprecated
+	public synchronized void setStateOld(boolean state) {
+		if(state) this.state |= 1;
+		else this.state &= ~1;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
 		this.state = state;
 	}
 

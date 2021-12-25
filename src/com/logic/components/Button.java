@@ -31,20 +31,20 @@ public class Button extends IComponent {
 	
 	@Override
 	public void update(LogicEngine engine) {
-		io.setOutputOld(0, getState(), engine);
+		io.setOutputOld(0, getStateOld(), engine);
 	}
 
 	@Override
 	public void clickAction(Point p) {
-		setState(true);
+		setStateOld(true);
 		LogicWorker.startLogic(this);
 	}
 
 	@Override
 	public void notification(int type) {
 		if(type == RELEASED) {
-			if(getState()) {
-				setState(false);
+			if(getStateOld()) {
+				setStateOld(false);
 				LogicWorker.startLogic(this);
 			}
 		}
@@ -52,7 +52,7 @@ public class Button extends IComponent {
 
 	@Override
 	public int getActiveImageIndex(){
-		if(getState()) return 1;
+		if(getStateOld()) return 1;
 		return 0;
 	}
 	

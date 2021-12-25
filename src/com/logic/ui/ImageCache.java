@@ -53,11 +53,20 @@ public class ImageCache {
         String ext = "";
         if(lcomp instanceof BasicGate) ext = Integer.toString(lcomp.getIO().getNumInputs());
         else if(lcomp instanceof Light) ext = lcomp.getIO().getInputOld(0) ? "1" : "0";
-        else if(lcomp instanceof IComponent) ext = ((IComponent) lcomp).getState() ? "1" : "0";
+        else if(lcomp instanceof Switch) ext = ((Switch) lcomp).getState() + "b" + ((Switch) lcomp).getBitWidth();
+        else if(lcomp instanceof Button) ext = Integer.toString(((Button) lcomp).getState());
         else if(lcomp instanceof Clock) ext = ((Clock) lcomp).isOn() ? "1" : "0";
         else if(lcomp instanceof Custom) ext = ((Custom) lcomp).getLabel();
+        else if(lcomp instanceof Splitter) ext = arrayString(((Splitter) lcomp).getSplit());
         return lcomp.getType().toString() + ext;
         //TODO add correct caching for Splitter, Display
+    }
+
+    private String arrayString(int[] arr){
+        StringBuilder str = new StringBuilder();
+        for(int i = 0; i < arr.length - 1; i++) str.append(arr[i]).append(",");
+        str.append(arr[arr.length - 1]);
+        return str.toString();
     }
 
     public void printContents(){

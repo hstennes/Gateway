@@ -33,11 +33,11 @@ public class WireBuilder {
 	 * The current location of the mouse in the coordinate system of the CircuitPanel
 	 */
 	private Point mousePoint;
-	
+
 	/**
-	 * The type of connection that workingWire was first attached to (Connection.INPUT or Connection.OUTPUT)
+	 * The connection that was used to start drawing the wire
 	 */
-	private int prevConnectionType;
+	private Connection startConnection;
 	
 	/**
 	 * Constructs a new WireBuilder
@@ -54,7 +54,7 @@ public class WireBuilder {
 	 */
 	public void startWire(Connection connection) {
 		workingWire = new Wire();
-		prevConnectionType = connection.getType();
+		startConnection = connection;
 		boolean successful = connection.addWire(workingWire);
 		if(!successful) workingWire = null;
 		else {
@@ -68,9 +68,10 @@ public class WireBuilder {
 	 * @param connection The Connection to connect the wire to
 	 */
 	public void endWire(Connection connection) {
-		if(workingWire != null && prevConnectionType != connection.getType()) {
+		if(workingWire != null && startConnection.getType() != connection.getType()) {
 			connection.addWire(workingWire);
-			LogicWorker.startLogic(connection.getLcomp());
+			LogicWorker.startLogic(startConnection.getType() == Connection.OUTPUT ?
+					connection.getLcomp() : startConnection.getLcomp());
 			workingWire = null;
 			revision.saveState(new CircuitState(cp));
 		}

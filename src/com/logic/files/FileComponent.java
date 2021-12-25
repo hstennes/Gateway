@@ -78,7 +78,7 @@ public class FileComponent {
         name = lcomp.getName().equals(CompProperties.defaultName) ? "" : lcomp.getName();
         com = lcomp.getComments().equals(CompProperties.defaultComments) ? "" : lcomp.getComments();
         if(lcomp instanceof LabeledComponent) showLabel = ((LabeledComponent) lcomp).isShowLabel();
-        if(type == CompType.SWITCH) state = ((Switch) lcomp).getState();
+        if(type == CompType.SWITCH) state = ((Switch) lcomp).getStateOld();
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
         else if(type == CompType.CUSTOM) {
             cTypeId = ((Custom) lcomp).getTypeID();
@@ -117,7 +117,7 @@ public class FileComponent {
     public LComponent makeComponent(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
         if(type.toString().equals("CUSTOM")) return makeCustom(cTypes, cData, topLevel, providedCDataId);
         LComponent lcomp = applyProperties(CompUtils.makeComponent(type.toString(), pos[0], pos[1]));
-        if(type == CompType.SWITCH) ((Switch) lcomp).setState(state);
+        if(type == CompType.SWITCH) ((Switch) lcomp).setStateOld(state);
         if(type == CompType.CLOCK) ((Clock) lcomp).setDelay(delay);
         if(lcomp instanceof LabeledComponent) ((LabeledComponent) lcomp).setShowLabel(showLabel);
         if(lcomp instanceof BasicGate) ((BasicGate) lcomp).setNumInputs(input.length);

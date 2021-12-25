@@ -3,6 +3,7 @@ package com.logic.components;
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicWorker;
 import com.logic.ui.CircuitPanel;
+import com.logic.ui.Renderer;
 import com.logic.util.*;
 
 import java.awt.*;
@@ -17,11 +18,6 @@ import java.util.HashMap;
 public class Custom extends SComponent {
 
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * The font used to display the label of the component
-	 */
-	public static final Font LABEL_FONT = new Font("Arial", Font.PLAIN, 15);
 	
 	/**
 	 * Maps input indexes to input nodes 
@@ -76,7 +72,7 @@ public class Custom extends SComponent {
 		inputs = new HashMap<Integer, CustomInput>();
 		outputs = new HashMap<Integer, CustomOutput>();
 		CustomHelper helper = new CustomHelper(content);
-		width = helper.chooseWidth(label, LABEL_FONT);
+		width = helper.chooseWidth(label, Renderer.CUSTOM_LABEL_FONT);
 		height = helper.chooseHeight();
 		
 		for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
@@ -157,14 +153,6 @@ public class Custom extends SComponent {
 			innerComps.get(i).delete();
 		}
 		super.delete();
-	}
-	
-	/**
-	 * Draws the label of this component at the center of the component
-	 * @param g2d The Graphics object to use
-	 */
-	private void drawLabel(Graphics2D g2d) {
-
 	}
 
 	/**
