@@ -17,12 +17,12 @@ public class CustomInput extends CustomNode {
 	/**
 	 * The state that was given to this CustomInput the last time addIfNecessary(...) was called
 	 */
-	private boolean prevState;
+	private int prevState;
 	
 	/**
 	 * The internal Switch that corresponds to an input to the Custom component
 	 */
-	private Switch sw;
+	private final Switch sw;
 	
 	/**
 	 * Constructs a new custom input by calling the super constructor and saving the given switch
@@ -31,7 +31,7 @@ public class CustomInput extends CustomNode {
 	public CustomInput(Switch sw) {
 		super(sw);
 		this.sw = sw;
-		prevState = sw.getStateOld();
+		prevState = sw.getState();
 	}
 	
 	/**
@@ -39,12 +39,11 @@ public class CustomInput extends CustomNode {
 	 * @param state The state of the input that corresponds to this CustomInput
 	 * @param startingComps The list of components that will be run through a LogicEngine to update the Custom component
 	 */
-	public void addIfNecessary(boolean state, ArrayList<LComponent> startingComps) {
+	public void addIfNecessary(int state, ArrayList<LComponent> startingComps) {
 		if(state != prevState) {
-			sw.setStateOld(state);
+			sw.setState(state);
 			startingComps.add(sw);
 			prevState = state;
 		}
 	}
-	
 }

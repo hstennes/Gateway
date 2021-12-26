@@ -22,38 +22,38 @@ public class Custom extends SComponent {
 	/**
 	 * Maps input indexes to input nodes 
 	 */
-	private HashMap<Integer, CustomInput> inputs;
+	private final HashMap<Integer, CustomInput> inputs;
 	
 	/**
 	 * Maps output indexes to output nodes
 	 */
-	private HashMap<Integer, CustomOutput> outputs;
+	private final HashMap<Integer, CustomOutput> outputs;
 	
 	/**
 	 * The content map that is given when the component is constructed, used for copying the component
 	 */
-	private LComponent[][] content;
+	private final LComponent[][] content;
 	
 	/**
 	 * The list of all LComponents contained within this component, used for displaying the inside of the component, copying the component,
 	 * and ensuring that this component functions properly if it happens to contain SComponents
 	 */
-	private ArrayList<LComponent> innerComps;
+	private final ArrayList<LComponent> innerComps;
 	
 	/**
 	 * The width and height of the body of the component in pixels
 	 */
-	private int width, height;
+	private final int width, height;
 	
 	/**
 	 * The label that appears on the custom component (ex: "Adder")
 	 */
-	private String label;
+	private final String label;
 
 	/**
 	 * An ID to show that different custom objects are of the same "type".  Assigned by CustomCreator.
 	 */
-	private int typeID;
+	private final int typeID;
 	
 	/**
 	 * @param x The x position
@@ -69,8 +69,8 @@ public class Custom extends SComponent {
 		this.content = content;
 		this.innerComps = innerComps;
 		this.typeID = typeID;
-		inputs = new HashMap<Integer, CustomInput>();
-		outputs = new HashMap<Integer, CustomOutput>();
+		inputs = new HashMap<>();
+		outputs = new HashMap<>();
 		CustomHelper helper = new CustomHelper(content);
 		width = helper.chooseWidth(label, Renderer.CUSTOM_LABEL_FONT);
 		height = helper.chooseHeight();
@@ -87,9 +87,8 @@ public class Custom extends SComponent {
 	 */
 	@Override
 	public void start(CircuitPanel cp) {
-		for(int i = 0; i < innerComps.size(); i++) {
-			LComponent lcomp = innerComps.get(i);
-			if(lcomp instanceof SComponent) {
+		for (LComponent lcomp : innerComps) {
+			if (lcomp instanceof SComponent) {
 				SComponent scomp = (SComponent) lcomp;
 				scomp.setCustom(this);
 				scomp.start(cp);
@@ -105,15 +104,14 @@ public class Custom extends SComponent {
 	@Override
 	public void update(LogicEngine engine) {
 		ArrayList<LComponent> startingComps = new ArrayList<LComponent>();
-		for(int i = 0; i < io.getNumInputs(); i++) inputs.get(i).addIfNecessary(io.getInputOld(i), startingComps);
-		for(int i = 0; i < innerComps.size(); i++) {
-			LComponent lcomp = innerComps.get(i);
-			if(lcomp instanceof SComponent) startingComps.add(lcomp);
+		for(int i = 0; i < io.getNumInputs(); i++) inputs.get(i).addIfNecessary(io.getInput(i), startingComps);
+		for (LComponent lcomp : innerComps) {
+			if (lcomp instanceof SComponent) startingComps.add(lcomp);
 		}
 		
 		LogicEngine le = new LogicEngine(startingComps);
 		le.doLogic();
-		for(int i = 0; i < io.getNumOutputs(); i++) io.setOutputOld(i, outputs.get(i).getState(), engine);
+		for(int i = 0; i < io.getNumOutputs(); i++) io.setOutput(i, outputs.get(i).getState(), engine);
 	}
 	
 	/**
@@ -149,9 +147,7 @@ public class Custom extends SComponent {
 	 */
 	@Override
 	public void delete() {
-		for(int i = 0; i < innerComps.size(); i++) {
-			innerComps.get(i).delete();
-		}
+		for (LComponent innerComp : innerComps) innerComp.delete();
 		super.delete();
 	}
 
@@ -177,10 +173,12 @@ public class Custom extends SComponent {
 	private void initConnection(LComponent lcomp, Point connectionPoint, int sideNum) {
 		if(lcomp instanceof Switch) {
 			int connectionIndex = io.addConnection(connectionPoint.x, connectionPoint.y, Connection.INPUT, sideNum);
+			io.inputConnection(connectionIndex).changeBitWidth(((Switch) lcomp).getBitWidth());
 			inputs.put(connectionIndex, new CustomInput((Switch) lcomp));
 		}
 		else if(lcomp instanceof Light) {
 			int connectionIndex = io.addConnection(connectionPoint.x, connectionPoint.y, Connection.OUTPUT, sideNum);
+			io.outputConnection(connectionIndex).changeBitWidth(((Light) lcomp).getBitWidth());
 			outputs.put(connectionIndex, new CustomOutput((Light) lcomp));
 		}
 	}

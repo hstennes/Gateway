@@ -14,7 +14,7 @@ public class CustomOutput extends CustomNode {
 	/**
 	 * The internal light that corresponds to an output in the Custom component
 	 */
-	private Light lt;
+	private final Light lt;
 	
 	/**
 	 * Constructs a new CustomOutput by calling the super constructor and saving the given Light
@@ -29,8 +29,8 @@ public class CustomOutput extends CustomNode {
 	 * Returns the state of the light, which should be set as the output of the corresponding connection in the CustomComponent
 	 * @return The state of the light (its input at index 0)
 	 */
-	public boolean getState() {
-		return lt.getIO().getInputOld(0);
+	public int getState() {
+		return lt.getIO().getInput(0);
 	}
 	
 }
