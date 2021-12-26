@@ -1,7 +1,10 @@
 package com.logic.components;
 
 import com.logic.engine.LogicEngine;
+import com.logic.ui.Renderer;
 import com.logic.util.Constants;
+
+import java.awt.*;
 
 /**
  * A simple output component that appears lit up when it receives a high signal and off when it receives a low signal
@@ -42,12 +45,38 @@ public class Light extends LabeledComponent implements BitWidthEntity {
 	}
 
 	@Override
+	public Rectangle getBoundsRight(){
+		Rectangle imageBounds = super.getBoundsRight();
+		if(getBitWidth() == 1) return imageBounds;
+		imageBounds.setBounds(imageBounds.x, imageBounds.y,
+				Renderer.SWITCH_BIT_SPACING * getBitWidth(),
+				Renderer.MULTI_BIT_SL_HEIGHT);
+		return imageBounds;
+	}
+
+	@Override
 	public int getBitWidth() {
-		return io.inputConnection(0).getBitWidth();
+		if(io.getNumInputs() == 1) return io.inputConnection(0).getBitWidth();
+		return 1;
 	}
 
 	@Override
 	public void changeBitWidth(int bitWidth) {
-		io.inputConnection(0).changeBitWidth(bitWidth);
+		Connection c = io.inputConnection(0);
+		int oldBits = getBitWidth();
+		if(oldBits == bitWidth) return;
+
+		if(bitWidth == 1) y -= Renderer.MULTI_BIT_SL_HEIGHT;
+		else if(oldBits == 1) y += Renderer.MULTI_BIT_SL_HEIGHT;
+		c.changeBitWidth(bitWidth);
+
+		if(bitWidth == 1) {
+			c.setXY(30, 100);
+			c.setDirection(Constants.DOWN);
+		}
+		else {
+			c.setXY(-20, getBoundsRight().height / 2);
+			c.setDirection(Constants.LEFT);
+		}
 	}
 }

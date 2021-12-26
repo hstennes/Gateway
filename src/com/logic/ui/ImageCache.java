@@ -52,7 +52,7 @@ public class ImageCache {
     public String getHashString(LComponent lcomp){
         String ext = "";
         if(lcomp instanceof BasicGate) ext = Integer.toString(lcomp.getIO().getNumInputs());
-        else if(lcomp instanceof Light) ext = lcomp.getIO().getInputOld(0) ? "1" : "0";
+        else if(lcomp instanceof Light) ext = lcomp.getIO().getInput(0) + "b" + ((Light) lcomp).getBitWidth();
         else if(lcomp instanceof Switch) ext = ((Switch) lcomp).getState() + "b" + ((Switch) lcomp).getBitWidth();
         else if(lcomp instanceof Button) ext = Integer.toString(((Button) lcomp).getState());
         else if(lcomp instanceof Clock) ext = ((Clock) lcomp).isOn() ? "1" : "0";
@@ -67,11 +67,5 @@ public class ImageCache {
         for(int i = 0; i < arr.length - 1; i++) str.append(arr[i]).append(",");
         str.append(arr[arr.length - 1]);
         return str.toString();
-    }
-
-    public void printContents(){
-        Set<String> keys = images.keySet();
-        for(String key : keys) System.out.print(key + " ");
-        System.out.println();
     }
 }

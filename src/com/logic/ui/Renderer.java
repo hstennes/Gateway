@@ -50,6 +50,11 @@ public class Renderer {
     public static final int SWITCH_BIT_SPACING = 35;
 
     /**
+     * The height of "switches" and "lights" when in multi-bit form
+     */
+    public static final int MULTI_BIT_SL_HEIGHT = 40;
+
+    /**
      * The font used to display the label of the component
      */
     public static final Font CUSTOM_LABEL_FONT = new Font("Arial", Font.PLAIN, 15);
@@ -238,13 +243,23 @@ public class Renderer {
         //Draw connections, same for all components
         drawConnections(g2d, lcomp, -cb.x, -cb.y);
 
-        //Special rendering currently for Custom components and multi bit swithces
+        //Special rendering currently for Custom, multi bit switch, multi bit light
         if(type == CompType.CUSTOM) {
             drawCustomBody(g2d, (Custom) lcomp, -cb.x, -cb.y);
             return image;
         }
         if(type == CompType.SWITCH && ((Switch) lcomp).getBitWidth() > 1){
-            drawSwitch(g2d, (Switch) lcomp, -cb.x, -cb.y);
+            drawSignalBox(g2d, lb,
+                    ((Switch) lcomp).getState(),
+                    ((Switch) lcomp).getBitWidth(),
+                    -cb.x, -cb.y);
+            return image;
+        }
+        if(type == CompType.LIGHT && ((Light) lcomp).getBitWidth() > 1){
+            drawSignalBox(g2d, lb,
+                    lcomp.getIO().getInput(0),
+                    ((Light) lcomp).getBitWidth(),
+                    -cb.x, -cb.y);
             return image;
         }
 
@@ -281,23 +296,21 @@ public class Renderer {
                 (bounds.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
     }
 
-    private void drawSwitch(Graphics2D g2d, Switch sw, int dx, int dy){
-        Rectangle bounds = sw.getBoundsRight();
+    private void drawSignalBox(Graphics2D g2d, Rectangle lb, int signal, int bitWidth, int dx, int dy){
         g2d.setColor(Color.WHITE);
-        g2d.fillRect(dx, dy, bounds.width, bounds.height);
+        g2d.fillRect(dx, dy, lb.width, lb.height);
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(4));
-        g2d.drawRect(dx + 2, dy + 2, bounds.width - 2, bounds.height - 4);
+        g2d.drawRect(dx + 2, dy + 2, lb.width - 4, lb.height - 4);
 
         g2d.setFont(SWITCH_FONT);
         FontMetrics metrics = g2d.getFontMetrics(SWITCH_FONT);
-        int state = sw.getState();
-        for(int i = 0; i < sw.getBitWidth(); i++){
-            String bit = Integer.toString((state >> i) & 1);
+        for(int i = 0; i < bitWidth; i++){
+            String bit = Integer.toString((signal >> i) & 1);
             int strWidth = metrics.stringWidth(bit);
             g2d.drawString(bit,
-                    bounds.width - SWITCH_BIT_SPACING * (i + 1) + (SWITCH_BIT_SPACING - strWidth) / 2,
-                    (bounds.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
+                    dx + lb.width - SWITCH_BIT_SPACING * (i + 1) + (SWITCH_BIT_SPACING - strWidth) / 2,
+                    dy + (lb.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
         }
     }
 

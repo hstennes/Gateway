@@ -16,13 +16,9 @@ public class Switch extends IComponent implements BitWidthEntity {
 	
 	private static final long serialVersionUID = 1L;
 
-	private static final int MULTI_BIT_HEIGHT = 40;
-
 	private static final int SINGLE_BIT_CLICK_PADDING = 15;
 
 	private static final int MULTI_BIT_CLICK_PADDING = 5;
-
-	private static final int MULTI_BIT_SPACE_BETWEEN = 5;
 	
 	/**
 	 * Constructs a new switch
@@ -71,19 +67,21 @@ public class Switch extends IComponent implements BitWidthEntity {
 		result.changeBitWidth(getBitWidth());
 		return result;
 	}
-
-	@Override
-	public int getBitWidth() {
-		if(io.getNumOutputs() == 1) return io.outputConnection(0).getBitWidth();
-		return 1;
-	}
 	
 	@Override
 	public Rectangle getBoundsRight(){
 		Rectangle imageBounds = super.getBoundsRight();
 		if(getBitWidth() == 1) return imageBounds;
-		imageBounds.setBounds(imageBounds.x, imageBounds.y, Renderer.SWITCH_BIT_SPACING * getBitWidth(), MULTI_BIT_HEIGHT);
+		imageBounds.setBounds(imageBounds.x, imageBounds.y,
+				Renderer.SWITCH_BIT_SPACING * getBitWidth(),
+				Renderer.MULTI_BIT_SL_HEIGHT);
 		return imageBounds;
+	}
+
+	@Override
+	public int getBitWidth() {
+		if(io.getNumOutputs() == 1) return io.outputConnection(0).getBitWidth();
+		return 1;
 	}
 
 	@Override
