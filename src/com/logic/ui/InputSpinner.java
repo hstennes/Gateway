@@ -55,8 +55,8 @@ public class InputSpinner extends LabeledSpinner implements ChangeListener {
 		if(value != currentInputs) {
 			gate.setNumInputs(value);
 			if(value < currentInputs) cp.cleanWires();
-			LogicWorker.startLogic(gate);
 			cp.getEditor().getRevision().saveState(new CircuitState(cp));
+			LogicWorker.startLogic(gate);
 			cp.repaint();
 		}
 	}

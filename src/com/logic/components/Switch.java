@@ -15,6 +15,14 @@ import java.awt.*;
 public class Switch extends IComponent implements BitWidthEntity {
 	
 	private static final long serialVersionUID = 1L;
+
+	private static final int MULTI_BIT_HEIGHT = 40;
+
+	private static final int SINGLE_BIT_CLICK_PADDING = 15;
+
+	private static final int MULTI_BIT_CLICK_PADDING = 5;
+
+	private static final int MULTI_BIT_SPACE_BETWEEN = 5;
 	
 	/**
 	 * Constructs a new switch
@@ -25,18 +33,22 @@ public class Switch extends IComponent implements BitWidthEntity {
 		super(x, y, CompType.SWITCH);
 		setImages(new int[] {3, 4});
 		io.addConnection(80, 40, Connection.OUTPUT, Constants.RIGHT);
-		setClickAction(15, 15, 30, 50);
+		updateClickBounds(getBoundsRight());
 	}
 	
 	@Override
 	public void update(LogicEngine engine) {
-		io.setOutputOld(0, getStateOld(), engine);
-		//io.setOutput(0, 107, engine);
+		io.setOutputStrict(0, getState(), engine);
 	}
 
 	@Override
 	public void clickAction(Point p) {
-		setStateOld(!getStateOld());
+		int bits = getBitWidth();
+		if(bits == 1) setState(1 & ~getState());
+		else{
+			int section = bits - (p.x + MULTI_BIT_CLICK_PADDING) / Renderer.SWITCH_BIT_SPACING;
+			setState(getState() ^ (1 << (section - 1)));
+		}
 		LogicWorker.startLogic(this);
 	}
 
@@ -54,8 +66,9 @@ public class Switch extends IComponent implements BitWidthEntity {
 		Switch result = new Switch(x, y);
 		result.setRotation(rotation);
 		result.setName(getName());
-		result.setStateOld(getStateOld());
+		result.setState(getState());
 		result.setShowLabel(isShowLabel());
+		result.changeBitWidth(getBitWidth());
 		return result;
 	}
 
@@ -68,16 +81,28 @@ public class Switch extends IComponent implements BitWidthEntity {
 	@Override
 	public Rectangle getBoundsRight(){
 		Rectangle imageBounds = super.getBoundsRight();
-		imageBounds.setBounds(imageBounds.x, imageBounds.y, Renderer.SWITCH_BIT_SPACING * getBitWidth(), imageBounds.height);
+		if(getBitWidth() == 1) return imageBounds;
+		imageBounds.setBounds(imageBounds.x, imageBounds.y, Renderer.SWITCH_BIT_SPACING * getBitWidth(), MULTI_BIT_HEIGHT);
 		return imageBounds;
 	}
 
 	@Override
 	public void changeBitWidth(int bitWidth) {
-		Connection c = io.outputConnection(0);
-		x += Renderer.SWITCH_BIT_SPACING * (c.getBitWidth() - bitWidth);
-		c.changeBitWidth(bitWidth);
+		if(getBitWidth() == bitWidth) return;
+		int oldWidth = getBoundsRight().width;
+		io.outputConnection(0).changeBitWidth(bitWidth);
+
 		Rectangle bounds = getBoundsRight();
-		setClickAction(15, 15, bounds.width - 30, bounds.height - 30);
+		x += oldWidth - bounds.width;
+
+		updateClickBounds(bounds);
+		io.outputConnection(0).setXY(bounds.width + 20, bounds.height / 2);
+	}
+
+	private void updateClickBounds(Rectangle compBounds){
+		int padding = getBitWidth() == 1 ? SINGLE_BIT_CLICK_PADDING : MULTI_BIT_CLICK_PADDING;
+		setClickAction(padding, padding,
+				compBounds.width - 2 * padding,
+				compBounds.height - 2 * padding);
 	}
 }

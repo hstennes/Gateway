@@ -22,7 +22,6 @@ public abstract class Splitter extends LComponent{
         super(x, y, type);
         this.split = split;
         height = (split.length - 1) * Renderer.BASIC_INPUT_SPACING;
-        setImages(new int[] {14});
     }
 
     @Override
@@ -42,10 +41,10 @@ public abstract class Splitter extends LComponent{
         return positions;
     }
 
-    /*@Override
+    @Override
     public Rectangle getBoundsRight(){
         return new Rectangle(x, y, width, height);
-    }*/
+    }
 
     /**
      * Returns the bit split configuration. Do not modify this array!

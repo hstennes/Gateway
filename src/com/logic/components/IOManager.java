@@ -104,6 +104,10 @@ public class IOManager implements Deletable, Serializable {
 			}
 		}
 	}
+
+	public void setOutputStrict(int index, int signal, LogicEngine engine){
+		setOutput(index, signal & (1 << outputs.get(index).getBitWidth()) - 1, engine);
+	}
 	
 	/**
 	 * Adds a new Connection to this IOManager

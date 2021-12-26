@@ -52,7 +52,7 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	 * rotation.
 	 */
 	private Rectangle upClickBounds;
-	
+
 	/**
 	 * The state of this IComponent, which should only be accessed through synchronized getter and setter methods. Valid state values
 	 * are determined by the subclass.
@@ -81,7 +81,13 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	 * @param cpClick The click point in CircuitPanel space
 	 */
 	public void componentClicked(Point cpClick){
-		clickAction(new Point(clickBounds.x - cpClick.x, clickBounds.y - cpClick.y));
+		Rectangle actionBounds = getClickActionBounds();
+		Point actionClick;
+		if(rotation == Constants.RIGHT) actionClick = new Point(cpClick.x - actionBounds.x, cpClick.y - actionBounds.y);
+		else if(rotation == Constants.UP) actionClick = new Point(actionBounds.y + actionBounds.height - cpClick.y, cpClick.x - actionBounds.x);
+		else if(rotation == Constants.LEFT) actionClick = new Point(actionBounds.x + actionBounds.width - cpClick.x, actionBounds.y + actionBounds.height - cpClick.y);
+		else actionClick = new Point(cpClick.y - actionBounds.y, actionBounds.x + actionBounds.width - cpClick.x);
+		clickAction(actionClick);
 	}
 	
 	/**
@@ -130,15 +136,15 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	}
 	
 	/**
-	 * Finds the new state of the given Rectangle if this component is rotated 
+	 * Finds the new state of the given Rectangle if this component is rotated
 	 * @param r The rectangle to rotate
 	 * @param rotation The rotation of the resulting Rectangle
 	 * @return The rotated Rectangle
 	 */
 	private Rectangle rotate(Rectangle r, int rotation) {
 		Rectangle bounds = getBounds();
-		Point p1 = CompUtils.withRotation(clickBounds.x, clickBounds.y, bounds.width, bounds.height, rotation);
-		Point p2 = CompUtils.withRotation(clickBounds.x + clickBounds.width, clickBounds.y + clickBounds.height, bounds.width,
+		Point p1 = CompUtils.withRotation(r.x, r.y, bounds.width, bounds.height, rotation);
+		Point p2 = CompUtils.withRotation(r.x + r.width, r.y + r.height, bounds.width,
 				bounds.height, rotation);
 		Rectangle result = new Rectangle(p1);
 		result.add(p2);

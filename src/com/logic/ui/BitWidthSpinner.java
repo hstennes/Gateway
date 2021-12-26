@@ -2,6 +2,7 @@ package com.logic.ui;
 
 import com.logic.components.BitWidthEntity;
 import com.logic.components.LComponent;
+import com.logic.engine.LogicWorker;
 import com.logic.input.CircuitState;
 import com.logic.input.Selection;
 
@@ -46,6 +47,7 @@ public class BitWidthSpinner extends LabeledSpinner implements ChangeListener {
         if(value != gate.getBitWidth()) {
             gate.changeBitWidth(value);
             cp.getEditor().getRevision().saveState(new CircuitState(cp));
+            LogicWorker.startLogic(lcomp);
             cp.repaint();
         }
     }

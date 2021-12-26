@@ -47,7 +47,7 @@ public class Renderer {
     /**
      * The spacing of bits within a multi bit switch
      */
-    public static final int SWITCH_BIT_SPACING = 55;
+    public static final int SWITCH_BIT_SPACING = 35;
 
     /**
      * The font used to display the label of the component
@@ -57,7 +57,7 @@ public class Renderer {
     /**
      * The font used for multi bit switches
      */
-    public static final Font SWITCH_FONT = new Font("Arial", Font.PLAIN, 40);
+    public static final Font SWITCH_FONT = new Font("Arial", Font.PLAIN, 34);
 
     /**
      * The x and y length of the divider lines drawn around the center rectangle in the custom builder
@@ -286,17 +286,17 @@ public class Renderer {
         g2d.setColor(Color.WHITE);
         g2d.fillRect(dx, dy, bounds.width, bounds.height);
         g2d.setColor(Color.BLACK);
-        g2d.setStroke(new BasicStroke(6));
-        g2d.drawRect(dx, dy, bounds.width, bounds.height);
+        g2d.setStroke(new BasicStroke(4));
+        g2d.drawRect(dx + 2, dy + 2, bounds.width - 2, bounds.height - 4);
 
         g2d.setFont(SWITCH_FONT);
         FontMetrics metrics = g2d.getFontMetrics(SWITCH_FONT);
-
         int state = sw.getState();
         for(int i = 0; i < sw.getBitWidth(); i++){
-            int bit = (state >> i) & 1;
-            g2d.drawString(Integer.toString(bit),
-                    bounds.width - SWITCH_BIT_SPACING * i - 40,
+            String bit = Integer.toString((state >> i) & 1);
+            int strWidth = metrics.stringWidth(bit);
+            g2d.drawString(bit,
+                    bounds.width - SWITCH_BIT_SPACING * (i + 1) + (SWITCH_BIT_SPACING - strWidth) / 2,
                     (bounds.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
         }
     }
