@@ -4,6 +4,7 @@ import com.logic.components.Button;
 import com.logic.components.*;
 import com.logic.ui.Renderer;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,6 +75,13 @@ public class CompUtils {
 				break;
 			case "display":
 				lcomp = new Display(x, y);
+				break;
+			case "splitter":
+				String input = JOptionPane.showInputDialog("Enter bit width split");
+				String[] strSplit = input.split(",");
+				int[] split = new int[strSplit.length];
+				for(int i = 0; i < strSplit.length; i++) split[i] = Integer.parseInt(strSplit[i].strip());
+				lcomp = new SplitOut(x, y, split);
 				break;
 			default:
 				throw new IllegalArgumentException("Component name not recognized");

@@ -59,10 +59,8 @@ public class Debug {
 	}
 
 	public static void testCircuit2(CircuitPanel cp){
-		cp.addLComp(new SplitOut(0, 0, new int[] {1, 1, 1, 1}));
-
-		cp.addLComp(new SplitIn(300, 0, new int[] {1, 1, 1, 2}));
-
-		cp.addLComp(new SplitOut(300, 300, new int[] {1, 2}));
+		cp.addLComp(new SplitOut(0, 0, new int[] {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}));
+		cp.addLComp(new SplitIn(300, 0, new int[] {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}));
+		//cp.addLComp(new SplitOut(300, 300, new int[] {1, 2}));
 	}
 }

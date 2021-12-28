@@ -151,6 +151,7 @@ public class Renderer {
 
     private void renderHighLight(Graphics2D g2d){
         Rectangle bounds = cp.getEditor().getHighlight().getBounds();
+        if(bounds.width == 0 && bounds.height == 0) return;
         g2d.setColor(SELECT_COLOR);
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         g2d.fill(bounds);

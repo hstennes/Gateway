@@ -32,6 +32,8 @@ public class NameConverter {
 		else if(type == CompType.ONE) return "One constant";
 		else if(type == CompType.DISPLAY) return "4-bit display";
 		else if(type == CompType.CUSTOM) return "Custom component";
+		else if(type == CompType.SPLIT_OUT) return "Output splitter";
+		else if(type == CompType.SPLIT_IN) return "Input splitter";
 		return "Unknown name";
 	}
 	
