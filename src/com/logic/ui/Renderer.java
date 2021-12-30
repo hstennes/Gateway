@@ -1,14 +1,18 @@
 package com.logic.ui;
 
 import com.logic.components.*;
+import com.logic.main.LogicSimApp;
 import com.logic.util.CompUtils;
 import com.logic.util.Constants;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.commons.logging.Log;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
+import java.awt.image.BaseMultiResolutionImage;
+import java.awt.image.MultiResolutionImage;
 import java.util.ArrayList;
 
 public class Renderer {
@@ -209,7 +213,7 @@ public class Renderer {
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
         CachedImage image = cache.get(lcomp);
         if(image == null){
-            image = renderComponentImage(lcomp, zoom);
+            image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE);
             cache.add(lcomp, image);
         }
 
@@ -221,22 +225,26 @@ public class Renderer {
         g2d.drawImage(image,
                 p.x - image.anchors[rotationAnchorTranslate[rot][0]],
                 p.y - image.anchors[rotationAnchorTranslate[rot][1]],
+                (int) (image.getWidth() * LogicSimApp.INV_DISP_SCALE),
+                (int) (image.getHeight() * LogicSimApp.INV_DISP_SCALE),
                 null);
         g2d.rotate(-radians, p.x, p.y);
     }
 
-    public CachedImage renderComponentImage(LComponent lcomp, float zoom){
+    public CachedImage renderComponentImage(LComponent lcomp, float zoom, float dpiScale){
         //set up BufferedImage and graphics object, same for all components
         Rectangle lb = lcomp.getBoundsRight();
         Rectangle cb = lcomp.getIO().getConnectionBounds();
         CompType type = lcomp.getType();
+        float invDpiScale = 1 / dpiScale;
+        zoom *= dpiScale;
         CachedImage image = new CachedImage(
                 (int) (cb.width * zoom),
                 (int) (cb.height * zoom),
-                (int) (-cb.x * zoom),
-                (int) (-cb.y * zoom),
-                (int) ((-cb.x + lb.width) * zoom),
-                (int) ((-cb.y + lb.height) * zoom));
+                (int) (-cb.x * zoom * invDpiScale),
+                (int) (-cb.y * zoom * invDpiScale),
+                (int) ((-cb.x + lb.width) * zoom * invDpiScale),
+                (int) ((-cb.y + lb.height) * zoom * invDpiScale));
         Graphics2D g2d = (Graphics2D) image.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.scale(zoom, zoom);

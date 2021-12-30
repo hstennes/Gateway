@@ -5,6 +5,7 @@ import com.logic.ui.FontLoader;
 import com.logic.ui.IconLoader;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -19,6 +20,21 @@ public class LogicSimApp {
 	 * The release version
 	 */
 	public static final String VERSION = "v1.2";
+
+	/**
+	 * The default DPI value, used to calculate resolution scaling
+	 */
+	private static final int DEFAULT_DPI = 96;
+
+	/**
+	 * The display scaling
+	 */
+	public static float DISP_SCALE;
+
+	/**
+	 * The inverse of DISP_SCALE for faster calculations
+	 */
+	public static float INV_DISP_SCALE;
 
 	/**
 	 * OS type, used to determine if the look and feel should be switched from default java to windows
@@ -77,6 +93,8 @@ public class LogicSimApp {
 	 * @param args The arguments to the main method, which have no effect whatsoever on anything
 	 */
 	public static void main(String[] args) {
+		DISP_SCALE = (float) Toolkit.getDefaultToolkit().getScreenResolution() / DEFAULT_DPI;
+		INV_DISP_SCALE = 1 / DISP_SCALE;
 		if(OS.contains("win")) {
 			try {
 				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");

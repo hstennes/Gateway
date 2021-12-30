@@ -1,6 +1,8 @@
 package com.logic.ui;
 
 import com.logic.components.*;
+import com.logic.components.Button;
+import com.logic.main.LogicSimApp;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.bridge.*;
 import org.apache.batik.gvt.GraphicsNode;
@@ -9,7 +11,10 @@ import org.w3c.dom.svg.SVGDocument;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BaseMultiResolutionImage;
 import java.awt.image.BufferedImage;
+import java.awt.image.MultiResolutionImage;
 import java.io.IOException;
 
 /**
@@ -134,7 +139,7 @@ public class IconLoader {
 	 * @param index The index the icon will be placed at in the logicIcons array
 	 * @return The icon based on the given LComponent
 	 */
-	private BufferedImage renderLogicIcon(LComponent model, int index){
+	private Image renderLogicIcon(LComponent model, int index){
 		/*BufferedImage image = new BufferedImage(70, 70, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) image.getGraphics();
 		Rectangle bounds = model.getBounds();
@@ -148,8 +153,10 @@ public class IconLoader {
 		model.render(g2d, null);
 		g2d.dispose();*/
 
-		BufferedImage image = new Renderer(null).renderComponentImage(model, 0.40f);
-		return image;
+		Image[] images = new Image[2];
+		images[0] = new Renderer(null).renderComponentImage(model, 0.40f, 1.0f);
+		images[1] = new Renderer(null).renderComponentImage(model, 0.40f, LogicSimApp.DISP_SCALE);
+		return new BaseMultiResolutionImage(images);
 	}
 
 	/**
