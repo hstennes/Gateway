@@ -27,7 +27,7 @@ public class FileManager {
 	/**
 	 * The file format version. Should be incremented when the file format is changed in any way.
 	 */
-	public static final int FILE_FORMAT_VERSION = 3;
+	public static final int FILE_FORMAT_VERSION = 4;
 
 	/**
 	 * A filter that only allows for the selection of files that are compatible with Gateway

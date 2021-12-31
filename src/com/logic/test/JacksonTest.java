@@ -65,12 +65,14 @@ public class JacksonTest {
             x, y, rotation
             name, comments (if present?)
             connect: [
-                [id, output_number, signal]
+                [id, output_number, *bit width, signal] (connected)
+                [-1, -1, bit width] (nothing connected)
             ]
 
             state (just for switch)
             delay (just for clock)
             cTypeId, cDataId (just for custom)
+            *split: [...] (just for splitter)
         }
     ]
     cTypes: [
@@ -78,7 +80,12 @@ public class JacksonTest {
             label
             components: [
                 {
-                    Same as above
+                    type from CompType of customID
+                    ...
+                    connect: [
+                        [id, output_number, *bit width] (connected)
+                        [-1, -1, bit width] (nothing connected)
+                    ]
                 }
             ]
         }

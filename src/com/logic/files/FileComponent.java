@@ -35,10 +35,23 @@ public class FileComponent {
     public int[][] input;
 
     /**
-     * On / off state for switches
+     * Holds the bit width of each output of the component
+     */
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public int[] output;
+
+    /**
+     * State for switches used prior to file version 4. Included to properly load old files. Will always be false for new saves, and
+     * therefore not included in the file.
      */
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public boolean state;
+
+    /**
+     * State for switches used for file version 4 and later (includes multi bit support)
+     */
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public int mState;
 
     /**
      * Show label option for lights, switches, buttons
@@ -78,7 +91,7 @@ public class FileComponent {
         name = lcomp.getName().equals(CompProperties.defaultName) ? "" : lcomp.getName();
         com = lcomp.getComments().equals(CompProperties.defaultComments) ? "" : lcomp.getComments();
         if(lcomp instanceof LabeledComponent) showLabel = ((LabeledComponent) lcomp).isShowLabel();
-        if(type == CompType.SWITCH) state = ((Switch) lcomp).getStateOld();
+        if(type == CompType.SWITCH) mState = ((Switch) lcomp).getState();
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
         else if(type == CompType.CUSTOM) {
             cTypeId = ((Custom) lcomp).getTypeID();
@@ -86,7 +99,7 @@ public class FileComponent {
         }
 
         IOManager io = lcomp.getIO();
-        input = new int[io.getNumInputs()][topLevel ? 3 : 2];
+        input = new int[io.getNumInputs()][topLevel ? 4 : 3];
         for(int i = 0; i < io.getNumInputs(); i++){
             Connection conn = io.inputConnection(i);
             if(conn.numWires() > 0) {
@@ -94,10 +107,14 @@ public class FileComponent {
                 Connection source = w.getSourceConnection();
                 input[i][0] = compIndex.get(source.getLcomp());
                 input[i][1] = source.getIndex();
-                if(topLevel) input[i][2] = w.getSignalOld() ? 1 : 0;
+                input[i][2] = conn.getBitWidth();
+                if(topLevel) input[i][3] = w.getSignal();
             }
-            else input[i] = new int[] {};
+            else input[i] = new int[] {-1, -1, conn.getBitWidth()};
         }
+
+        output = new int[io.getNumOutputs()];
+        for(int i = 0; i < output.length; i++) output[i] = io.outputConnection(i).getBitWidth();
     }
 
     /**
@@ -107,6 +124,7 @@ public class FileComponent {
 
     /**
      * Converts this FileComponent back to an LComponent
+     * @param version The version of the file being loaded
      * @param cTypes cTypesArray to use if this component is a custom
      * @param cData cData array to use if this component is a custom
      * @param topLevel see constructor
@@ -114,10 +132,19 @@ public class FileComponent {
      * @return The LComponent
      */
     @JsonIgnore
-    public LComponent makeComponent(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
-        if(type.toString().equals("CUSTOM")) return makeCustom(cTypes, cData, topLevel, providedCDataId);
+    public LComponent makeComponent(int version, CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
+        if(type.toString().equals("CUSTOM")) return makeCustom(version, cTypes, cData, topLevel, providedCDataId);
         LComponent lcomp = applyProperties(CompUtils.makeComponent(type.toString(), pos[0], pos[1]));
-        if(type == CompType.SWITCH) ((Switch) lcomp).setStateOld(state);
+        if(version > 3) {
+            IOManager io = lcomp.getIO();
+            for (int i = 0; i < io.getNumInputs(); i++) io.inputConnection(i).changeBitWidth(input[i][2]);
+            for (int i = 0; i < io.getNumOutputs(); i++) io.outputConnection(i).changeBitWidth(output[i]);
+            if(lcomp instanceof BitWidthEntity) ((BitWidthEntity) lcomp).changeBitWidth(((BitWidthEntity) lcomp).getBitWidth());
+        }
+        if(type == CompType.SWITCH) {
+            if(state) ((Switch) lcomp).setState(1);
+            else ((Switch) lcomp).setState(mState);
+        }
         if(type == CompType.CLOCK) ((Clock) lcomp).setDelay(delay);
         if(lcomp instanceof LabeledComponent) ((LabeledComponent) lcomp).setShowLabel(showLabel);
         if(lcomp instanceof BasicGate) ((BasicGate) lcomp).setNumInputs(input.length);
@@ -126,13 +153,14 @@ public class FileComponent {
 
     /**
      * Helper method for converting to a custom component
+     * @param version The version of the file being loaded
      * @param cTypes The cTypes
      * @param cData The cData
      * @param topLevel The topLevel flag
      * @param providedCDataId the providedCDataId
      * @return Custom component
      */
-    private LComponent makeCustom(CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
+    private LComponent makeCustom(int version, CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
         int realCDataId = topLevel ? cDataId : providedCDataId;
 
         CustomBlueprint b = cTypes[cTypeId];
@@ -140,9 +168,9 @@ public class FileComponent {
         for(int i = 0; i < b.components.length; i++) {
             if(b.components[i].type.toString().equals("CUSTOM")) {
                 Integer[] compData = cData.get(realCDataId)[i];
-                lcomps.add(b.components[i].makeComponent(cTypes, cData, false, compData[compData.length - 1]));
+                lcomps.add(b.components[i].makeComponent(version, cTypes, cData, false, compData[compData.length - 1]));
             }
-            else lcomps.add(b.components[i].makeComponent(cTypes, cData, false, -1));
+            else lcomps.add(b.components[i].makeComponent(version, cTypes, cData, false, -1));
         }
 
         LComponent[][] content = new LComponent[4][];
@@ -156,7 +184,7 @@ public class FileComponent {
             if(fc.input == null) continue;
             for(int x = 0; x < fc.input.length; x++){
                 int[] input = fc.input[x];
-                if(input.length == 0) continue;
+                if(JSONFile.isEmptyConnection(input, version)) continue;
                 Wire wire = new Wire();
                 OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
                 source.setSignalOld(cData.get(realCDataId)[i][x] == 1);

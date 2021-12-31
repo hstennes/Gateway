@@ -22,6 +22,7 @@ public class OutputPin extends Connection{
         return (signal & 1) == 1;
     }
 
+    @Deprecated
     public void setSignalOld(boolean signal) {
         if(signal) this.signal |= 1;
         else this.signal &= ~1;

@@ -100,7 +100,7 @@ public class CircuitPanel extends JPanel {
 
 		renderer = new Renderer(this);
 		//Debug.loadTestCircuit(this, true);
-		Debug.testCircuit2(this);
+		//Debug.testCircuit2(this);
 	}
 
 	/**

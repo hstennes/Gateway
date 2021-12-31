@@ -16,7 +16,7 @@ public class JSONFile {
     /**
      * File format version, incremented whenever a change is made
      */
-    public final int version = FileManager.FILE_FORMAT_VERSION;
+    public int version = FileManager.FILE_FORMAT_VERSION;
 
     /**
      * Holds camera position data [x, y, zoom]
@@ -123,15 +123,15 @@ public class JSONFile {
     public FileData getFileData(){
         ArrayList<Custom> customs = new ArrayList<>();
         ArrayList<LComponent> lcomps = new ArrayList<>();
-        for(FileComponent fc : components) lcomps.add(fc.makeComponent(cTypes, cData, true, -1));
-        for(FileComponent fc : cExamples) customs.add((Custom) fc.makeComponent(cTypes, cData, true, -1));
+        for(FileComponent fc : components) lcomps.add(fc.makeComponent(version, cTypes, cData, true, -1));
+        for(FileComponent fc : cExamples) customs.add((Custom) fc.makeComponent(version, cTypes, cData, true, -1));
 
         for(int i = 0; i < components.length; i++){
             FileComponent fc = components[i];
             if(fc.input == null) continue;
             for(int x = 0; x < fc.input.length; x++){
                 int[] input = fc.input[x];
-                if(input.length == 0) continue;
+                if(isEmptyConnection(input, version)) continue;
                 Wire wire = new Wire();
                 OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
                 source.setSignalOld(input[2] == 1);
@@ -140,5 +140,9 @@ public class JSONFile {
             }
         }
         return new FileData(version, lcomps, customs, camera, settings);
+    }
+
+    public static boolean isEmptyConnection(int[] input, int version){
+        return version <= 3 && input.length == 0 || version > 3 && input[0] == -1;
     }
 }
