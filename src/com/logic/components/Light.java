@@ -62,15 +62,26 @@ public class Light extends LabeledComponent implements BitWidthEntity {
 
 	@Override
 	public void changeBitWidth(int bitWidth) {
-		Connection c = io.inputConnection(0);
 		int oldBits = getBitWidth();
 		if(oldBits == bitWidth) return;
 
-		if(bitWidth == 1) y -= Renderer.MULTI_BIT_SL_HEIGHT;
-		else if(oldBits == 1) y += Renderer.MULTI_BIT_SL_HEIGHT;
-		c.changeBitWidth(bitWidth);
+		io.inputConnection(0).changeBitWidth(bitWidth);
+		bitWidthUpdate(oldBits, bitWidth, true);
+	}
 
-		if(bitWidth == 1) {
+	@Override
+	public void validateBitWidth() {
+		bitWidthUpdate(-1, getBitWidth(), false);
+	}
+
+	public void bitWidthUpdate(int oldBitWidth, int newBitWidth, boolean move){
+		Connection c = io.inputConnection(0);
+		if(move) {
+			if (newBitWidth == 1) y -= Renderer.MULTI_BIT_SL_HEIGHT;
+			else if (oldBitWidth == 1) y += Renderer.MULTI_BIT_SL_HEIGHT;
+		}
+
+		if(newBitWidth == 1) {
 			c.setXY(30, 100);
 			c.setDirection(Constants.DOWN);
 		}

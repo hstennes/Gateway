@@ -139,7 +139,7 @@ public class FileComponent {
             IOManager io = lcomp.getIO();
             for (int i = 0; i < io.getNumInputs(); i++) io.inputConnection(i).changeBitWidth(input[i][2]);
             for (int i = 0; i < io.getNumOutputs(); i++) io.outputConnection(i).changeBitWidth(output[i]);
-            if(lcomp instanceof BitWidthEntity) ((BitWidthEntity) lcomp).changeBitWidth(((BitWidthEntity) lcomp).getBitWidth());
+            if(lcomp instanceof BitWidthEntity) ((BitWidthEntity) lcomp).validateBitWidth();
         }
         if(type == CompType.SWITCH) {
             if(state) ((Switch) lcomp).setState(1);

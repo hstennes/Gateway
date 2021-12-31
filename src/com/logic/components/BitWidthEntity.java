@@ -10,4 +10,5 @@ public interface BitWidthEntity {
 
     void changeBitWidth(int bitWidth);
 
+    void validateBitWidth();
 }

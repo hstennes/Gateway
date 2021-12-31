@@ -89,9 +89,17 @@ public class Switch extends IComponent implements BitWidthEntity {
 		if(getBitWidth() == bitWidth) return;
 		int oldWidth = getBoundsRight().width;
 		io.outputConnection(0).changeBitWidth(bitWidth);
+		bitWidthUpdate(oldWidth, true);
+	}
 
+	@Override
+	public void validateBitWidth(){
+		bitWidthUpdate(-1, false);
+	}
+
+	private void bitWidthUpdate(int oldWidth, boolean move){
 		Rectangle bounds = getBoundsRight();
-		x += oldWidth - bounds.width;
+		if(move) x += oldWidth - bounds.width;
 
 		updateClickBounds(bounds);
 		io.outputConnection(0).setXY(bounds.width + 20, bounds.height / 2);

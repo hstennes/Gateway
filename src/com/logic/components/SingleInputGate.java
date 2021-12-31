@@ -57,4 +57,7 @@ public class SingleInputGate extends LComponent implements BitWidthEntity{
 		io.inputConnection(0).changeBitWidth(bitWidth);
 		io.outputConnection(0).changeBitWidth(bitWidth);
 	}
+
+	@Override
+	public void validateBitWidth() { }
 }

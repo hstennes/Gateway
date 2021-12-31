@@ -144,6 +144,9 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 		for(int i = 0; i < io.getNumOutputs(); i++) io.outputConnection(i).changeBitWidth(bitWidth);
 	}
 
+	@Override
+	public void validateBitWidth(){ }
+
 	/**
 	 * Calculates the positions of each connection so that they are centered and equally spaced in the y direction
 	 * @param xPos The x position that all of the inputs will have

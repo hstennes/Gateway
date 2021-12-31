@@ -228,6 +228,8 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 		//TODO might need to check if wire is consistent
 	}
 
+	public void validateBitWidth() { };
+
 	@Override
 	public void delete() {
 		clearWires();

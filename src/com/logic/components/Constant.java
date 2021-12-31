@@ -48,4 +48,7 @@ public class Constant extends LComponent implements BitWidthEntity{
 	public void changeBitWidth(int bitWidth) {
 		io.outputConnection(0).changeBitWidth(bitWidth);
 	}
+
+	@Override
+	public void validateBitWidth() { }
 }
