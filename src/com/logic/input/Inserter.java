@@ -1,12 +1,19 @@
 package com.logic.input;
 
+import com.logic.components.CompType;
 import com.logic.components.LComponent;
+import com.logic.components.SplitIn;
+import com.logic.components.SplitOut;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.InsertPanel;
+import com.logic.ui.SplitterOptionPanel;
+import com.logic.ui.UserMessage;
 import com.logic.util.CompUtils;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.Locale;
 
 /**
  * This class holds the code for adding components to the CircuitPanel
@@ -95,7 +102,11 @@ public class Inserter {
 	 * @param location The location of the mouse
 	 */
 	private void doInsert(String name, Point location) {
-		LComponent lcomp = CompUtils.makeComponent(name, location.x, location.y);
+		LComponent lcomp;
+		if(name.equalsIgnoreCase("splitter")) lcomp = makeSplitter(location);
+		else lcomp = CompUtils.makeComponent(name, location.x, location.y);
+		if(lcomp == null) return;
+
 		Rectangle b = lcomp.getBounds();
 		if(editor.isSnap()){
 			lcomp.setX((b.x - b.width / 2) / CircuitEditor.SNAP_DIST * CircuitEditor.SNAP_DIST);
@@ -107,5 +118,27 @@ public class Inserter {
 		}
 		cp.addLComp(lcomp);
 		revision.saveState(new CircuitState(cp));
+	}
+
+	/**
+	 * Creates a splitter by prompting the user for the bit width split and splitter type. If the user enters an invalid split,
+	 * then a UserMessage is displayed a null value is returned.
+	 * @param location The location of the new splitter
+	 * @return The splitter
+	 */
+	private LComponent makeSplitter(Point location){
+		SplitterOptionPanel panel = new SplitterOptionPanel();
+		int result = JOptionPane.showConfirmDialog(cp.getWindow(), panel, "Create splitter", JOptionPane.OK_CANCEL_OPTION);
+		if(result == JOptionPane.OK_OPTION){
+			int[] split = panel.getSplit();
+			if(split == null) {
+				cp.dispMessage(new UserMessage(cp, "Invalid bit width split", 1500));
+				return null;
+			}
+			return panel.getType() == CompType.SPLIT_IN ?
+					new SplitIn(location.x, location.y, panel.getSplit()) :
+					new SplitOut(location.x, location.y, panel.getSplit());
+		}
+		else return null;
 	}
 }

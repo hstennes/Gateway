@@ -2,7 +2,9 @@ package com.logic.util;
 
 import com.logic.components.Button;
 import com.logic.components.*;
+import com.logic.main.LogicSimApp;
 import com.logic.ui.Renderer;
+import com.logic.ui.SplitterOptionPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +23,8 @@ public class CompUtils {
 	public static final double[] RAD_ROTATION = new double[] {0, Math.PI / 2, Math.PI, -Math.PI / 2};
 
 	/**
-	 * Creates a component of the given type with the given coordinates (does not support custom components)
+	 * Creates a component of the given type with the given coordinates (does not support custom components). Supports all components
+	 * besides splitters since they require additional configuration (bit width split, in/out splitter).
 	 * @param type The component type (case-insensitive CompType value as string)
 	 * @param x The x position
 	 * @param y The y position
@@ -77,12 +80,7 @@ public class CompUtils {
 				lcomp = new Display(x, y);
 				break;
 			case "splitter":
-				String input = JOptionPane.showInputDialog("Enter bit width split");
-				String[] strSplit = input.split(",");
-				int[] split = new int[strSplit.length];
-				for(int i = 0; i < strSplit.length; i++) split[i] = Integer.parseInt(strSplit[i].strip());
-				lcomp = new SplitOut(x, y, split);
-				break;
+				throw new IllegalArgumentException("CompUtils.makeComponent does not support splitters");
 			default:
 				throw new IllegalArgumentException("Component name not recognized");
 		}
