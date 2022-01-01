@@ -130,6 +130,7 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 		BasicGate result = new BasicGate(x, y, type, io.getNumInputs());
 		result.setRotation(rotation);
 		result.setName(getName());
+		result.changeBitWidth(getBitWidth());
 		return result;
 	}
 

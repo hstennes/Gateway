@@ -187,7 +187,7 @@ public class FileComponent {
                 if(JSONFile.isEmptyConnection(input, version)) continue;
                 Wire wire = new Wire();
                 OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
-                source.setSignalOld(cData.get(realCDataId)[i][x] == 1);
+                source.setSignal(cData.get(realCDataId)[i][x]);
                 source.addWire(wire);
                 lcomps.get(i).getIO().inputConnection(x).addWire(wire);
             }

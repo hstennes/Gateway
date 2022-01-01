@@ -44,6 +44,7 @@ public class SingleInputGate extends LComponent implements BitWidthEntity{
 		SingleInputGate result = new SingleInputGate(x, y, type);
 		result.setRotation(rotation);
 		result.setName(getName());
+		result.changeBitWidth(getBitWidth());
 		return result;
 	}
 

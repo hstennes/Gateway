@@ -142,7 +142,7 @@ public class CompUtils {
 			OutputPin newSourceConnection = newSourceComp.getIO().outputConnection(oldSourceConnection.getIndex());
 			InputPin newDestConnection = newDestComp.getIO().inputConnection(oldDestConnection.getIndex());
 			Wire newWire = new Wire();
-			newSourceConnection.setSignalOld(oldSourceConnection.getSignalOld());
+			newSourceConnection.setSignal(oldSourceConnection.getSignal());
 			newSourceConnection.addWire(newWire);
 			newDestConnection.addWire(newWire);
 		}

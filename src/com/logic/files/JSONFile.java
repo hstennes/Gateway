@@ -99,7 +99,7 @@ public class JSONFile {
             data[i] = new Integer[lcomp.getType() == CompType.CUSTOM ? io.getNumInputs() + 1 : io.getNumInputs()];
             for(int x = 0; x < io.getNumInputs(); x++){
                 Connection conn = io.inputConnection(x);
-                if(conn.numWires() > 0) data[i][x] = conn.getWire().getSignalOld() ? 1 : 0;
+                if(conn.numWires() > 0) data[i][x] = conn.getWire().getSignal();
             }
             if(lcomp.getType() == CompType.CUSTOM) {
                 populateCustomData((Custom) lcomp);
