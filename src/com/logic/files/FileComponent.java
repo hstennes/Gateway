@@ -133,7 +133,9 @@ public class FileComponent {
      */
     @JsonIgnore
     public LComponent makeComponent(int version, CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
-        if(type.toString().equals("CUSTOM")) return makeCustom(version, cTypes, cData, topLevel, providedCDataId);
+        if(type == CompType.CUSTOM) return makeCustom(version, cTypes, cData, topLevel, providedCDataId);
+        if(type == CompType.SPLIT_IN || type == CompType.SPLIT_OUT) return makeSplitter(version);
+
         LComponent lcomp = applyProperties(CompUtils.makeComponent(type.toString(), pos[0], pos[1]));
         if(version > 3) {
             IOManager io = lcomp.getIO();
@@ -193,6 +195,16 @@ public class FileComponent {
             }
         }
         return applyProperties(new Custom(pos[0], pos[1], b.label, content, lcomps, cTypeId));
+    }
+
+    private Splitter makeSplitter(int version){
+        if(version <= 3) throw new IllegalArgumentException("How could the version possibly be less than 4?");
+        if(type == CompType.SPLIT_IN){
+            int[] split = new int[input.length];
+            for(int i = 0; i < split.length; i++) split[i] = input[i][2];
+            return new SplitIn(pos[0], pos[1], split);
+        }
+        else return new SplitOut(pos[0], pos[1], output);
     }
 
     /**

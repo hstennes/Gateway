@@ -72,7 +72,6 @@ public class JacksonTest {
             state (just for switch)
             delay (just for clock)
             cTypeId, cDataId (just for custom)
-            *split: [...] (just for splitter)
         }
     ]
     cTypes: [

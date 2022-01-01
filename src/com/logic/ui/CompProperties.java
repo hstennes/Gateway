@@ -346,7 +346,7 @@ public class CompProperties extends JPanel {
 		String s = "<html>";
 		for(int i = 0; i < io.getNumInputs(); i++) {
 			Connection c = io.inputConnection(i);
-			s = s + "Input " + c.getIndex() + ":";
+			s = s + "Input " + c.getIndex() + " (" + c.getBitWidth() + " bit):";
 			if(c.numWires() == 0 || c.getWire(0).getSourceConnection() == null) s = s + " Empty<br>";
 			else {
 				Wire wire = c.getWire(0);
@@ -356,7 +356,7 @@ public class CompProperties extends JPanel {
 		}
 		for(int i = 0; i < io.getNumOutputs(); i++) {
 			Connection c = io.outputConnection(i);
-			s = s + "Output " + c.getIndex() + ":";
+			s = s + "Output " + c.getIndex() + " (" + c.getBitWidth() + " bit):";
 			if(c.numWires() == 0 || c.getWire(0).getDestConnection() == null) s = s + " Empty<br>";
 			else if(c.numWires() == 1) {
 				Wire wire = c.getWire(0);
