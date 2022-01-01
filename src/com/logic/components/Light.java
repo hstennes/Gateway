@@ -41,6 +41,7 @@ public class Light extends LabeledComponent implements BitWidthEntity {
 		result.setRotation(rotation);
 		result.setName(getName());
 		result.setShowLabel(isShowLabel());
+		result.changeBitWidth(getBitWidth());
 		return result;
 	}
 

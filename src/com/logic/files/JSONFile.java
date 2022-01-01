@@ -134,7 +134,7 @@ public class JSONFile {
                 if(isEmptyConnection(input, version)) continue;
                 Wire wire = new Wire();
                 OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
-                source.setSignalOld(input[2] == 1);
+                applySignal(source, input);
                 source.addWire(wire);
                 lcomps.get(i).getIO().inputConnection(x).addWire(wire);
             }
@@ -144,5 +144,9 @@ public class JSONFile {
 
     public static boolean isEmptyConnection(int[] input, int version){
         return version <= 3 && input.length == 0 || version > 3 && input[0] == -1;
+    }
+
+    private void applySignal(OutputPin source, int[] input){
+        source.setSignal(input[version > 3 ? 3 : 2]);
     }
 }

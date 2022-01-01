@@ -4,6 +4,7 @@ import com.logic.components.CompType;
 import com.logic.components.LComponent;
 import com.logic.components.SplitIn;
 import com.logic.components.SplitOut;
+import com.logic.engine.LogicWorker;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.InsertPanel;
 import com.logic.ui.SplitterOptionPanel;
@@ -118,6 +119,7 @@ public class Inserter {
 		}
 		cp.addLComp(lcomp);
 		revision.saveState(new CircuitState(cp));
+		LogicWorker.startLogic(lcomp);
 	}
 
 	/**
