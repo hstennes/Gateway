@@ -1,4 +1,4 @@
-package com.logic.util;
+package com.logic.test;
 
 import com.logic.components.*;
 import com.logic.ui.CircuitPanel;

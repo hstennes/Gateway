@@ -20,6 +20,8 @@ public class LogicFunctions {
 	 * The list of all functions that accept two inputs. See setFunctions() for info.
 	 */
 	public static ArrayList<BiFunction<Integer, Integer, Integer>> twoInput = new ArrayList<>();
+
+	public static BiFunction<Integer[], BiFunction<Integer, Integer, Integer>, Integer> basicLogic;
 	
 	/**
 	 * Initializes all logic functions. Single input functions are loaded in the order NOT, BUFFER, and multi-input functions are loaded in 
@@ -31,5 +33,13 @@ public class LogicFunctions {
 		twoInput.add((a, b) -> a & b);
 		twoInput.add((a, b) -> a | b);
 		twoInput.add((a, b) -> a ^ b);
+	}
+
+	public static int basicLogic(int[] inputs, BiFunction<Integer, Integer, Integer> function){
+		int output = inputs[0];
+		for(int i = 1; i < inputs.length; i++){
+			output = function.apply(output, inputs[i]);
+		}
+		return output;
 	}
 }

@@ -30,7 +30,7 @@ public class Camera extends MouseInputAdapter implements MouseWheelListener {
 	/**
 	 * The minimum zoom value
 	 */
-	public final float minZoom = 0.4f;
+	public final float minZoom = 0.1f;
 	
 	/**
 	 * The maximum zoom value

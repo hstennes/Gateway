@@ -96,12 +96,9 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 
 	@Override
 	public void update(LogicEngine engine) {
-		int inputs = io.getNumInputs();
-		int output = io.getInput(0);
-		for(int i = 1; i < inputs; i++){
-			output = LogicFunctions.twoInput.get(function).apply(output, io.getInput(i));
-		}
-		io.setOutput(0, inverted ^ output, engine);
+		int[] inputs = new int[io.getNumInputs()];
+		for(int i = 0; i < io.getNumInputs(); i++) inputs[i] = io.getInput(i);
+		io.setOutput(0, inverted ^ LogicFunctions.basicLogic(inputs, LogicFunctions.twoInput.get(function)), engine);
 	}
 
 	/**

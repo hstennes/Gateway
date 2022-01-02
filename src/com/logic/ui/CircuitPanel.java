@@ -5,7 +5,6 @@ import com.logic.input.Camera;
 import com.logic.input.CircuitEditor;
 import com.logic.main.Window;
 import com.logic.util.ActionUtils;
-import com.logic.util.Debug;
 
 import javax.swing.*;
 import java.awt.*;

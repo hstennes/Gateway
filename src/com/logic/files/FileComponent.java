@@ -134,7 +134,7 @@ public class FileComponent {
     @JsonIgnore
     public LComponent makeComponent(int version, CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
         if(type == CompType.CUSTOM) return makeCustom(version, cTypes, cData, topLevel, providedCDataId);
-        if(type == CompType.SPLIT_IN || type == CompType.SPLIT_OUT) return makeSplitter(version);
+        if(type == CompType.SPLIT_IN || type == CompType.SPLIT_OUT) return applyProperties(makeSplitter(version));
 
         LComponent lcomp = applyProperties(CompUtils.makeComponent(type.toString(), pos[0], pos[1]));
         if(version > 3) {
