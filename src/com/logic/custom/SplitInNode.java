@@ -1,5 +1,7 @@
 package com.logic.custom;
 
+import java.util.ArrayList;
+
 public class SplitInNode extends Node{
 
     private final int[] split;
@@ -16,7 +18,7 @@ public class SplitInNode extends Node{
     }
 
     @Override
-    public void update(Node[] nodes) {
+    public void update(Node[] nodes, ArrayList<Integer> active) {
 
     }
 }

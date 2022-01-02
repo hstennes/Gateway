@@ -3,6 +3,8 @@ package com.logic.custom;
 import com.logic.components.CompType;
 import com.logic.engine.LogicFunctions;
 
+import java.util.ArrayList;
+
 public class BasicGateNode extends Node{
 
     private final int function;
@@ -19,9 +21,10 @@ public class BasicGateNode extends Node{
     }
 
     @Override
-    public void update(Node[] nodes) {
+    public void update(Node[] nodes, ArrayList<Integer> active) {
         int[] inputs = new int[in.length];
         for(int i = 0; i < in.length; i++) inputs[i] = nodes[in[i]].out[inOutIndex[i]];
         out[0] = LogicFunctions.basicLogic(inputs, function);
+
     }
 }

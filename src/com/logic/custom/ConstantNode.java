@@ -2,6 +2,8 @@ package com.logic.custom;
 
 import com.logic.components.CompType;
 
+import java.util.ArrayList;
+
 public class ConstantNode extends Node{
 
     public ConstantNode(CompType type) {
@@ -11,5 +13,5 @@ public class ConstantNode extends Node{
     }
 
     @Override
-    public void update(Node[] nodes) { }
+    public void update(Node[] nodes, ArrayList<Integer> active) { }
 }

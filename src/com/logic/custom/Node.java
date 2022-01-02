@@ -1,14 +1,16 @@
 package com.logic.custom;
 
+import java.util.ArrayList;
+
 public abstract class Node {
 
-    /**
+    /*
      * Array of nodes (fixed size)
      * Each node holds the indexes of all connected nodes, or -1 for nothing connected
      * On update: get input from input nodes, set outputs, mark (write down index) of affected output nodes
      */
 
-    /**
+    /*
      * BasicGate - type
      * SingleInput - type
      * Constant - type
@@ -28,5 +30,5 @@ public abstract class Node {
         this.out = out;
     }
 
-    public abstract void update(Node[] nodes);
+    public abstract void update(Node[] nodes, ArrayList<Integer> active);
 }

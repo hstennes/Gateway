@@ -3,6 +3,8 @@ package com.logic.custom;
 import com.logic.components.CompType;
 import com.logic.engine.LogicFunctions;
 
+import java.util.ArrayList;
+
 public class SingleInputGateNode extends Node {
 
     private final int function;
@@ -20,7 +22,7 @@ public class SingleInputGateNode extends Node {
     }
 
     @Override
-    public void update(Node[] nodes) {
+    public void update(Node[] nodes, ArrayList<Integer> active) {
         out[0] = LogicFunctions.singleInput.get(function).apply(nodes[in].out[inOutIndex]);
     }
 }
