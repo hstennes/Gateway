@@ -29,11 +29,6 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 	private int function;
 
 	/**
-	 * Stores a bitmask that optionally inverts the output of the logic function depending on the type of gate
-	 */
-	private int inverted;
-
-	/**
 	 * Constructs a new BasicGate with the default number of inputs
 	 * @param x The x position of the new gate
 	 * @param y The y position of the new gate
@@ -52,38 +47,9 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 	 */
 	public BasicGate(int x, int y, CompType type, int numInputs) {
 		super(x, y, type);
-		int normalMask = 0;
-		int invertedMask = -1;
-		if(type == CompType.AND) {
-			setImages(new int[]{1});
-			inverted = normalMask;
-			function = 0;
-		}
-		else if(type == CompType.NAND) {
-			setImages(new int[]{1});
-			inverted = invertedMask;
-			function = 0;
-		}
-		else if(type == CompType.OR) {
-			setImages(new int[]{2});
-			inverted = normalMask;
-			function = 1;
-		}
-		else if(type == CompType.NOR) {
-			setImages(new int[]{2});
-			inverted = invertedMask;
-			function = 1;
-		}
-		else if(type == CompType.XOR) {
-			setImages(new int[]{2});
-			inverted = normalMask;
-			function = 2;
-		}
-		else if(type == CompType.XNOR) {
-			setImages(new int[]{2});
-			inverted = invertedMask;
-			function = 2;
-		}
+		if(type == CompType.AND || type == CompType.NAND) setImages(new int[]{1});
+		else setImages(new int[]{2});
+		function = LogicFunctions.getFunctionIndex(type);
 
 		if(numInputs > MAX_INPUTS) numInputs = MAX_INPUTS;
 		else if(numInputs < MIN_INPUTS) numInputs = MIN_INPUTS;
@@ -98,7 +64,7 @@ public class BasicGate extends LComponent implements BitWidthEntity {
 	public void update(LogicEngine engine) {
 		int[] inputs = new int[io.getNumInputs()];
 		for(int i = 0; i < io.getNumInputs(); i++) inputs[i] = io.getInput(i);
-		io.setOutput(0, inverted ^ LogicFunctions.basicLogic(inputs, LogicFunctions.twoInput.get(function)), engine);
+		io.setOutput(0, LogicFunctions.basicLogic(inputs, function), engine);
 	}
 
 	/**

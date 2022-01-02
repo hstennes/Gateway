@@ -1,11 +1,6 @@
 package com.logic.custom;
 
-import com.logic.components.CompType;
-
-import java.awt.*;
-import java.util.ArrayList;
-
-public class Node {
+public abstract class Node {
 
     /**
      * Array of nodes (fixed size)
@@ -27,19 +22,11 @@ public class Node {
      * Switch - does not exist
      */
 
-    private int[] in;
-
-    private int[] inOutIndex;
-
     public int[] out;
 
-    private CompType type;
-
-    public Node(){
-
+    public Node(int[] out){
+        this.out = out;
     }
 
-    public void update(Node[] nodes){
-
-    }
+    public abstract void update(Node[] nodes);
 }

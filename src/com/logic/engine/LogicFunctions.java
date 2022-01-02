@@ -1,5 +1,7 @@
 package com.logic.engine;
 
+import com.logic.components.CompType;
+
 import java.util.ArrayList;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -33,13 +35,35 @@ public class LogicFunctions {
 		twoInput.add((a, b) -> a & b);
 		twoInput.add((a, b) -> a | b);
 		twoInput.add((a, b) -> a ^ b);
+		twoInput.add((a, b) -> ~(a & b));
+		twoInput.add((a, b) -> ~(a | b));
+		twoInput.add((a, b) -> ~(a ^ b));
 	}
 
-	public static int basicLogic(int[] inputs, BiFunction<Integer, Integer, Integer> function){
+	public static int basicLogic(int[] inputs, int function){
 		int output = inputs[0];
 		for(int i = 1; i < inputs.length; i++){
-			output = function.apply(output, inputs[i]);
+			output = twoInput.get(function).apply(output, inputs[i]);
 		}
 		return output;
+	}
+
+	public static int getFunctionIndex(CompType type){
+		switch(type){
+			case AND:
+				return 0;
+			case NAND:
+				return 3;
+			case OR:
+				return 1;
+			case NOR:
+				return 4;
+			case XOR:
+				return 2;
+			case XNOR:
+				return 5;
+			default:
+				throw new IllegalArgumentException("getFunctionIndex requires BasicGate type");
+		}
 	}
 }
