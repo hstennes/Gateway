@@ -1,17 +1,19 @@
 package com.logic.custom;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ClockNode extends Node{
+public class ClockNode implements Node{
 
     private int delay;
 
-    public ClockNode() {
-        super(new int[1]);
+    @Override
+    public void update(NodeBox nb, List<Integer> active) {
+
     }
 
     @Override
-    public void update(Node[] nodes, ArrayList<Integer> active) {
-        //this is really going to suck
+    public int getSignal(int n) {
+        return 0;
     }
 }

@@ -4,27 +4,36 @@ import com.logic.components.CompType;
 import com.logic.engine.LogicFunctions;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class BasicGateNode extends Node{
+public class BasicGateNode implements Node{
 
     private final int function;
 
     private final int[] in;
 
-    private final int[] inOutIndex;
+    private final int out;
 
-    public BasicGateNode(int[] in, int[] inOutIndex, CompType type) {
-        super(new int[1]);
+    private int signal;
+
+    public BasicGateNode(int[] in, int out, CompType type) {
         this.in = in;
-        this.inOutIndex = inOutIndex;
+        this.out = out;
         function = LogicFunctions.getFunctionIndex(type);
     }
 
     @Override
-    public void update(Node[] nodes, ArrayList<Integer> active) {
-        int[] inputs = new int[in.length];
-        for(int i = 0; i < in.length; i++) inputs[i] = nodes[in[i]].out[inOutIndex[i]];
-        out[0] = LogicFunctions.basicLogic(inputs, function);
+    public void update(NodeBox nb, List<Integer> active) {
+        int[] inputs = new int[in.length / 2];
+        for(int i = 0; i < in.length; i += 2) inputs[i] = nb.get(in[i], in[i + 1]);
+        int newSignal = LogicFunctions.basicLogic(inputs, function);
+        if(newSignal == signal) return;
+        signal = newSignal;
+        active.add(out);
+    }
 
+    @Override
+    public int getSignal(int n) {
+        return signal;
     }
 }

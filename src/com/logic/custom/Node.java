@@ -1,8 +1,9 @@
 package com.logic.custom;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public abstract class Node {
+public interface Node {
 
     /*
      * Array of nodes (fixed size)
@@ -24,11 +25,23 @@ public abstract class Node {
      * Switch - does not exist
      */
 
-    public int[] out;
+    /*
+    BasicGate - function int, inputs xN, inOut xN, signal x1, output x1
+    SingleInput - function boolean, input x1, inOut x1, signal x1, output x1
+    Constant - type boolean, output x1
+    Clock - delay int, signal x1, output x1
+    SplitIn - inputs xN, inOut xN, signal x1, output x1
+    Custom - inner Nodes, inputs xN, inOut xN, signal xM, output xM
 
-    public Node(int[] out){
-        this.out = out;
-    }
+    seems like a bit of a waste to have an output array when only custom component require an array
 
-    public abstract void update(Node[] nodes, ArrayList<Integer> active);
+    Node interface: update(NodeBox nb), getOutput(int n)
+    NodeBox: getInput(int component, int outIndex), mark(int node)
+
+    Maximum memory efficiency, not great simulation speed because of tons of method calls
+     */
+
+    void update(NodeBox nb, List<Integer> active);
+
+    int getSignal(int n);
 }

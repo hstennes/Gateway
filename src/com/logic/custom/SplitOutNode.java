@@ -1,24 +1,19 @@
 package com.logic.custom;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class SplitOutNode extends Node {
+public class SplitOutNode implements Node {
 
-    private final int[] split;
+    private int[] split;
 
-    private final int in;
+    @Override
+    public void update(NodeBox nb, List<Integer> active) {
 
-    private final int inOutIndex;
-
-    public SplitOutNode(int in, int inOutIndex, int[] out, int[] split) {
-        super(new int[split.length]);
-        this.split = split;
-        this.in = in;
-        this.inOutIndex = inOutIndex;
     }
 
     @Override
-    public void update(Node[] nodes, ArrayList<Integer> active) {
-
+    public int getSignal(int n) {
+        return 0;
     }
 }

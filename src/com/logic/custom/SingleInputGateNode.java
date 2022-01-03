@@ -4,25 +4,37 @@ import com.logic.components.CompType;
 import com.logic.engine.LogicFunctions;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class SingleInputGateNode extends Node {
+public class SingleInputGateNode implements Node {
 
-    private final int function;
+    private final int mask;
 
     private final int in;
 
-    private final int inOutIndex;
+    private final int inOut;
 
-    public SingleInputGateNode(int in, int inOutIndex, CompType type) {
-        super(new int[1]);
+    private int signal;
+
+    private final int out;
+
+    public SingleInputGateNode(int in, int inOut, int out, CompType type) {
         this.in = in;
-        this.inOutIndex = inOutIndex;
-        if(type == CompType.BUFFER) function = 1;
-        else function = 0;
+        this.inOut = inOut;
+        this.out = out;
+        mask = type == CompType.NOT ? -1 : 0;
     }
 
     @Override
-    public void update(Node[] nodes, ArrayList<Integer> active) {
-        out[0] = LogicFunctions.singleInput.get(function).apply(nodes[in].out[inOutIndex]);
+    public void update(NodeBox nb, List<Integer> active) {
+        int newSignal = nb.get(in, inOut) ^ mask;
+        if(newSignal == signal) return;
+        signal = newSignal;
+        active.add(out);
+    }
+
+    @Override
+    public int getSignal(int n) {
+        return signal;
     }
 }
