@@ -44,4 +44,6 @@ public interface Node {
     void update(NodeBox nb, List<Integer> active);
 
     int getSignal(int n);
+
+    Node duplicate();
 }

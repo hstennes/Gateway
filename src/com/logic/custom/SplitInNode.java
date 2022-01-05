@@ -16,4 +16,9 @@ public class SplitInNode implements Node{
     public int getSignal(int n) {
         return 0;
     }
+
+    @Override
+    public Node duplicate() {
+        return null;
+    }
 }

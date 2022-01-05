@@ -18,10 +18,18 @@ public class BasicGateNode implements Node{
 
     private int signal;
 
-    public BasicGateNode(int[] in, int[] out, CompType type) {
+    public BasicGateNode(int[] in, int[] out, int signal, CompType type) {
         this.in = in;
         this.out = out;
+        this.signal = signal;
         function = (byte) LogicFunctions.getFunctionIndex(type);
+    }
+
+    private BasicGateNode(byte function, int[] in, int[] out, int signal){
+        this.function = function;
+        this.in = in;
+        this.out = out;
+        this.signal = signal;
     }
 
     @Override
@@ -37,5 +45,10 @@ public class BasicGateNode implements Node{
     @Override
     public int getSignal(int n) {
         return signal;
+    }
+
+    @Override
+    public Node duplicate() {
+        return new BasicGateNode(function, in, out, signal);
     }
 }

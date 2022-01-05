@@ -101,7 +101,7 @@ public class CustomCreator {
 			return;
 		}
 
-		ArrayList<LComponent> lcomps = CompUtils.duplicate(this.lcomps);
+		//ArrayList<LComponent> lcomps = CompUtils.duplicate(this.lcomps);
 		LComponent[][] content = getCustomContent(lcomps, centerRect);
 		String label = JOptionPane.showInputDialog(null, "New component label?");
 		if(label == null) return;

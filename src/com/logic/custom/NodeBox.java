@@ -11,9 +11,9 @@ public class NodeBox implements Node{
 
     private final Node[] inner;
 
-    private final int[] in;
+    private int[] in;
 
-    private final int[][] out;
+    private int[][] out;
 
     private final int[] outNodes;
 
@@ -38,7 +38,7 @@ public class NodeBox implements Node{
     @Override
     public void update(NodeBox nb, List<Integer> active) {
         int[] inputs = new int[in.length / 2];
-        for(int i = 0; i < in.length; i += 2) inputs[i] = nb.get(in[i], in[i + 1]);
+        for(int i = 0; i < inputs.length; i++) inputs[i] = nb.get(in[i * 2], in[i * 2 + 1]);
         update(inputs, active);
     }
 
@@ -87,5 +87,16 @@ public class NodeBox implements Node{
     public int get(int node, int nodeOut){
         if(node == -1) return 0;
         return inner[node].getSignal(nodeOut);
+    }
+
+    public void connect(int[] in, int[][] out){
+        this.in = in;
+        this.out = out;
+    }
+
+    public NodeBox duplicate(){
+        Node[] newInner = new Node[inner.length];
+        for(int i = 0; i < inner.length; i++) newInner[i] = inner[i].duplicate();
+        return new NodeBox(inner, in, out, outNodes);
     }
 }

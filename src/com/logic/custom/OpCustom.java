@@ -9,6 +9,7 @@ import com.logic.util.CustomHelper;
 import com.logic.util.CustomInput;
 import com.logic.util.CustomOutput;
 
+import javax.crypto.spec.PSource;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,7 +112,48 @@ public class OpCustom extends LComponent {
 
                 OutputPin outputPin = io.outputConnection(0);
                 int[] out = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
-                nodes[i] = new BasicGateNode(in, out, lcomp.getType());
+                nodes[i] = new BasicGateNode(in, out, outputPin.getSignal(), lcomp.getType());
+            }
+            else if(lcomp instanceof SingleInputGate){
+                IOManager io = lcomp.getIO();
+                InputPin inputPin = io.inputConnection(0);
+                int in = -1, inOut = -1;
+                if(inputPin.numWires() > 0) {
+                    OutputPin source = inputPin.getWire().getSourceConnection();
+                    in = compIndex.get(source.getLcomp());
+                    inOut = source.getIndex();
+                }
+
+                OutputPin outputPin = io.outputConnection(0);
+                int[] out = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
+                nodes[i] = new SingleInputGateNode(in, inOut, out, outputPin.getSignal(), lcomp.getType());
+            }
+            else if(lcomp instanceof OpCustom){
+                //die
+                NodeBox box = ((OpCustom) lcomp).getNodeBox().duplicate();
+
+                IOManager io = lcomp.getIO();
+                int[] in = new int[io.getNumInputs() * 2];
+                for(int n = 0; n < io.getNumInputs(); n++){
+                    InputPin inputPin = io.inputConnection(n);
+                    if(inputPin.numWires() > 0) {
+                        OutputPin source = inputPin.getWire().getSourceConnection();
+                        in[2 * n] = compIndex.get(source.getLcomp());
+                        in[2 * n + 1] = source.getIndex();
+                    }
+                    else{
+                        in[2 * n] = -1;
+                        in[2 * n + 1] = -1;
+                    }
+                }
+
+                int[][] out = new int[io.getNumOutputs()][];
+                for(int n = 0; n < io.getNumOutputs(); n++) {
+                    OutputPin outputPin = io.outputConnection(n);
+                    out[n] = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
+                }
+                box.connect(in, out);
+                nodes[i] = box;
             }
             else if(lcomp instanceof Switch){
                 OutputPin outputPin = lcomp.getIO().outputConnection(0);
@@ -121,6 +163,15 @@ public class OpCustom extends LComponent {
         }
 
         nodeBox = new NodeBox(nodes, outNodes);
+    }
+
+    private OpCustom(int x, int y, NodeBox nodeBox, String label, int typeID, int width, int height){
+        super(x, y, CompType.CUSTOM);
+        this.nodeBox = nodeBox;
+        this.label = label;
+        this.typeID = typeID;
+        this.width = width;
+        this.height = height;
     }
 
     /**
@@ -189,10 +240,30 @@ public class OpCustom extends LComponent {
 
     @Override
     public LComponent makeCopy() {
-        return null;
-    }
+        OpCustom result = new OpCustom(x, y, nodeBox.duplicate(), label, typeID, width, height);
+        result.setRotation(rotation);
+        result.setName(getName());
 
+        for(int i = 0; i < io.getNumInputs(); i++){
+            Connection c = io.inputConnection(i);
+            result.getIO().addConnection(c.getX(), c.getY(), Connection.INPUT, c.getDirection());
+            io.inputConnection(i).changeBitWidth(c.getBitWidth());
+        }
+
+        for(int i = 0; i < io.getNumOutputs(); i++){
+            Connection c = io.outputConnection(i);
+            result.getIO().addConnection(c.getX(), c.getY(), Connection.OUTPUT, c.getDirection());
+            io.outputConnection(i).changeBitWidth(c.getBitWidth());
+        }
+
+        return result;
+    }
+    
     public String getLabel(){
         return label;
+    }
+
+    public NodeBox getNodeBox(){
+        return nodeBox;
     }
 }

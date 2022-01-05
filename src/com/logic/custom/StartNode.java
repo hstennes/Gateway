@@ -15,6 +15,11 @@ public class StartNode implements Node{
         this.out = out;
     }
 
+    private StartNode(int[] out, int signal){
+        this.out = out;
+        this.signal = signal;
+    }
+
     @Override
     public void update(NodeBox nb, List<Integer> active) {
         active.addAll(Arrays.stream(out).boxed().collect(Collectors.toList()));
@@ -23,6 +28,11 @@ public class StartNode implements Node{
     @Override
     public int getSignal(int n) {
         return signal;
+    }
+
+    @Override
+    public Node duplicate() {
+        return new StartNode(out, signal);
     }
 
     public void setSignal(int signal){
