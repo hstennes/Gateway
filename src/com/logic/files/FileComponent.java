@@ -3,6 +3,7 @@ package com.logic.files;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.logic.components.*;
+import com.logic.custom.OpCustom;
 import com.logic.ui.CompProperties;
 import com.logic.util.CompUtils;
 
@@ -194,7 +195,7 @@ public class FileComponent {
                 lcomps.get(i).getIO().inputConnection(x).addWire(wire);
             }
         }
-        return applyProperties(new Custom(pos[0], pos[1], b.label, content, lcomps, cTypeId));
+        return applyProperties(new OpCustom(pos[0], pos[1], b.label, content, lcomps, cTypeId));
     }
 
     private Splitter makeSplitter(int version){

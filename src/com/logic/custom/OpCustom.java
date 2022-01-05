@@ -148,12 +148,54 @@ public class OpCustom extends LComponent {
                 }
 
                 int[][] out = new int[io.getNumOutputs()][];
+                int[] signal = new int[io.getNumOutputs()];
                 for(int n = 0; n < io.getNumOutputs(); n++) {
                     OutputPin outputPin = io.outputConnection(n);
                     out[n] = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
+                    signal[n] = outputPin.getSignal();
                 }
-                box.connect(in, out);
+                box.connect(in, out, signal);
                 nodes[i] = box;
+            }
+            else if(lcomp instanceof SplitIn){
+                IOManager io = lcomp.getIO();
+                int[] in = new int[io.getNumInputs() * 2];
+                for(int n = 0; n < io.getNumInputs(); n++){
+                    InputPin inputPin = io.inputConnection(n);
+                    if(inputPin.numWires() > 0) {
+                        OutputPin source = inputPin.getWire().getSourceConnection();
+                        in[2 * n] = compIndex.get(source.getLcomp());
+                        in[2 * n + 1] = source.getIndex();
+                    }
+                    else{
+                        in[2 * n] = -1;
+                        in[2 * n + 1] = -1;
+                    }
+                }
+
+                OutputPin outputPin = io.outputConnection(0);
+                int[] out = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
+                nodes[i] = new SplitInNode(((SplitIn) lcomp).getSplit(), in, out, outputPin.getSignal());
+            }
+            else if(lcomp instanceof SplitOut){
+                IOManager io = lcomp.getIO();
+                InputPin inputPin = io.inputConnection(0);
+                int in = -1, inOut = -1;
+                if(inputPin.numWires() > 0) {
+                    OutputPin source = inputPin.getWire().getSourceConnection();
+                    in = compIndex.get(source.getLcomp());
+                    inOut = source.getIndex();
+                }
+
+                int[][] out = new int[io.getNumOutputs()][];
+                int[] signal = new int[io.getNumOutputs()];
+                for(int n = 0; n < io.getNumOutputs(); n++) {
+                    OutputPin outputPin = io.outputConnection(n);
+                    out[n] = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
+                    signal[n] = outputPin.getSignal();
+                }
+
+                nodes[i] = new SplitOutNode(((SplitOut) lcomp).getSplit(), in, inOut, out, signal);
             }
             else if(lcomp instanceof Switch){
                 OutputPin outputPin = lcomp.getIO().outputConnection(0);
@@ -162,7 +204,12 @@ public class OpCustom extends LComponent {
             }
         }
 
-        nodeBox = new NodeBox(nodes, outNodes);
+        int[] signal = new int[io.getNumOutputs()];
+        for(int i  = 0; i < signal.length; i++){
+            signal[i] = io.outputConnection(i).getSignal();
+        }
+
+        nodeBox = new NodeBox(nodes, outNodes, signal);
     }
 
     private OpCustom(int x, int y, NodeBox nodeBox, String label, int typeID, int width, int height){
@@ -247,18 +294,18 @@ public class OpCustom extends LComponent {
         for(int i = 0; i < io.getNumInputs(); i++){
             Connection c = io.inputConnection(i);
             result.getIO().addConnection(c.getX(), c.getY(), Connection.INPUT, c.getDirection());
-            io.inputConnection(i).changeBitWidth(c.getBitWidth());
+            result.getIO().inputConnection(i).changeBitWidth(c.getBitWidth());
         }
 
         for(int i = 0; i < io.getNumOutputs(); i++){
             Connection c = io.outputConnection(i);
             result.getIO().addConnection(c.getX(), c.getY(), Connection.OUTPUT, c.getDirection());
-            io.outputConnection(i).changeBitWidth(c.getBitWidth());
+            result.getIO().outputConnection(i).changeBitWidth(c.getBitWidth());
         }
 
         return result;
     }
-    
+
     public String getLabel(){
         return label;
     }

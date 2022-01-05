@@ -17,22 +17,22 @@ public class NodeBox implements Node{
 
     private final int[] outNodes;
 
-    public final int[] signal;
+    public int[] signal;
 
-    public NodeBox(Node[] inner, int[] outNodes){
+    public NodeBox(Node[] inner, int[] outNodes, int[] signal){
         this.inner = inner;
         in = null;
         out = null;
         this.outNodes = outNodes;
-        signal = new int[outNodes.length / 2];
+        this.signal = signal;
     }
 
-    public NodeBox(Node[] inner, int[] in, int[][] out, int[] outNodes) {
+    public NodeBox(Node[] inner, int[] in, int[][] out, int[] outNodes, int[] signal) {
         this.inner = inner;
         this.in = in;
         this.out = out;
         this.outNodes = outNodes;
-        signal = new int[outNodes.length / 2];
+        this.signal = signal;
     }
 
     @Override
@@ -89,14 +89,15 @@ public class NodeBox implements Node{
         return inner[node].getSignal(nodeOut);
     }
 
-    public void connect(int[] in, int[][] out){
+    public void connect(int[] in, int[][] out, int[] signal){
         this.in = in;
         this.out = out;
+        this.signal = signal;
     }
 
     public NodeBox duplicate(){
         Node[] newInner = new Node[inner.length];
         for(int i = 0; i < inner.length; i++) newInner[i] = inner[i].duplicate();
-        return new NodeBox(inner, in, out, outNodes);
+        return new NodeBox(inner, in, out, outNodes, signal);
     }
 }

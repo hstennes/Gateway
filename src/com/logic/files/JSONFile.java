@@ -124,7 +124,7 @@ public class JSONFile {
         ArrayList<Custom> customs = new ArrayList<>();
         ArrayList<LComponent> lcomps = new ArrayList<>();
         for(FileComponent fc : components) lcomps.add(fc.makeComponent(version, cTypes, cData, true, -1));
-        for(FileComponent fc : cExamples) customs.add((Custom) fc.makeComponent(version, cTypes, cData, true, -1));
+        //for(FileComponent fc : cExamples) customs.add((Custom) fc.makeComponent(version, cTypes, cData, true, -1));
 
         for(int i = 0; i < components.length; i++){
             FileComponent fc = components[i];
