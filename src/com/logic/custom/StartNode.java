@@ -11,11 +11,7 @@ public class StartNode implements Node{
 
     public int signal;
 
-    public StartNode(int[] out){
-        this.out = out;
-    }
-
-    private StartNode(int[] out, int signal){
+    public StartNode(int[] out, int signal){
         this.out = out;
         this.signal = signal;
     }

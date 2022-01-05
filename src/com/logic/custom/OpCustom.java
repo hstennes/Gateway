@@ -29,7 +29,6 @@ public class OpCustom extends LComponent {
         super(x, y, CompType.CUSTOM);
         this.label = label;
         this.typeID=  typeID;
-
         CustomHelper helper = new CustomHelper(content);
         width = helper.chooseWidth(label, Renderer.CUSTOM_LABEL_FONT);
         height = helper.chooseHeight();
@@ -37,178 +36,45 @@ public class OpCustom extends LComponent {
         //maps components to ID values, ignoring lights and other components that will not be included in the NodeBox. This should be the same
         //as the indexes of the components in nodeComps, and the same components are included in both
         Map<LComponent, Integer> compIndex = new HashMap<>();
-
         //the list of all components that will be converted to nodes. Starts with all Switches in the order that input connections will be considered
         ArrayList<LComponent> nodeComps = new ArrayList<>();
-
-        //A list of lights. Currently serves no purpose besides tracking the number of lights that have been added. Will optimize later.
-        ArrayList<Light> lights = new ArrayList<>();
-
         //The index of the output connection corresponding to each Light. Used for creating outNodes array, which tells NodeBox how to set the output connections
         //based on Node states at the end of the update method.
         Map<Light, Integer> lightIndex = new HashMap<>();
+        //Initialize connections, modifying the above 3 objects in the process
+        initConnections(helper, content, compIndex, nodeComps, lightIndex);
 
-        //Loops through sides of content array, uses same format as old Custom
-        for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
-            LComponent[] side = content[s];
-            if(side == null) continue;
-            Point[] connectionPoints = helper.getConnectionPoints(s, width, height);
-            for(int i = 0; i < side.length; i++) {
-                if(side[i] instanceof Switch) {
-                    //Add connection
-                    int connectionIndex = io.addConnection(connectionPoints[i].x, connectionPoints[i].y, Connection.INPUT, s);
-                    io.inputConnection(connectionIndex).changeBitWidth(((Switch) side[i]).getBitWidth());
-
-                    //Add lcomp to list and keep track of index with map
-                    compIndex.put(side[i], nodeComps.size());
-                    nodeComps.add(side[i]);
-                }
-                else if(side[i] instanceof Light) {
-                    //Add connection
-                    int connectionIndex = io.addConnection(connectionPoints[i].x, connectionPoints[i].y, Connection.OUTPUT, s);
-                    io.outputConnection(connectionIndex).changeBitWidth(((Light) side[i]).getBitWidth());
-
-                    //Add to Lights array and keep track of index, which should also correspond to the index of the output connection
-                    lightIndex.put((Light) side[i], lights.size());
-                    lights.add((Light) side[i]);
-                }
-            }
-        }
-
-        //loop through all lcomps to fill out nodeComps
         for (LComponent lcomp : lcomps) {
             //Ignore Lights because they have no nodes. Ignore Switches because they were already added. Will also ignore other components in the future.
             if (lcomp instanceof Light || lcomp instanceof Switch) continue;
-
-            //Add lcomp to list and keep track of index with map
             compIndex.put(lcomp, nodeComps.size());
             nodeComps.add(lcomp);
         }
 
         //final nodes array that goes to NodeBox
         Node[] nodes = new Node[nodeComps.size()];
-
         //final outNodes array. Goes in order of connections. Alternates component id, output connection number on that component
-        int[] outNodes = new int[lights.size() * 2];
+        int[] outNodes = new int[io.getNumOutputs() * 2];
 
         for(int i = 0; i < nodes.length; i++){
             LComponent lcomp = nodeComps.get(i);
+            int[] in = getNodeIn(lcomp, compIndex);
+            int[][] out = getNodeOut(lcomp, compIndex, lightIndex, outNodes);
+            int[] signal = getSignal(lcomp);
 
-            if(lcomp instanceof BasicGate){
-                IOManager io = lcomp.getIO();
-                int[] in = new int[io.getNumInputs() * 2];
-                for(int n = 0; n < io.getNumInputs(); n++){
-                    InputPin inputPin = io.inputConnection(n);
-                    if(inputPin.numWires() > 0) {
-                        OutputPin source = inputPin.getWire().getSourceConnection();
-                        in[2 * n] = compIndex.get(source.getLcomp());
-                        in[2 * n + 1] = source.getIndex();
-                    }
-                    else{
-                        in[2 * n] = -1;
-                        in[2 * n + 1] = -1;
-                    }
-                }
-
-                OutputPin outputPin = io.outputConnection(0);
-                int[] out = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
-                nodes[i] = new BasicGateNode(in, out, outputPin.getSignal(), lcomp.getType());
-            }
-            else if(lcomp instanceof SingleInputGate){
-                IOManager io = lcomp.getIO();
-                InputPin inputPin = io.inputConnection(0);
-                int in = -1, inOut = -1;
-                if(inputPin.numWires() > 0) {
-                    OutputPin source = inputPin.getWire().getSourceConnection();
-                    in = compIndex.get(source.getLcomp());
-                    inOut = source.getIndex();
-                }
-
-                OutputPin outputPin = io.outputConnection(0);
-                int[] out = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
-                nodes[i] = new SingleInputGateNode(in, inOut, out, outputPin.getSignal(), lcomp.getType());
-            }
+            if(lcomp instanceof BasicGate) nodes[i] = new BasicGateNode(in, out[0], signal[0], lcomp.getType());
+            else if(lcomp instanceof SingleInputGate) nodes[i] = new SingleInputGateNode(in[0], in[1], out[0], signal[0], lcomp.getType());
+            else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(((SplitIn) lcomp).getSplit(), in, out[0], signal[0]);
+            else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(((SplitOut) lcomp).getSplit(), in[0], in[1], out, signal);
+            else if(lcomp instanceof Switch) nodes[i] = new StartNode(out[0], signal[0]);
             else if(lcomp instanceof OpCustom){
-                //die
                 NodeBox box = ((OpCustom) lcomp).getNodeBox().duplicate();
-
-                IOManager io = lcomp.getIO();
-                int[] in = new int[io.getNumInputs() * 2];
-                for(int n = 0; n < io.getNumInputs(); n++){
-                    InputPin inputPin = io.inputConnection(n);
-                    if(inputPin.numWires() > 0) {
-                        OutputPin source = inputPin.getWire().getSourceConnection();
-                        in[2 * n] = compIndex.get(source.getLcomp());
-                        in[2 * n + 1] = source.getIndex();
-                    }
-                    else{
-                        in[2 * n] = -1;
-                        in[2 * n + 1] = -1;
-                    }
-                }
-
-                int[][] out = new int[io.getNumOutputs()][];
-                int[] signal = new int[io.getNumOutputs()];
-                for(int n = 0; n < io.getNumOutputs(); n++) {
-                    OutputPin outputPin = io.outputConnection(n);
-                    out[n] = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
-                    signal[n] = outputPin.getSignal();
-                }
                 box.connect(in, out, signal);
                 nodes[i] = box;
             }
-            else if(lcomp instanceof SplitIn){
-                IOManager io = lcomp.getIO();
-                int[] in = new int[io.getNumInputs() * 2];
-                for(int n = 0; n < io.getNumInputs(); n++){
-                    InputPin inputPin = io.inputConnection(n);
-                    if(inputPin.numWires() > 0) {
-                        OutputPin source = inputPin.getWire().getSourceConnection();
-                        in[2 * n] = compIndex.get(source.getLcomp());
-                        in[2 * n + 1] = source.getIndex();
-                    }
-                    else{
-                        in[2 * n] = -1;
-                        in[2 * n + 1] = -1;
-                    }
-                }
-
-                OutputPin outputPin = io.outputConnection(0);
-                int[] out = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
-                nodes[i] = new SplitInNode(((SplitIn) lcomp).getSplit(), in, out, outputPin.getSignal());
-            }
-            else if(lcomp instanceof SplitOut){
-                IOManager io = lcomp.getIO();
-                InputPin inputPin = io.inputConnection(0);
-                int in = -1, inOut = -1;
-                if(inputPin.numWires() > 0) {
-                    OutputPin source = inputPin.getWire().getSourceConnection();
-                    in = compIndex.get(source.getLcomp());
-                    inOut = source.getIndex();
-                }
-
-                int[][] out = new int[io.getNumOutputs()][];
-                int[] signal = new int[io.getNumOutputs()];
-                for(int n = 0; n < io.getNumOutputs(); n++) {
-                    OutputPin outputPin = io.outputConnection(n);
-                    out[n] = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
-                    signal[n] = outputPin.getSignal();
-                }
-
-                nodes[i] = new SplitOutNode(((SplitOut) lcomp).getSplit(), in, inOut, out, signal);
-            }
-            else if(lcomp instanceof Switch){
-                OutputPin outputPin = lcomp.getIO().outputConnection(0);
-                int[] out = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
-                nodes[i] = new StartNode(out);
-            }
         }
 
-        int[] signal = new int[io.getNumOutputs()];
-        for(int i  = 0; i < signal.length; i++){
-            signal[i] = io.outputConnection(i).getSignal();
-        }
-
+        int[] signal = getSignal(this);
         nodeBox = new NodeBox(nodes, outNodes, signal);
     }
 
@@ -219,6 +85,92 @@ public class OpCustom extends LComponent {
         this.typeID = typeID;
         this.width = width;
         this.height = height;
+    }
+
+    /**
+     * Initializes connections and adds data to compIndex, nodeComps, and lightIndex
+     * @param helper The CustomHelper
+     * @param content The content array
+     * @param compIndex The compIndex map
+     * @param nodeComps The nodeComps list
+     * @param lightIndex The lightIndex map
+     */
+    private void initConnections(CustomHelper helper, LComponent[][] content, Map<LComponent, Integer> compIndex, ArrayList<LComponent> nodeComps, Map<Light, Integer> lightIndex){
+        int lightID = 0;
+        for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
+            LComponent[] side = content[s];
+            if(side == null) continue;
+            Point[] connectionPoints = helper.getConnectionPoints(s, width, height);
+            for(int i = 0; i < side.length; i++) {
+                if(side[i] instanceof Switch) {
+                    int connectionIndex = io.addConnection(connectionPoints[i].x, connectionPoints[i].y, Connection.INPUT, s);
+                    io.inputConnection(connectionIndex).changeBitWidth(((Switch) side[i]).getBitWidth());
+                    compIndex.put(side[i], nodeComps.size());
+                    nodeComps.add(side[i]);
+                }
+                else if(side[i] instanceof Light) {
+                    int connectionIndex = io.addConnection(connectionPoints[i].x, connectionPoints[i].y, Connection.OUTPUT, s);
+                    io.outputConnection(connectionIndex).changeBitWidth(((Light) side[i]).getBitWidth());
+                    lightIndex.put((Light) side[i], lightID);
+                    lightID++;
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates the node input array for the given component
+     * @param lcomp The component
+     * @param compIndex The compIndex map
+     * @return The input array for the new Node
+     */
+    private int[] getNodeIn(LComponent lcomp, Map<LComponent, Integer> compIndex){
+        IOManager io = lcomp.getIO();
+        int[] in = new int[io.getNumInputs() * 2];
+        for(int n = 0; n < io.getNumInputs(); n++){
+            InputPin inputPin = io.inputConnection(n);
+            if(inputPin.numWires() > 0) {
+                OutputPin source = inputPin.getWire().getSourceConnection();
+                in[2 * n] = compIndex.get(source.getLcomp());
+                in[2 * n + 1] = source.getIndex();
+            }
+            else{
+                in[2 * n] = -1;
+                in[2 * n + 1] = -1;
+            }
+        }
+        return in;
+    }
+
+    /**
+     * Creates the node output array for the given component. The outNodes array will be modified if the component is connected
+     * to any output lights
+     * @param lcomp The component
+     * @param compIndex The component index map
+     * @param lightIndex The light index map
+     * @param outNodes The outNodes array (may be modified)
+     * @return The out array for the new Node
+     */
+    private int[][] getNodeOut(LComponent lcomp, Map<LComponent, Integer> compIndex, Map<Light, Integer> lightIndex, int[] outNodes){
+        IOManager io = lcomp.getIO();
+        int[][] out = new int[io.getNumOutputs()][];
+        for(int n = 0; n < io.getNumOutputs(); n++) {
+            OutputPin outputPin = io.outputConnection(n);
+            out[n] = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
+        }
+        return out;
+    }
+
+    /**
+     * Gets the signal array from the outputs connections of the given LComponent
+     * @param lcomp The LComponent
+     * @return The signal array for the new Node
+     */
+    private int[] getSignal(LComponent lcomp){
+        IOManager io = lcomp.getIO();
+        int[] signal = new int[io.getNumOutputs()];
+        for(int n = 0; n < io.getNumOutputs(); n++) signal[n] = io.outputConnection(n).getSignal();
+        return signal;
     }
 
     /**
