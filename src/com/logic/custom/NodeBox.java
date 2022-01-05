@@ -3,34 +3,50 @@ package com.logic.custom;
 import com.logic.components.LComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NodeBox implements Node{
 
-    private Node[] inner;
+    private final Node[] inner;
 
-    private int numStart;
+    private final int[] in;
 
-    private int[] in;
+    private final int[][] out;
 
-    private int[] out;
+    private final int[] outNodes;
 
-    private int[] signal;
+    public final int[] signal;
 
-    public NodeBox(Node[] inner, int[] in, int[] out) {
+    public NodeBox(Node[] inner, int[] outNodes){
+        this.inner = inner;
+        in = null;
+        out = null;
+        this.outNodes = outNodes;
+        signal = new int[outNodes.length / 2];
+    }
+
+    public NodeBox(Node[] inner, int[] in, int[][] out, int[] outNodes) {
         this.inner = inner;
         this.in = in;
         this.out = out;
+        this.outNodes = outNodes;
+        signal = new int[outNodes.length / 2];
     }
 
     @Override
     public void update(NodeBox nb, List<Integer> active) {
         int[] inputs = new int[in.length / 2];
         for(int i = 0; i < in.length; i += 2) inputs[i] = nb.get(in[i], in[i + 1]);
-        update(inputs);
+        update(inputs, active);
     }
 
     public void update(int[] inputs){
+        update(inputs, null);
+    }
+
+    private void update(int[] inputs, List<Integer> outerActive){
         List<Integer> active = new ArrayList<>();
         for(int i = 0; i < inputs.length; i++){
             if(inputs[i] != inner[i].getSignal(0)) {
@@ -46,19 +62,30 @@ public class NodeBox implements Node{
                 inner[n].update(this, active);
             }
         }
+
+        if(outerActive != null) {
+            for (int i = 0; i < signal.length; i++) {
+                int newSignal = get(outNodes[2 * i], outNodes[2 * i + 1]);
+                if (newSignal != signal[i]) {
+                    signal[i] = newSignal;
+                    outerActive.addAll(Arrays.stream(out[i]).boxed().collect(Collectors.toList()));
+                }
+            }
+        }
+        else{
+            for (int i = 0; i < signal.length; i++) {
+                signal[i] = get(outNodes[2 * i], outNodes[2 * i + 1]);
+            }
+        }
     }
 
     @Override
     public int getSignal(int n){
-        return 0;
+        return signal[n];
     }
 
     public int get(int node, int nodeOut){
         if(node == -1) return 0;
         return inner[node].getSignal(nodeOut);
-    }
-
-    public int get(int input){
-        return 0;
     }
 }

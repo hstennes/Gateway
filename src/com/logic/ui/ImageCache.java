@@ -34,7 +34,9 @@ public class ImageCache {
      * @return The image
      */
     public CachedImage get(LComponent lcomp){
-        return images.get(getHashString(lcomp));
+        return null;
+        //TODO restore once OpCustom is fixed
+        //return images.get(getHashString(lcomp));
     }
 
     /**

@@ -4,6 +4,7 @@ import com.logic.components.Custom;
 import com.logic.components.LComponent;
 import com.logic.components.Light;
 import com.logic.components.Switch;
+import com.logic.custom.OpCustom;
 import com.logic.input.CircuitState;
 import com.logic.input.Selection;
 import com.logic.util.CompUtils;
@@ -107,8 +108,12 @@ public class CustomCreator {
 
 		int x = centerRect.x + centerRect.width + customPlacementOffset;
 		int y = centerRect.y + centerRect.height + customPlacementOffset;
-		Custom custom = new Custom(x, y, label, content, lcomps, customs.size());
-		storeCopy(custom);
+		//Custom custom = new Custom(x, y, label, content, lcomps, customs.size());
+		//storeCopy(custom);
+
+		//TODO make sure everything is right here with transition to OpCustom
+		OpCustom custom = new OpCustom(x, y, label, content, lcomps, customs.size());
+
 		cp.addLComp(custom);
 		cp.getEditor().getRevision().saveState(new CircuitState(cp));
 		reset();

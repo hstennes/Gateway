@@ -1,6 +1,7 @@
 package com.logic.ui;
 
 import com.logic.components.*;
+import com.logic.custom.OpCustom;
 import com.logic.main.LogicSimApp;
 import com.logic.util.CompUtils;
 import com.logic.util.Constants;
@@ -254,7 +255,8 @@ public class Renderer {
 
         //Special rendering currently for Custom, multi bit switch, multi bit light
         if(type == CompType.CUSTOM) {
-            drawCustomBody(g2d, (Custom) lcomp, -cb.x, -cb.y);
+            //TODO make sure this is right when OpCustom is done
+            drawCustomBody(g2d, (OpCustom) lcomp, -cb.x, -cb.y);
             return image;
         }
         if(type == CompType.SWITCH && ((Switch) lcomp).getBitWidth() > 1){
@@ -289,7 +291,7 @@ public class Renderer {
         return image;
     }
 
-    private void drawCustomBody(Graphics2D g2d, Custom custom, int dx, int dy){
+    private void drawCustomBody(Graphics2D g2d, OpCustom custom, int dx, int dy){
         Rectangle bounds = custom.getBoundsRight();
         bounds.translate(dx, dy);
         g2d.setColor(Color.WHITE);
