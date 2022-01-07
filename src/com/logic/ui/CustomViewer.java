@@ -2,6 +2,7 @@ package com.logic.ui;
 
 import com.logic.components.Custom;
 import com.logic.components.LComponent;
+import com.logic.custom.OpCustom;
 import com.logic.input.Camera;
 import com.logic.util.CompUtils;
 
@@ -56,8 +57,8 @@ public class CustomViewer {
 	 * repositions the camera, and displays the custom component message.
 	 * @param c The Custom component
 	 */
-	public void view(Custom c) {
-		ArrayList<LComponent> dispComps = c.getInnerComps();
+	public void view(OpCustom c) {
+		ArrayList<LComponent> dispComps = cp.getEditor().getCustomCreator().getCustomTypes().get(c.getTypeID()).getInnerComps();
 		for(int i = 0; i < cp.lcomps.size(); i++) oldComps.add(cp.lcomps.get(i));
 		cp.lcomps.clear();
 		cp.wires.clear();
