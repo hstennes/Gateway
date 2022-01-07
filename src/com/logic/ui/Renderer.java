@@ -6,14 +6,11 @@ import com.logic.main.LogicSimApp;
 import com.logic.util.CompUtils;
 import com.logic.util.Constants;
 import org.apache.batik.gvt.GraphicsNode;
-import org.apache.commons.logging.Log;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
-import java.awt.image.BaseMultiResolutionImage;
-import java.awt.image.MultiResolutionImage;
 import java.util.ArrayList;
 
 public class Renderer {
@@ -70,6 +67,11 @@ public class Renderer {
     public static final Font SWITCH_FONT = new Font("Arial", Font.PLAIN, 34);
 
     /**
+     * The font used for rendering Display components
+     */
+    private final Font DISPLAY_FONT;
+
+    /**
      * The x and y length of the divider lines drawn around the center rectangle in the custom builder
      */
     private static final int CUSTOM_DIVIDER_SIZE = 1000;
@@ -77,7 +79,7 @@ public class Renderer {
     /**
      * The CircuitPanel instance
      */
-    private CircuitPanel cp;
+    private final CircuitPanel cp;
 
     /**
      * The collection of cached images
@@ -100,6 +102,7 @@ public class Renderer {
         this.cp = cp;
         cache = new ImageCache();
         userMessageDrawer = new LabelDrawer(UserMessage.MESSAGE_FONT, UserMessage.MESSAGE_COLOR, UserMessage.X_MARGIN, UserMessage.Y_MARGIN);
+        DISPLAY_FONT = LogicSimApp.fontLoader.sevenSegFont.deriveFont(70f);
     }
 
     public void render(Graphics2D g2d, ArrayList<LComponent> lcomps, ArrayList<Wire> wires, float cx, float cy, float zoom){
@@ -255,7 +258,6 @@ public class Renderer {
 
         //Special rendering currently for Custom, multi bit switch, multi bit light
         if(type == CompType.CUSTOM) {
-            //TODO make sure this is right when OpCustom is done
             drawCustomBody(g2d, (OpCustom) lcomp, -cb.x, -cb.y);
             return image;
         }
@@ -285,9 +287,10 @@ public class Renderer {
             svg.paint(g2d);
         }
 
-        //Final step of adding marks for basic gates
+        //Final step of adding marks for basic gates and value for display
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
         if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR || type == CompType.NOT) drawInverted(g2d, -cb.x, -cb.y);
+        if(type == CompType.DISPLAY) drawDisplayValue(g2d, ((Display) lcomp), -cb.x, -cb.y);
         return image;
     }
 
@@ -323,6 +326,16 @@ public class Renderer {
                     dx + lb.width - SWITCH_BIT_SPACING * (i + 1) + (SWITCH_BIT_SPACING - strWidth) / 2,
                     dy + (lb.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
         }
+    }
+
+    private void drawDisplayValue(Graphics2D g2d, Display display, int dx, int dy){
+        double radians = CompUtils.RAD_ROTATION[display.getRotation()];
+        Rectangle bounds = display.getBounds();
+        g2d.rotate(-radians, dx + bounds.width / 2, dy + bounds.height / 2);
+        g2d.setFont(DISPLAY_FONT);
+        g2d.setColor(SELECT_COLOR);
+        g2d.drawString(display.getValue(), dx + 22, dy + 85);
+        g2d.rotate(radians, dx + bounds.width / 2, dy + bounds.height / 2);
     }
 
     /**

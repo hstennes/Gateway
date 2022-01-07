@@ -9,13 +9,11 @@ import com.logic.util.Constants;
  *
  */
 public class Display extends LComponent {
-	
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Letters used to represent values greater than 9
 	 */
-	private final String[] letters = new String[] {"A", "b", "C", "d", "E", "F"};
+	private static final String[] VALUE_STRS = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "b", "C", "d", "E", "F"};
 	
 	/**
 	 * Constructs a new Display
@@ -33,27 +31,13 @@ public class Display extends LComponent {
 	
 	@Override
 	public void update(LogicEngine engine) { }
-	
-	/**
-	 * Returns an integer value in base ten that is equal to the given binary value
-	 * @param i1 The one's digit of the binary number
-	 * @param i2 The two's digit of the binary number
-	 * @param i4 The four's digit of the binary number
-	 * @param i8 The eight's digit of the binary number
-	 * @return The base ten equivalent of the binary value
-	 */
-	private int calcValue(boolean i1, boolean i2, boolean i4, boolean i8) {
-		return boolToInt(i1) + 2 * boolToInt(i2) + 4 * boolToInt(i4) + 8 * boolToInt(i8);
-	}
-	
-	/**
-	 * Converts a boolean to an integer in an intuitive way
-	 * @param b The boolean to convert
-	 * @return 1 if b is true, 0, if b is false
-	 */
-	public int boolToInt(boolean b) {
-		if(b) return 1;
-		return 0;
+
+	public String getValue(){
+		int val = 0;
+		for(int i = 3; i >= 0; i--){
+			val = 2 * val + io.getInputStrict(i);
+		}
+		return VALUE_STRS[val];
 	}
 	
 	@Override

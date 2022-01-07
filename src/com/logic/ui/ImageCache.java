@@ -60,8 +60,8 @@ public class ImageCache {
         else if(lcomp instanceof Custom) ext = ((Custom) lcomp).getLabel();
         else if(lcomp instanceof OpCustom) ext = ((OpCustom) lcomp).getLabel();
         else if(lcomp instanceof Splitter) ext = arrayString(((Splitter) lcomp).getSplit());
+        else if(lcomp instanceof Display) ext = ((Display) lcomp).getValue() + lcomp.getRotation();
         return lcomp.getType().toString() + ext;
-        //TODO add correct caching for Splitter, Display
     }
 
     private String arrayString(int[] arr){
