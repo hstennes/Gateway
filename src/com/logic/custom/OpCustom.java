@@ -262,6 +262,10 @@ public class OpCustom extends LComponent {
         return label;
     }
 
+    public int getTypeID(){
+        return typeID;
+    }
+
     public NodeBox getNodeBox(){
         return nodeBox;
     }

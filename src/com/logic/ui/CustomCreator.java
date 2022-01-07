@@ -4,6 +4,7 @@ import com.logic.components.Custom;
 import com.logic.components.LComponent;
 import com.logic.components.Light;
 import com.logic.components.Switch;
+import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom;
 import com.logic.input.CircuitState;
 import com.logic.input.Selection;
@@ -59,7 +60,7 @@ public class CustomCreator {
 	 * A list containing copies of all custom components that have been created. A future feature could be to actually display these in a list rather than having the user just
 	 * copy / paste, but for now this list is only useful for saving the circuit.
 	 */
-	private ArrayList<Custom> customs;
+	private ArrayList<CustomType> customTypes;
 	
 	/**
 	 * Constructs a new CustomCreator
@@ -68,7 +69,7 @@ public class CustomCreator {
 	public CustomCreator(CircuitPanel cp) {
 		this.cp = cp;
 		lcomps = new ArrayList<>();
-		customs = new ArrayList<>();
+		customTypes = new ArrayList<>();
 	}
 
 	/**
@@ -101,18 +102,14 @@ public class CustomCreator {
 			return;
 		}
 
-		//ArrayList<LComponent> lcomps = CompUtils.duplicate(this.lcomps);
 		LComponent[][] content = getCustomContent(lcomps, centerRect);
 		String label = JOptionPane.showInputDialog(null, "New component label?");
 		if(label == null) return;
 
 		int x = centerRect.x + centerRect.width + customPlacementOffset;
 		int y = centerRect.y + centerRect.height + customPlacementOffset;
-		//Custom custom = new Custom(x, y, label, content, lcomps, customs.size());
-		//storeCopy(custom);
-
-		//TODO make sure everything is right here with transition to OpCustom
-		OpCustom custom = new OpCustom(x, y, label, content, lcomps, customs.size());
+		OpCustom custom = new OpCustom(x, y, label, content, lcomps, customTypes.size());
+		customTypes.add(new CustomType(label, content, lcomps, customTypes.size(), custom.getNodeBox()));
 
 		cp.addLComp(custom);
 		cp.getEditor().getRevision().saveState(new CircuitState(cp));
@@ -166,17 +163,6 @@ public class CustomCreator {
 				left.toArray(new LComponent[0]),
 				top.toArray(new LComponent[0])};
 	}
-
-	/**
-	 * Saves a copy of a newly created custom component to the list of distinct customs
-	 * @param custom The component to add
-	 */
-	private void storeCopy(Custom custom){
-		Custom copy = CompUtils.duplicateCustom(custom);
-		copy.setX(0);
-		copy.setY(0);
-		customs.add(copy);
-	}
 	
 	/**
 	 * Resets this CustomCreator by setting its active state to false, clearing the list of involved components, clearing the center 
@@ -197,20 +183,20 @@ public class CustomCreator {
 		return active;
 	}
 
-	/**
-	 * Returns the list of distinct types of custom components
-	 * @return the list of customs
-	 */
-	public ArrayList<Custom> getCustoms(){
-		return customs;
+	public ArrayList<CustomType> getCustomTypes(){
+		return customTypes;
 	}
 
-	/**
-	 * Sets the list of distinct custom components (for loading from file)
-	 * @param customs The list of customs
-	 */
+	public void setCustomTypes(ArrayList<CustomType> customTypes){
+		this.customTypes = customTypes;
+	}
+
+	public ArrayList<Custom> getCustoms(){
+		return new ArrayList<Custom>();
+	}
+
 	public void setCustoms(ArrayList<Custom> customs){
-		this.customs = customs;
+
 	}
 
 	public Rectangle getCenterRect(){

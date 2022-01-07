@@ -98,6 +98,6 @@ public class NodeBox implements Node{
     public NodeBox duplicate(){
         Node[] newInner = new Node[inner.length];
         for(int i = 0; i < inner.length; i++) newInner[i] = inner[i].duplicate();
-        return new NodeBox(inner, in, out, outNodes, signal);
+        return new NodeBox(newInner, in, out, outNodes, signal);
     }
 }

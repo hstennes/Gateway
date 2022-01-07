@@ -85,8 +85,8 @@ public class JSONFile {
 
     /**
      * Recursively adds the wire state data for this custom component and each custom it contains to the cData list and returns the index
-     * in cData where the data is stored.  The data for this component holds the index of the data for each nested component so that
-     * the state can be reconstructed.
+     * in cData where the data is stored. This index can vary because the data for this custom component will be placed AFTER the data for nested
+     * customs. The data for this component holds the index of the data for each nested component so that the state can be reconstructed.
      * @param custom The custom component
      * @return The index of the data
      */

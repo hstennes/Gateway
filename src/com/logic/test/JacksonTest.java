@@ -13,61 +13,19 @@ import java.util.HashMap;
 
 public class JacksonTest {
 
-    public static void testSave(CircuitPanel cp) {
-        Camera cam = cp.getCamera();
-        JSONFile file = new JSONFile(new FileData(FileManager.FILE_FORMAT_VERSION, cp.lcomps,
-                cp.getEditor().getCustomCreator().getCustoms(),
-                new float[] {cam.getX(), cam.getY(), cam.getZoom()},
-                new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0}));
-        try {
-            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(Paths.get("testsave2.json").toFile(), file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void testJackson(){
-        HashMap<String, String> stuff = new HashMap<>();
-        stuff.put("Hello", "world");
-        try {
-            new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(Paths.get("testsave3.json").toFile(), stuff);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void testLoad(CircuitPanel cp){
-        try{
-            long time1 = System.currentTimeMillis();
-            JSONFile file = new ObjectMapper().readValue(Paths.get("testsave2.json").toFile(), JSONFile.class);
-            long time2 = System.currentTimeMillis();
-            FileData fileData = file.getFileData();
-            cp.addLComps(fileData.getLcomps());
-            cp.getEditor().getCustomCreator().setCustoms(fileData.getCustoms());
-
-
-            long time3 = System.currentTimeMillis();
-
-            System.out.println("JSON parsing: " + (time2 - time1));
-            System.out.println("Creating components: " + (time3 - time2));
-
-            cp.repaint();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     /*
-    File format:
+    FILE VERSION 4:
+
     components: [
         {
-            type from CompType OR customID
+            type from CompType
             x, y, rotation
             name, comments (if present?)
-            connect: [
+            input: [
                 [id, output_number, *bit width, signal] (connected)
                 [-1, -1, bit width] (nothing connected)
             ]
+            output: [output 1 bit width, output 2 bit width...]
 
             state (just for switch)
             delay (just for clock)
@@ -79,18 +37,70 @@ public class JacksonTest {
             label
             components: [
                 {
-                    type from CompType of customID
+                    type from CompType
                     ...
-                    connect: [
+                    input: [
                         [id, output_number, *bit width] (connected)
                         [-1, -1, bit width] (nothing connected)
                     ]
+                    output: [output 1 bit width, output 2 bit width...]
                 }
             ]
         }
     ]
+    eExamples: [
+        {
+            A custom component, identical to a custom component that could appear in "components", with its own cData index.
+        }
+    ]
     cData: [
+        [[comp1 wires], [comp2 wires], [custom wires, cDataId]],
         [[comp1 wires], [comp2 wires], [custom wires, cDataId]]
     ]
+     */
+
+    /*
+    input and output array format across file versions:
+
+    version 3 and below:
+    input array, inner array for each connection with following format:
+        "top level" (present in the circuit, not inside of a custom): [id, output number, signal]
+        "inner level" (inside of at least one custom component): [id, output number]
+        nothing connected: []
+
+    version 4:
+    input array, inner array for each connection with following format:
+        "top level": [id, output number, bit width, signal]
+        "inner level": [id, output number, bit width]
+        nothing connected: [-1, -1, bit width]
+    new 1D output array, just lists bit width for each output connection
+
+    version 5:
+    input array, inner array for each connection with following format:
+    note: no more "top level" and "inner level". FileComponents are either present directly in the circuit, or present in the CustomSource
+    section of a CustomBlueprint. In either case, signal data needs to be stored.
+        wire connected: [id, output number, bit width, signal]
+        nothing connected: [bit width]
+     */
+
+    /*
+    Major changes to support OpCustom (file format version 5)
+
+    cTypes will hold both custom source and compiled representation for each type
+    new "CustomBlueprint", notably difference from current CustomBlueprint. Contains two parts:
+        custom source LComponents:
+        The exact same data as current CustomBlueprint. However, these components will now hold their own signal values
+        Saving - easy because this is the same as current CustomBlueprint code
+        Loading - easy because this is the same as FileComponent.makeCustom, just returning Custom constructor params rather than the actual component
+
+        compiled structure:
+        essentially a copy of how the structure is stored in memory. However, signals are omitted because they are held in cData.
+        Saving - Need standardized data format for Nodes. Also need to put signals in cData.
+        Loading - File format will be similar to the Node data. Load back cData into signals. Need to recursively load in inner NodeBoxes
+
+    cExamples:
+    No longer needed, because the program will now store CustomSources rather than actual custom components for the internal list of types.
+
+    Backwards compatibility is easy. Use the current CustomBlueprint to create OpCustom since it shares the same constructor as Custom
      */
 }
