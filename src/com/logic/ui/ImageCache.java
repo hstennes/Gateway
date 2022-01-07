@@ -1,6 +1,7 @@
 package com.logic.ui;
 
 import com.logic.components.*;
+import com.logic.custom.OpCustom;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -34,9 +35,7 @@ public class ImageCache {
      * @return The image
      */
     public CachedImage get(LComponent lcomp){
-        return null;
-        //TODO restore once OpCustom is fixed
-        //return images.get(getHashString(lcomp));
+        return images.get(getHashString(lcomp));
     }
 
     /**
@@ -59,6 +58,7 @@ public class ImageCache {
         else if(lcomp instanceof Button) ext = Integer.toString(((Button) lcomp).getState());
         else if(lcomp instanceof Clock) ext = ((Clock) lcomp).isOn() ? "1" : "0";
         else if(lcomp instanceof Custom) ext = ((Custom) lcomp).getLabel();
+        else if(lcomp instanceof OpCustom) ext = ((OpCustom) lcomp).getLabel();
         else if(lcomp instanceof Splitter) ext = arrayString(((Splitter) lcomp).getSplit());
         return lcomp.getType().toString() + ext;
         //TODO add correct caching for Splitter, Display
