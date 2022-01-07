@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class SplitInNode implements Node{
 
-    private int[] split;
+    private final int[] split;
 
     private final int[] in;
 

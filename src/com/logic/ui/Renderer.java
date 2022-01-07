@@ -7,11 +7,13 @@ import com.logic.util.CompUtils;
 import com.logic.util.Constants;
 import org.apache.batik.gvt.GraphicsNode;
 
+import javax.swing.plaf.basic.BasicIconFactory;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
+import java.util.concurrent.RecursiveAction;
 
 public class Renderer {
 
@@ -226,12 +228,21 @@ public class Renderer {
         double radians = CompUtils.RAD_ROTATION[rot];
 
         g2d.rotate(radians, p.x, p.y);
-        g2d.drawImage(image,
+        Rectangle imageBox =  new Rectangle(
                 p.x - image.anchors[rotationAnchorTranslate[rot][0]],
                 p.y - image.anchors[rotationAnchorTranslate[rot][1]],
                 (int) (image.getWidth() * LogicSimApp.INV_DISP_SCALE),
-                (int) (image.getHeight() * LogicSimApp.INV_DISP_SCALE),
-                null);
+                (int) (image.getHeight() * LogicSimApp.INV_DISP_SCALE));
+
+
+        g2d.drawImage(image,
+                imageBox.x, imageBox.y, imageBox.width, imageBox.height, null);
+        if(lcomp.isSelected()) {
+            g2d.setColor(SELECT_COLOR);
+            g2d.setStroke(new BasicStroke(2));
+            g2d.draw(imageBox);
+        }
+
         g2d.rotate(-radians, p.x, p.y);
     }
 
