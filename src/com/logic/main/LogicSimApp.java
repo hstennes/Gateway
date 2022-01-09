@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 /**
  * A digital logic simulator meant as an alternative to applications like Logicly and Boolr.
- * @author GoopyLotus5844
+ * @author Hank Stennes
  */
 public class LogicSimApp {
 
@@ -103,23 +103,5 @@ public class LogicSimApp {
 			}
 		}
 		SwingUtilities.invokeLater(LogicSimApp::new);
-		/**
-		 * To do list:
-		 * Add built in latches, flip flops, and random generator
-		 * Add copy / paste between windows
-		 * ADD MULTI BIT WIRES
-		 * Text labels (implemented through CompProperties)
-		 * Keyboard shortcuts (such as press A for and, O for or)
-		 * Add circuit timing diagrams for ICs
-		 * Add ability to print circuits to pdf
-		 * Add ability to move components with arrow keys
-		 * Add ability to reshape wires
-		 */
-		
-		/**
-		 * Issues
-		 * The location field in the properties can malfunction
-		 * The insert and select options are redundant; there is no reason to ever use them
-		 */
 	}
 }

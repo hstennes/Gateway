@@ -225,7 +225,6 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 	@Override
 	public void changeBitWidth(int bitWidth) {
 		this.bitWidth = bitWidth;
-		//TODO might need to check if wire is consistent
 	}
 
 	public void validateBitWidth() { };

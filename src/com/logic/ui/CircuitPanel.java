@@ -98,8 +98,6 @@ public class CircuitPanel extends JPanel {
 		addMouseMotionListener(cam);
 
 		renderer = new Renderer(this);
-		//Debug.loadTestCircuit(this, true);
-		//Debug.testCircuit2(this);
 	}
 
 	/**
@@ -237,16 +235,6 @@ public class CircuitPanel extends JPanel {
 
 	public UserMessage getUserMessage(){
 		return message;
-	}
-
-	/**
-	 * Returns the bounds of the section of the CircuitPanel that is currently on the screen
-	 * @return The view Rectangle
-	 */
-	public Rectangle getViewRect() {
-		Rectangle view = new Rectangle(withTransform(new Point(0, 0)));
-		view.add(withTransform(new Point(getWidth(), getHeight())));
-		return view;
 	}
 
 	/**

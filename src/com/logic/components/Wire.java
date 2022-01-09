@@ -32,12 +32,6 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * The input connection the wire is attached to
 	 */
 	private InputPin dest;
-
-	/**
-	 * A wire is consistent if the source and dest connections have the same bit width. If the source or dest connection
-	 * is null (the wire is still being drawn, or the wire is dead), then the wire is consistent.
-	 */
-	private boolean consistent;
 	
 	/**
 	 * Returns the wire's signal (the least significant bit if there are multiple)
@@ -128,7 +122,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * @param p The original point
 	 * @param offset The offset to apply
 	 * @param direction The direction of the offset
-	 * @return
+	 * @return The point after the offset is applied
 	 */
 	private Point offsetInDirection(Point p, int offset, int direction) {
 		if(direction == Constants.UP) return new Point(p.x, p.y - offset);
@@ -144,15 +138,6 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 */
 	public boolean isComplete() {
 		return source != null && dest != null;
-	}
-
-	public void checkConsistent(){
-		if(source == null || dest == null) consistent = true;
-		else consistent = source.getBitWidth() == dest.getBitWidth();
-	}
-
-	public boolean isConsistent(){
-		return consistent;
 	}
 	
 	@Override
