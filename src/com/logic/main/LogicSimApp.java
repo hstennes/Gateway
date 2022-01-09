@@ -11,7 +11,6 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 /**
- * A digital logic simulator meant as an alternative to applications like Logicly and Boolr.
  * @author Hank Stennes
  */
 public class LogicSimApp {
