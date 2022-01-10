@@ -43,7 +43,7 @@ public class SplitterOptionPanel extends JPanel{
 
         try {
             int[] split = new int[strSplit.length];
-            for (int i = 0; i < strSplit.length; i++) split[i] = Integer.parseInt(strSplit[i].strip());
+            for (int i = 0; i < strSplit.length; i++) split[i] = Integer.parseInt(strSplit[i].trim());
             return split;
         }
         catch (NumberFormatException e){

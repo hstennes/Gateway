@@ -12,9 +12,7 @@ import org.w3c.dom.svg.SVGDocument;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BaseMultiResolutionImage;
 import java.awt.image.BufferedImage;
-import java.awt.image.MultiResolutionImage;
 import java.io.IOException;
 
 /**
@@ -153,10 +151,7 @@ public class IconLoader {
 		model.render(g2d, null);
 		g2d.dispose();*/
 
-		Image[] images = new Image[2];
-		images[0] = new Renderer(null).renderComponentImage(model, 0.40f, 1.0f);
-		images[1] = new Renderer(null).renderComponentImage(model, 0.40f, LogicSimApp.DISP_SCALE);
-		return new BaseMultiResolutionImage(images);
+		return new Renderer(null).renderComponentImage(model, 0.40f, 1.0f);
 	}
 
 	/**

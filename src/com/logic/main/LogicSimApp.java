@@ -18,7 +18,7 @@ public class LogicSimApp {
 	/**
 	 * The release version
 	 */
-	public static final String VERSION = "v1.2";
+	public static final String VERSION = "v1.3";
 
 	/**
 	 * The default DPI value, used to calculate resolution scaling
@@ -92,8 +92,12 @@ public class LogicSimApp {
 	 * @param args The arguments to the main method, which have no effect whatsoever on anything
 	 */
 	public static void main(String[] args) {
-		DISP_SCALE = (float) Toolkit.getDefaultToolkit().getScreenResolution() / DEFAULT_DPI;
-		INV_DISP_SCALE = 1 / DISP_SCALE;
+		//DISP_SCALE = (float) Toolkit.getDefaultToolkit().getScreenResolution() / DEFAULT_DPI;
+		//INV_DISP_SCALE = 1 / DISP_SCALE;
+
+		DISP_SCALE = 1;
+		INV_DISP_SCALE = 1;
+
 		if(OS.contains("win")) {
 			try {
 				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
