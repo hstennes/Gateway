@@ -2,6 +2,8 @@ package com.logic.files;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logic.components.LComponent;
+import com.logic.custom.OpCustom;
 import com.logic.input.Camera;
 import com.logic.input.CircuitState;
 import com.logic.input.RevisionManager;
@@ -112,9 +114,14 @@ public class FileManager {
 	 * @param path The path to save the file to
 	 */
 	private void saveFile(String path) {
-		cp.getWindow().setTitle(path);
-		UserMessage message = new UserMessage(cp, "Circuit saved", 3000);
-		cp.dispMessage(message);
+
+		for(LComponent lcomp : cp.lcomps){
+			if(lcomp instanceof OpCustom) {
+				cp.dispMessage(new UserMessage(cp, "Gateway 1.3 is a work in progress - files with custom chips cannot be saved", 3000));
+				return;
+			}
+		}
+
 		try {
 			Camera cam = cp.getCamera();
 			JSONFile file = new JSONFile(new FileData(FILE_FORMAT_VERSION, cp.lcomps,
@@ -122,6 +129,9 @@ public class FileManager {
 					new float[] {cam.getX(), cam.getY(), cam.getZoom()},
 					new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0, cp.isHighQuality() ? 1 : 0}));
 			new ObjectMapper().writeValue(Paths.get(path).toFile(), file);
+			cp.getWindow().setTitle(path);
+			UserMessage message = new UserMessage(cp, "Circuit saved", 3000);
+			cp.dispMessage(message);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
