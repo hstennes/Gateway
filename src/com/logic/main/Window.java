@@ -51,6 +51,7 @@ public class Window extends JFrame {
 	 */
 	private FileManager createAndShowGUI(String path) {
 		setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+		setIconImage(LogicSimApp.iconLoader.logo);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		JPanel mainPanel = new JPanel();
