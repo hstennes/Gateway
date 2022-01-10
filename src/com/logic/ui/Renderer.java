@@ -121,9 +121,10 @@ public class Renderer {
         view.add(screenToCircuit(screen.width, screen.height));
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		if(cp.isHighQuality()) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         applyTransform(g2d);
         renderGrid(g2d, view);
+        if(!cp.isHighQuality()) g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         renderWires(g2d, wires, view);
         reverseTransform(g2d);
         renderComponents(g2d, lcomps, view);

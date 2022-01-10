@@ -43,7 +43,6 @@ public class RevisionManager {
 	 * @param editor The CircuitEditor, used for checking if the editor is enabled
 	 */
 	public RevisionManager(CircuitEditor editor) {
-		//TODO restore when OpCustom duplication is fixed
 		states = new ArrayList<CircuitState>(maxStates);
 		this.editor = editor;
 	}
@@ -56,40 +55,40 @@ public class RevisionManager {
 		//Called by Clipboard.paste, Inserter.attemptInsert, WireBuilder.endWire, Selection.delete, RotationSpinner.stateChanged, 
 		//InputSpinner.stateChanged, CircuitEditor.mouseReleased, FileManager.openFile
 
-		/*for(int i = states.size() - 1; i > index; i--) {
+		for(int i = states.size() - 1; i > index; i--) {
 			states.remove(i);
 		}
 		states.add(state);
 		index++;
-		removeOld();*/
+		removeOld();
 	}
 	
 	/**
 	 * Clears the states list so that undo and redo cannot be performed
 	 */
 	public void clearStates() {
-		/*index = -1;
-		states.clear();*/
+		index = -1;
+		states.clear();
 	}
 	
 	/**
 	 * Undoes the last action in the ArrayList of CircuitStates
 	 */
 	public void undo() {
-		/*if(editor.isEnabled() && index > 0) {
+		if(editor.isEnabled() && index > 0) {
 			states.get(index - 1).revertState();
 			index--;
-		}*/
+		}
 	}
 	
 	/**
 	 * Redoes the last undone action in the ArrayList of CircuitStates
 	 */
 	public void redo() {
-		/*if(editor.isEnabled() && index < states.size() - 1) {
+		if(editor.isEnabled() && index < states.size() - 1) {
 			states.get(index + 1).revertState();
 			index++;
-		}*/
+		}
 	}
 	
 	/**

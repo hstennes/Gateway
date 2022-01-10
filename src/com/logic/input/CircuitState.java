@@ -29,22 +29,21 @@ public class CircuitState {
 	 * @param cp The CircuitPanel
 	 */
 	public CircuitState(CircuitPanel cp) {
-		//TODO restore once OpCustom duplication is fixed
-		/*lcomps = CompUtils.duplicate(cp.lcomps);
-		this.cp = cp;*/
+		lcomps = CompUtils.duplicate(cp.lcomps);
+		this.cp = cp;
 	}
 	
 	/**
 	 * Changes the CircuitPanel back to the state it was in when this CircuitState was created
 	 */
 	public void revertState() { 
-		/*for(int i = 0; i < cp.lcomps.size(); i++) cp.lcomps.get(i).delete();
+		for(int i = 0; i < cp.lcomps.size(); i++) cp.lcomps.get(i).delete();
 		cp.lcomps.clear();
 		cp.wires.clear(); 
 		cp.getEditor().getSelection().clear();
 		cp.addLComps(CompUtils.duplicate(lcomps));
 		LogicWorker.startLogic(cp);
-		cp.repaint();*/
+		cp.repaint();
 	}
 
 	/**
