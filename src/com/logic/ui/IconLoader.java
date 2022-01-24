@@ -68,6 +68,8 @@ public class IconLoader {
 	 * The array of tool bar icons
 	 */
 	public ImageIcon[] toolBarIcons;
+
+	public BufferedImage logo;
 	
 	/**
 	 * Constructs a new IconLoader and loads all of the images
@@ -131,6 +133,8 @@ public class IconLoader {
 		logicIcons[13] = new ImageIcon(renderLogicIcon(new Button(0, 0), 13));
 		logicIcons[14] = new ImageIcon(renderLogicIcon(new Display(0, 0), 14));
 		logicIcons[15] = new ImageIcon(renderLogicIcon(new SplitOut(0, 0, new int[] {1, 1}), 15));
+
+		logo = loadImage("/logo.png");
 	}
 
 	/**

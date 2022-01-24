@@ -1,5 +1,7 @@
 package com.logic.custom;
 
+import com.logic.util.CompUtils;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +45,8 @@ public class SplitOutNode implements Node {
 
     @Override
     public Node duplicate() {
-        return new SplitOutNode(split, in, inOut, out, signal);
+        int[] newSignal = new int[signal.length];
+        System.arraycopy(signal, 0, newSignal, 0, signal.length);
+        return new SplitOutNode(split, in, inOut, out, newSignal);
     }
 }

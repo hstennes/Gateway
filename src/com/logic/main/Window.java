@@ -41,7 +41,7 @@ public class Window extends JFrame {
 	private FileManager createAndShowGUI(String path) {
 		setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setIconImage(LogicSimApp.iconLoader.toolBarIcons[3].getImage());
+		setIconImage(LogicSimApp.iconLoader.logo);
 		
 		JPanel mainPanel = new JPanel();
 		BoxLayout layout = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);

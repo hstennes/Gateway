@@ -1,6 +1,7 @@
 package com.logic.custom;
 
 import com.logic.components.LComponent;
+import com.logic.util.CompUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,6 +99,8 @@ public class NodeBox implements Node{
     public NodeBox duplicate(){
         Node[] newInner = new Node[inner.length];
         for(int i = 0; i < inner.length; i++) newInner[i] = inner[i].duplicate();
-        return new NodeBox(newInner, in, out, outNodes, signal);
+        int[] newSignal = new int[signal.length];
+        System.arraycopy(signal, 0, newSignal, 0, signal.length);
+        return new NodeBox(newInner, in, out, outNodes, newSignal);
     }
 }
