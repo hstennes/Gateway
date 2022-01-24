@@ -142,7 +142,7 @@ public abstract class IComponent extends LabeledComponent implements MouseListen
 	 * @return The rotated Rectangle
 	 */
 	private Rectangle rotate(Rectangle r, int rotation) {
-		Rectangle bounds = getBounds();
+		Rectangle bounds = getBoundsRight();
 		Point p1 = CompUtils.withRotation(r.x, r.y, bounds.width, bounds.height, rotation);
 		Point p2 = CompUtils.withRotation(r.x + r.width, r.y + r.height, bounds.width,
 				bounds.height, rotation);
