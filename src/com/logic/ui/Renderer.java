@@ -313,7 +313,7 @@ public class Renderer {
         g2d.fill(bounds);
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(4));
-        g2d.draw(bounds);
+        g2d.drawRect(bounds.x + 2, bounds.y + 2, bounds.width - 4, bounds.height - 4);
 
         g2d.setFont(CUSTOM_LABEL_FONT);
         FontMetrics metrics = g2d.getFontMetrics(CUSTOM_LABEL_FONT);
