@@ -25,7 +25,7 @@ public class JacksonTest {
                 [id, output_number, *bit width, signal] (connected)
                 [-1, -1, bit width] (nothing connected)
             ]
-            output: [output 1 bit width, output 2 bit width...]
+            *output: [output 1 bit width, output 2 bit width...]
 
             state (just for switch)
             delay (just for clock)
