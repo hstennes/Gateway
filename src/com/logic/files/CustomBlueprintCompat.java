@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Represents one distinct type of custom component, the template can then be duplicated for all components of the same type
  */
-public class CustomBlueprint {
+public class CustomBlueprintCompat {
 
     /**
      * The label of the Custom component
@@ -32,7 +32,7 @@ public class CustomBlueprint {
      * Creates a new custom blueprint
      * @param custom The custom component
      */
-    public CustomBlueprint(Custom custom){
+    public CustomBlueprintCompat(Custom custom){
         label = custom.getLabel();
 
         ArrayList<LComponent> innerComps = custom.getInnerComps();
@@ -53,7 +53,7 @@ public class CustomBlueprint {
     /**
      * Needed for deserialization to work
      */
-    public CustomBlueprint(){}
+    public CustomBlueprintCompat(){}
 
     /**
      * Completes one side of the io array based on the content from the custom component

@@ -2,6 +2,7 @@ package com.logic.files;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.logic.components.*;
+import com.logic.custom.CustomType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class JSONFile {
     /**
      * The list of custom types from CompCreator.customs.
      */
-    public CustomBlueprint[] cTypes;
+    public CustomBlueprintCompat[] cTypes;
 
     /**
      * Holds all wire data associated with custom components, including nested customs
@@ -76,8 +77,8 @@ public class JSONFile {
         components = new FileComponent[lcomps.size()];
         for(int i = 0; i < lcomps.size(); i++) components[i] = new FileComponent(lcomps.get(i), compIndex, cDataIndex, true);
 
-        cTypes = new CustomBlueprint[customs.size()];
-        for(int i = 0; i < customs.size(); i++) cTypes[i] = new CustomBlueprint(customs.get(i));
+        cTypes = new CustomBlueprintCompat[customs.size()];
+        for(int i = 0; i < customs.size(); i++) cTypes[i] = new CustomBlueprintCompat(customs.get(i));
 
         cExamples = new FileComponent[customs.size()];
         for(int i = 0; i < customs.size(); i++) cExamples[i] = new FileComponent(customs.get(i), null, cDataIndex, true);
@@ -121,10 +122,10 @@ public class JSONFile {
      */
     @JsonIgnore
     public FileData getFileData(){
-        ArrayList<Custom> customs = new ArrayList<>();
+        ArrayList<CustomType> customs = new ArrayList<>();
         ArrayList<LComponent> lcomps = new ArrayList<>();
         for(FileComponent fc : components) lcomps.add(fc.makeComponent(version, cTypes, cData, true, -1));
-        //for(FileComponent fc : cExamples) customs.add((Custom) fc.makeComponent(version, cTypes, cData, true, -1));
+        for(FileComponent fc : cExamples) customs.add(fc.makeCustomParams(version, cTypes, cData, true, -1));
 
         for(int i = 0; i < components.length; i++){
             FileComponent fc = components[i];

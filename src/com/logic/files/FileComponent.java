@@ -3,6 +3,7 @@ package com.logic.files;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.logic.components.*;
+import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom;
 import com.logic.ui.CompProperties;
 import com.logic.util.CompUtils;
@@ -133,7 +134,7 @@ public class FileComponent {
      * @return The LComponent
      */
     @JsonIgnore
-    public LComponent makeComponent(int version, CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
+    public LComponent makeComponent(int version, CustomBlueprintCompat[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
         if(type == CompType.CUSTOM) return makeCustom(version, cTypes, cData, topLevel, providedCDataId);
         if(type == CompType.SPLIT_IN || type == CompType.SPLIT_OUT) return applyProperties(makeSplitter(version));
 
@@ -163,10 +164,15 @@ public class FileComponent {
      * @param providedCDataId the providedCDataId
      * @return Custom component
      */
-    private LComponent makeCustom(int version, CustomBlueprint[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
+    private LComponent makeCustom(int version, CustomBlueprintCompat[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
+        CustomType params = makeCustomParams(version, cTypes, cData, topLevel, providedCDataId);
+        return applyProperties(new OpCustom(pos[0], pos[1], params.getLabel(), params.getContent(), params.getInnerComps(), cTypeId));
+    }
+
+    public CustomType makeCustomParams(int version, CustomBlueprintCompat[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
         int realCDataId = topLevel ? cDataId : providedCDataId;
 
-        CustomBlueprint b = cTypes[cTypeId];
+        CustomBlueprintCompat b = cTypes[cTypeId];
         ArrayList<LComponent> lcomps = new ArrayList<>();
         for(int i = 0; i < b.components.length; i++) {
             if(b.components[i].type.toString().equals("CUSTOM")) {
@@ -195,7 +201,7 @@ public class FileComponent {
                 lcomps.get(i).getIO().inputConnection(x).addWire(wire);
             }
         }
-        return applyProperties(new OpCustom(pos[0], pos[1], b.label, content, lcomps, cTypeId));
+        return new CustomType(b.label, content, lcomps, cTypeId, null);
     }
 
     private Splitter makeSplitter(int version){

@@ -2,6 +2,7 @@ package com.logic.files;
 
 import com.logic.components.Custom;
 import com.logic.components.LComponent;
+import com.logic.custom.CustomType;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,7 @@ public class FileData {
     /**
      * The list of custom components from CustomCreator
      */
-    private ArrayList<Custom> customs;
+    private ArrayList<CustomType> customTypes;
 
     /**
      * The (x, y) position of the camera
@@ -39,14 +40,14 @@ public class FileData {
      * Constructs FileData object
      * @param version The file format version
      * @param lcomps The LComponents
-     * @param customs The custom components
+     * @param customTypes The custom components
      * @param camera The camera info array (see JSONFile.camera)
      * @param settings The settings array (see JSONFile.settings)
      */
-    public FileData(int version, ArrayList<LComponent> lcomps, ArrayList<Custom> customs, float[] camera, int[] settings) {
+    public FileData(int version, ArrayList<LComponent> lcomps, ArrayList<CustomType> customTypes, float[] camera, int[] settings) {
         this.version = version;
         this.lcomps = lcomps;
-        this.customs = customs;
+        this.customTypes = customTypes;
         this.camera = camera;
         this.settings = settings;
     }
@@ -59,8 +60,17 @@ public class FileData {
         return lcomps;
     }
 
-    public ArrayList<Custom> getCustoms() {
-        return customs;
+    public ArrayList<CustomType> getCustomTypes() {
+        return customTypes;
+    }
+
+    /**
+     * This method does nothing because saving OpCustoms is not yet supported.
+     * @return null
+     */
+    @Deprecated
+    public ArrayList<Custom> getCustoms(){
+        return null;
     }
 
     public float[] getCamera() {
