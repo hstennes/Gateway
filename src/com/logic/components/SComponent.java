@@ -10,7 +10,9 @@ import com.logic.ui.CircuitPanel;
  * spontaneous components (such as clocks) to work when placed inside of custom components.
  * @author Hank Stennes
  *
+ * Will no longer be needed with new OpCustom system
  */
+@Deprecated
 public abstract class SComponent extends LComponent {
 
 	private static final long serialVersionUID = 1L;

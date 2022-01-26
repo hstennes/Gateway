@@ -91,7 +91,11 @@ public class CustomViewer {
 	 * the CircuitEditor, and repositioning the camera.
 	 */
 	public void exit() {
-		for(LComponent lcomp : cp.lcomps) lcomp.delete();
+		for(LComponent lcomp : cp.lcomps) {
+			//TODO temporary solution for spontaneous components
+			if(lcomp instanceof OpCustom) ((OpCustom) lcomp).getNodeBox().stop();
+			else if(lcomp instanceof Clock) ((Clock) lcomp).stop();
+		}
 		cp.lcomps.clear();
 		cp.wires.clear();
 		cp.addLComps(oldComps);

@@ -14,7 +14,9 @@ import java.util.HashMap;
  * An LComponent that combines multiple other components into one (ex: a full adder)
  * @author Hank Stennes
  *
+ * Will be replaced by OpCustom
  */
+@Deprecated
 public class Custom extends SComponent {
 
 	private static final long serialVersionUID = 1L;

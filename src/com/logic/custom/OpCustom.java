@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A WIP replacement for the Custom class that uses a more efficient internal representation of components. Enables very
+ * large custom components without using tons of memory.
+ */
 public class OpCustom extends LComponent {
 
     private final NodeBox nodeBox;
