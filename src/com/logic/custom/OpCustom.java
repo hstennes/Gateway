@@ -265,6 +265,12 @@ public class OpCustom extends LComponent {
         return result;
     }
 
+    /**
+     * Accepts a circuit with the exact same structure as the one used to construct this component. This method sets the signals
+     * in the circuit so that they reflect the current inner state of this OpCustom.
+     * @param lcomps The lcomps list, same as constructor
+     * @param content The content array, same as constructor
+     */
     public void applySignals(ArrayList<LComponent> lcomps, LComponent[][] content){
         Map<LComponent, Integer> compIndex = new HashMap<>();
         int compID = 0;

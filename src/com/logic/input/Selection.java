@@ -85,10 +85,7 @@ public class Selection extends ArrayList<LComponent> {
 	 * @param lcomps The LComponents to select
 	 */
 	public void select(ArrayList<LComponent> lcomps) {
-		for(int i = 0; i < lcomps.size(); i++) {
-			LComponent lcomp = lcomps.get(i);
-			lcomp.setSelected(true);
-		}
+		for (LComponent lcomp : lcomps) lcomp.setSelected(true);
 		addAll(lcomps);
 		compProperties.refresh();
 		displacementX = 0;
@@ -119,8 +116,7 @@ public class Selection extends ArrayList<LComponent> {
 				moveX = newX - prevDragX;
 				moveY = newY - prevDragY;
 			}
-			for(int i = 0; i < size(); i++) {
-				LComponent lcomp = get(i);
+			for (LComponent lcomp : this) {
 				lcomp.setX(lcomp.getX() + moveX);
 				lcomp.setY(lcomp.getY() + moveY);
 			}
@@ -140,12 +136,11 @@ public class Selection extends ArrayList<LComponent> {
 	}
 	
 	/**
-	 * Deletes all of the LComponents that are selected
+	 * Deletes all LComponents that are selected
 	 */
 	public void deleteComponents() {
-		for(int i = 0; i < size(); i++) {
-			LComponent lcomp = get(i);
-			get(i).delete();
+		for (LComponent lcomp : this) {
+			lcomp.delete();
 			cp.removeLComp(lcomp);
 		}
 		clear();
@@ -176,9 +171,7 @@ public class Selection extends ArrayList<LComponent> {
 	 */
 	@Override
 	public void clear() {
-		for(int i = 0; i < size(); i++) {
-			get(i).setSelected(false);
-		}
+		for (LComponent lComponent : this) lComponent.setSelected(false);
 		super.clear();
 		compProperties.refresh();
 	}

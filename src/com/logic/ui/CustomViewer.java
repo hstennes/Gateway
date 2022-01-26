@@ -1,7 +1,9 @@
 package com.logic.ui;
 
+import com.logic.components.Clock;
 import com.logic.components.Custom;
 import com.logic.components.LComponent;
+import com.logic.components.SComponent;
 import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom;
 import com.logic.input.Camera;
@@ -89,6 +91,7 @@ public class CustomViewer {
 	 * the CircuitEditor, and repositioning the camera.
 	 */
 	public void exit() {
+		for(LComponent lcomp : cp.lcomps) lcomp.delete();
 		cp.lcomps.clear();
 		cp.wires.clear();
 		cp.addLComps(oldComps);
