@@ -49,7 +49,7 @@ public class OpCustom extends LComponent {
         initConnections(helper, content, compIndex, nodeComps, lightIndex);
 
         for (LComponent lcomp : lcomps) {
-            //Ignore Lights because they have no nodes. Ignore Switches because they were already added. Will also ignore other components in the future.
+            //Ignore Lights because they have no nodes. Ignore Switches because they were already added.
             if(lcomp instanceof Light || lcomp instanceof Switch) continue;
             compIndex.put(lcomp, nodeComps.size());
             nodeComps.add(lcomp);
@@ -71,12 +71,14 @@ public class OpCustom extends LComponent {
             else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(((SplitIn) lcomp).getSplit(), in, out[0], signal[0]);
             else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(((SplitOut) lcomp).getSplit(), in[0], in[1], out, signal);
             else if(lcomp instanceof Switch) nodes[i] = new StartNode(out[0], signal[0]);
+            else if(lcomp instanceof Constant) nodes[i] = new ConstantNode(lcomp.getType());
             else if(lcomp instanceof Clock) nodes[i] = new ClockNode(((Clock) lcomp).getDelay(), out[0], signal[0]);
             else if(lcomp instanceof OpCustom){
                 NodeBox box = ((OpCustom) lcomp).getNodeBox().duplicate();
                 box.connect(in, out, signal);
                 nodes[i] = box;
             }
+            else nodes[i] = new PlaceholderNode(lcomp.getType(), in, out);
         }
 
         int[] signal = getSignal(this);

@@ -5,10 +5,6 @@ import java.util.List;
 
 public interface Node {
 
-    /*
-    Will not support Button, Display, Light, or Switch
-     */
-
     /**
      * Updates the output signal based on inputs acquired from the given NodeBox
      * @param nb The NodeBox containing the Node
