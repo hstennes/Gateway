@@ -186,4 +186,8 @@ public class NodeBox implements SpontNode{
     public void stop(){
         for(int i : spontaneous) ((SpontNode) inner[i]).stop();
     }
+
+    public Node getInnerNode(int i){
+        return inner[i];
+    }
 }

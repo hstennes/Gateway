@@ -2,6 +2,7 @@ package com.logic.ui;
 
 import com.logic.components.Custom;
 import com.logic.components.LComponent;
+import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom;
 import com.logic.input.Camera;
 import com.logic.util.CompUtils;
@@ -58,8 +59,11 @@ public class CustomViewer {
 	 * @param c The Custom component
 	 */
 	public void view(OpCustom c) {
-		ArrayList<LComponent> dispComps = cp.getEditor().getCustomCreator().getCustomTypes().get(c.getTypeID()).getInnerComps();
-		for(int i = 0; i < cp.lcomps.size(); i++) oldComps.add(cp.lcomps.get(i));
+		CustomType customType = cp.getEditor().getCustomCreator().getCustomTypes().get(c.getTypeID());
+		ArrayList<LComponent> dispComps = customType.getInnerComps();
+		c.applySignals(dispComps, customType.getContent());
+
+		oldComps.addAll(cp.lcomps);
 		cp.lcomps.clear();
 		cp.wires.clear();
 		cp.getEditor().getSelection().clear();

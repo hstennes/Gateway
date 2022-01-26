@@ -74,7 +74,7 @@ public class OpCustom extends LComponent {
             else if(lcomp instanceof Constant) nodes[i] = new ConstantNode(lcomp.getType());
             else if(lcomp instanceof Clock) nodes[i] = new ClockNode(((Clock) lcomp).getDelay(), out[0], signal[0]);
             else if(lcomp instanceof OpCustom){
-                NodeBox box = ((OpCustom) lcomp).getNodeBox().duplicate();
+                NodeBox box = ((OpCustom) lcomp).nodeBox.duplicate();
                 box.connect(in, out, signal);
                 nodes[i] = box;
             }
@@ -263,6 +263,38 @@ public class OpCustom extends LComponent {
         }
 
         return result;
+    }
+
+    public void applySignals(ArrayList<LComponent> lcomps, LComponent[][] content){
+        Map<LComponent, Integer> compIndex = new HashMap<>();
+        int compID = 0;
+
+        for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
+            LComponent[] side = content[s];
+            if (side == null) continue;
+            for (LComponent lComponent : side) {
+                if (lComponent instanceof Switch) {
+                    compIndex.put(lComponent, compID);
+                    compID++;
+                }
+            }
+        }
+        for (LComponent lcomp : lcomps) {
+            if(lcomp instanceof Light || lcomp instanceof Switch) continue;
+            compIndex.put(lcomp, compID);
+            compID++;
+        }
+
+        for(LComponent lcomp : lcomps){
+            if(lcomp instanceof Light) continue;
+            Node node = nodeBox.getInnerNode(compIndex.get(lcomp));
+            if(lcomp instanceof Switch) ((Switch) lcomp).setState(node.getSignal(0));
+            IOManager io = lcomp.getIO();
+            for(int i = 0; i < io.getNumOutputs(); i++){
+                OutputPin outputPin = io.outputConnection(i);
+                outputPin.setSignal(node.getSignal(i));
+            }
+        }
     }
 
     public void start(CircuitPanel cp){
