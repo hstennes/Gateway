@@ -6,44 +6,27 @@ import java.util.List;
 public interface Node {
 
     /*
-     * Array of nodes (fixed size)
-     * Each node holds the indexes of all connected nodes, or -1 for nothing connected
-     * On update: get input from input nodes, set outputs, mark (write down index) of affected output nodes
+    Will not support Button, Display, Light, or Switch
      */
 
-    /*
-     * BasicGate - type
-     * SingleInput - type
-     * Constant - type
-     * Clock - delay
-     * Splitter - type, split[]
-     * Custom - lots of stuff!
-     *
-     * Button - does not exist
-     * Display - does not exist
-     * Light - does not exist
-     * Switch - does not exist
+    /**
+     * Updates the output signal based on inputs acquired from the given NodeBox
+     * @param nb The NodeBox containing the Node
+     * @param active The active array for marking components that must be updated
      */
-
-    /*
-    BasicGate - function int, inputs xN, inOut xN, signal x1, output x1
-    SingleInput - function boolean, input x1, inOut x1, signal x1, output x1
-    Constant - type boolean, output x1
-    Clock - delay int, signal x1, output x1
-    SplitIn - inputs xN, inOut xN, signal x1, output x1
-    Custom - inner Nodes, inputs xN, inOut xN, signal xM, output xM
-
-    seems like a bit of a waste to have an output array when only custom component require an array
-
-    Node interface: update(NodeBox nb), getOutput(int n)
-    NodeBox: getInput(int component, int outIndex), mark(int node)
-
-    Maximum memory efficiency, not great simulation speed because of tons of method calls
-     */
-
     void update(NodeBox nb, List<Integer> active);
 
+    /**
+     * Returns the output signal at the given index
+     * @param n The index
+     * @return The signal
+     */
     int getSignal(int n);
 
+    /**
+     * Duplicates the node. The duplicated node may reference the same data held by the original node, as long as this
+     * data will never be modified.
+     * @return A copy of the Node.
+     */
     Node duplicate();
 }

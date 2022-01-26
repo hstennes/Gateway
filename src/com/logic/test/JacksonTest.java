@@ -87,7 +87,7 @@ public class JacksonTest {
     Major changes to support OpCustom (file format version 5)
 
     cTypes will hold both custom source and compiled representation for each type
-    new "CustomBlueprint", notably difference from current CustomBlueprint. Contains two parts:
+    new "CustomBlueprint", notably different from current CustomBlueprint. Contains two parts:
         custom source LComponents:
         The exact same data as current CustomBlueprint. However, these components will now hold their own signal values
         Saving - easy because this is the same as current CustomBlueprint code

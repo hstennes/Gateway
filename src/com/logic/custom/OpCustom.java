@@ -2,7 +2,9 @@ package com.logic.custom;
 
 import com.logic.components.*;
 import com.logic.engine.LogicEngine;
+import com.logic.engine.LogicWorker;
 import com.logic.files.FileComponent;
+import com.logic.ui.CircuitPanel;
 import com.logic.ui.Renderer;
 import com.logic.util.Constants;
 import com.logic.util.CustomHelper;
@@ -17,13 +19,15 @@ import java.util.Map;
 
 public class OpCustom extends LComponent {
 
-    private NodeBox nodeBox;
+    private final NodeBox nodeBox;
 
-    private String label;
+    private final String label;
 
-    private int typeID;
+    private final int typeID;
 
     private final int width, height;
+
+    private CircuitPanel cp;
 
     public OpCustom(int x, int y, String label, LComponent[][] content, ArrayList<LComponent> lcomps, int typeID) {
         super(x, y, CompType.CUSTOM);
@@ -46,7 +50,7 @@ public class OpCustom extends LComponent {
 
         for (LComponent lcomp : lcomps) {
             //Ignore Lights because they have no nodes. Ignore Switches because they were already added. Will also ignore other components in the future.
-            if (lcomp instanceof Light || lcomp instanceof Switch) continue;
+            if(lcomp instanceof Light || lcomp instanceof Switch) continue;
             compIndex.put(lcomp, nodeComps.size());
             nodeComps.add(lcomp);
         }
@@ -67,6 +71,7 @@ public class OpCustom extends LComponent {
             else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(((SplitIn) lcomp).getSplit(), in, out[0], signal[0]);
             else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(((SplitOut) lcomp).getSplit(), in[0], in[1], out, signal);
             else if(lcomp instanceof Switch) nodes[i] = new StartNode(out[0], signal[0]);
+            else if(lcomp instanceof Clock) nodes[i] = new ClockNode(((Clock) lcomp).getDelay(), out[0], signal[0]);
             else if(lcomp instanceof OpCustom){
                 NodeBox box = ((OpCustom) lcomp).getNodeBox().duplicate();
                 box.connect(in, out, signal);
@@ -256,6 +261,22 @@ public class OpCustom extends LComponent {
         }
 
         return result;
+    }
+
+    public void start(CircuitPanel cp){
+        nodeBox.start(this);
+        this.cp = cp;
+    }
+
+    @Override
+    public void delete(){
+        nodeBox.stop();
+        super.delete();
+    }
+
+    public void spontaneousCallback(){
+        LogicWorker.startLogic(this);
+        cp.repaint();
     }
 
     public String getLabel(){
