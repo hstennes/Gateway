@@ -86,7 +86,7 @@ public class OpCustom extends LComponent {
         }
 
         int[] signal = getSignal(this);
-        nodeBox = new NodeBox(nodes, outNodes, signal);
+        nodeBox = new NodeBox(nodes, outNodes, signal, typeID);
     }
 
     private OpCustom(int x, int y, NodeBox nodeBox, String label, int typeID, int width, int height){
@@ -297,7 +297,7 @@ public class OpCustom extends LComponent {
 
         for(LComponent lcomp : lcomps){
             if(lcomp instanceof Light) continue;
-            Node node = nodeBox.getInnerNode(compIndex.get(lcomp));
+            Node node = nodeBox.getInnerNodes()[compIndex.get(lcomp)];
             if(lcomp instanceof Switch) ((Switch) lcomp).setState(node.getSignal(0));
             IOManager io = lcomp.getIO();
             for(int i = 0; i < io.getNumOutputs(); i++){

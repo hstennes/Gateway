@@ -2,6 +2,7 @@ package com.logic.custom;
 
 import com.logic.components.CompType;
 import com.logic.engine.LogicFunctions;
+import com.logic.files.FileNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,11 @@ public class SingleInputGateNode implements Node {
     @Override
     public int getSignal(int n) {
         return signal;
+    }
+
+    @Override
+    public FileNode serialize() {
+        return new FileNode(mask == -1 ? CompType.NOT : CompType.BUFFER, new int[] {in, inOut}, new int[][] {out});
     }
 
     @Override

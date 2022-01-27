@@ -2,6 +2,8 @@ package com.logic.custom;
 
 import com.logic.components.CompType;
 import com.logic.engine.LogicFunctions;
+import com.logic.engine.LogicWorker;
+import com.logic.files.FileNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +47,11 @@ public class BasicGateNode implements Node{
     @Override
     public int getSignal(int n) {
         return signal;
+    }
+
+    @Override
+    public FileNode serialize() {
+        return new FileNode(LogicFunctions.getCompType(function), in, new int[][] {out});
     }
 
     @Override

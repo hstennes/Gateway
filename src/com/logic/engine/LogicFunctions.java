@@ -66,4 +66,23 @@ public class LogicFunctions {
 				throw new IllegalArgumentException("getFunctionIndex requires BasicGate type");
 		}
 	}
+
+	public static CompType getCompType(int funcIndex){
+		switch(funcIndex){
+			case 0:
+				return CompType.AND;
+			case 1:
+				return CompType.OR;
+			case 2:
+				return CompType.XOR;
+			case 3:
+				return CompType.NAND;
+			case 4:
+				return CompType.NOR;
+			case 5:
+				return CompType.XNOR;
+			default:
+				throw new IllegalArgumentException("getCompType requires a function index from 0 to 5");
+		}
+	}
 }

@@ -96,8 +96,8 @@ public class FileComponent {
         if(type == CompType.SWITCH) mState = ((Switch) lcomp).getState();
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
         else if(type == CompType.CUSTOM) {
-            cTypeId = ((Custom) lcomp).getTypeID();
-            if(topLevel) cDataId = cDataIndex.get((Custom) lcomp);
+            cTypeId = ((OpCustom) lcomp).getTypeID();
+            //if(topLevel) cDataId = cDataIndex.get((OpCustom) lcomp);
         }
 
         IOManager io = lcomp.getIO();

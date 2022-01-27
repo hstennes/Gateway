@@ -1,12 +1,15 @@
 package com.logic.custom;
 
 import com.logic.components.Clock;
+import com.logic.components.CompType;
 import com.logic.engine.LogicWorker;
+import com.logic.files.FileNode;
 import com.logic.ui.CircuitPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +59,13 @@ public class ClockNode implements SpontNode{
     @Override
     public int getSignal(int n) {
         return signal ? 1 : 0;
+    }
+
+    @Override
+    public FileNode serialize() {
+        FileNode fileNode = new FileNode(CompType.CLOCK, null, new int[][] {out});
+        fileNode.setDelay(delay);
+        return fileNode;
     }
 
     @Override

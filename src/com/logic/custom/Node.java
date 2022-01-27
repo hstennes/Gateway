@@ -1,5 +1,7 @@
 package com.logic.custom;
 
+import com.logic.files.FileNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,12 @@ public interface Node {
      * @return The signal
      */
     int getSignal(int n);
+
+    /**
+     * Creates a FileNode of this node for saving to JSON
+     * @return The FileNode object
+     */
+    FileNode serialize();
 
     /**
      * Duplicates the node. The duplicated node may reference the same data held by the original node, as long as this

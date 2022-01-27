@@ -44,6 +44,8 @@ public class JSONFile {
      */
     public CustomBlueprintCompat[] cTypes;
 
+    public CustomBlueprint[] cPrints;
+
     /**
      * Holds all wire data associated with custom components, including nested customs
      */
@@ -58,6 +60,7 @@ public class JSONFile {
         settings = fd.getSettings();
         List<LComponent> lcomps = fd.getLcomps();
         List<Custom> customs = fd.getCustoms();
+        List<CustomType> customTypes = fd.getCustomTypes();
 
         Map<LComponent, Integer> compIndex = new HashMap<>();
         Map<Custom, Integer> cDataIndex = new HashMap<>();
@@ -66,22 +69,27 @@ public class JSONFile {
         for(int i = 0; i < lcomps.size(); i++) {
             LComponent lcomp = lcomps.get(i);
             compIndex.put(lcomp, i);
-            if(lcomp.getType() == CompType.CUSTOM) cDataIndex.put((Custom) lcomp, populateCustomData((Custom) lcomp));
+            //if(lcomp.getType() == CompType.CUSTOM) cDataIndex.put((Custom) lcomp, populateCustomData((Custom) lcomp));
         }
 
-        for (Custom custom : customs) {
+        /*for (Custom custom : customs) {
             populateCustomData(custom);
             cDataIndex.put(custom, cData.size() - 1);
+        }*/
+
+        cPrints = new CustomBlueprint[customTypes.size()];
+        for(int i = 0; i < customTypes.size(); i++){
+            cPrints[i] = new CustomBlueprint(customTypes.get(i));
         }
 
         components = new FileComponent[lcomps.size()];
         for(int i = 0; i < lcomps.size(); i++) components[i] = new FileComponent(lcomps.get(i), compIndex, cDataIndex, true);
 
-        cTypes = new CustomBlueprintCompat[customs.size()];
-        for(int i = 0; i < customs.size(); i++) cTypes[i] = new CustomBlueprintCompat(customs.get(i));
+        /*cTypes = new CustomBlueprintCompat[customs.size()];
+        for(int i = 0; i < customs.size(); i++) cTypes[i] = new CustomBlueprintCompat(customs.get(i));*/
 
-        cExamples = new FileComponent[customs.size()];
-        for(int i = 0; i < customs.size(); i++) cExamples[i] = new FileComponent(customs.get(i), null, cDataIndex, true);
+        /*cExamples = new FileComponent[customs.size()];
+        for(int i = 0; i < customs.size(); i++) cExamples[i] = new FileComponent(customs.get(i), null, cDataIndex, true);*/
     }
 
     /**
@@ -125,7 +133,7 @@ public class JSONFile {
         ArrayList<CustomType> customs = new ArrayList<>();
         ArrayList<LComponent> lcomps = new ArrayList<>();
         for(FileComponent fc : components) lcomps.add(fc.makeComponent(version, cTypes, cData, true, -1));
-        for(FileComponent fc : cExamples) customs.add(fc.makeCustomParams(version, cTypes, cData, true, -1));
+        //for(FileComponent fc : cExamples) customs.add(fc.makeCustomParams(version, cTypes, cData, true, -1));
 
         for(int i = 0; i < components.length; i++){
             FileComponent fc = components[i];

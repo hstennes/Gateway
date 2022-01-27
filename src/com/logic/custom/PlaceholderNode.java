@@ -1,6 +1,7 @@
 package com.logic.custom;
 
 import com.logic.components.CompType;
+import com.logic.files.FileNode;
 
 import java.util.List;
 
@@ -24,6 +25,11 @@ public class PlaceholderNode implements Node{
     @Override
     public int getSignal(int n) {
         return 0;
+    }
+
+    @Override
+    public FileNode serialize() {
+        return new FileNode(type, in, out);
     }
 
     @Override

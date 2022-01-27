@@ -1,5 +1,8 @@
 package com.logic.custom;
 
+import com.logic.components.CompType;
+import com.logic.files.FileNode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +27,11 @@ public class StartNode implements Node{
     @Override
     public int getSignal(int n) {
         return signal;
+    }
+
+    @Override
+    public FileNode serialize() {
+        return new FileNode(CompType.SWITCH, null, new int[][] {out});
     }
 
     @Override

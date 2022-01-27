@@ -13,6 +13,15 @@ import java.util.HashMap;
 
 public class JacksonTest {
 
+    public static void main(String[] args){
+        JacksonTestObject file = new JacksonTestObject(null);
+        try {
+            new ObjectMapper().writeValue(Paths.get("C:/Users/HPSte/myfile.json").toFile(), file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
     FILE VERSION 4:
 

@@ -1,9 +1,12 @@
 package com.logic.custom;
 
 import com.logic.components.Clock;
+import com.logic.components.CompType;
 import com.logic.components.LComponent;
+import com.logic.files.FileNode;
 import com.logic.util.CompUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +43,8 @@ public class NodeBox implements SpontNode{
      */
     private int[] signal;
 
+    private int typeID;
+
     private final int[] spontaneous;
 
     /**
@@ -48,12 +53,13 @@ public class NodeBox implements SpontNode{
      * @param outNodes The outNodes array
      * @param signal The starting signal array
      */
-    public NodeBox(Node[] inner, int[] outNodes, int[] signal){
+    public NodeBox(Node[] inner, int[] outNodes, int[] signal, int typeID){
         this.inner = inner;
         in = null;
         out = null;
         this.outNodes = outNodes;
         this.signal = signal;
+        this.typeID = typeID;
         spontaneous = findSpontaneous();
     }
 
@@ -65,12 +71,13 @@ public class NodeBox implements SpontNode{
      * @param outNodes The outNodes array
      * @param signal The starting signal array
      */
-    public NodeBox(Node[] inner, int[] in, int[][] out, int[] outNodes, int[] signal) {
+    public NodeBox(Node[] inner, int[] in, int[][] out, int[] outNodes, int[] signal, int typeID) {
         this.inner = inner;
         this.in = in;
         this.out = out;
         this.outNodes = outNodes;
         this.signal = signal;
+        this.typeID = typeID;
         spontaneous = findSpontaneous();
     }
 
@@ -146,6 +153,15 @@ public class NodeBox implements SpontNode{
         return signal[n];
     }
 
+    @Override
+    public FileNode serialize() {
+        FileNode fileNode = new FileNode(CompType.CUSTOM, in, out);
+        fileNode.setOutNodes(outNodes);
+        fileNode.setSpontaneous(spontaneous);
+        fileNode.setnTypeId(typeID);
+        return fileNode;
+    }
+
     /**
      * Gets the specified signal being outputted by some node
      * @param node The node ID
@@ -175,7 +191,7 @@ public class NodeBox implements SpontNode{
         for(int i = 0; i < inner.length; i++) newInner[i] = inner[i].duplicate();
         int[] newSignal = new int[signal.length];
         System.arraycopy(signal, 0, newSignal, 0, signal.length);
-        return new NodeBox(newInner, in, out, outNodes, newSignal);
+        return new NodeBox(newInner, in, out, outNodes, newSignal, typeID);
     }
 
     @Override
@@ -187,7 +203,11 @@ public class NodeBox implements SpontNode{
         for(int i : spontaneous) ((SpontNode) inner[i]).stop();
     }
 
-    public Node getInnerNode(int i){
-        return inner[i];
+    public Node[] getInnerNodes(){
+        return inner;
+    }
+
+    public int[] getOutNodes(){
+        return outNodes;
     }
 }

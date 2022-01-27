@@ -1,5 +1,7 @@
 package com.logic.custom;
 
+import com.logic.components.CompType;
+import com.logic.files.FileNode;
 import com.logic.util.CompUtils;
 
 import java.util.Arrays;
@@ -41,6 +43,13 @@ public class SplitOutNode implements Node {
     @Override
     public int getSignal(int n) {
         return signal[n];
+    }
+
+    @Override
+    public FileNode serialize() {
+        FileNode fileNode = new FileNode(CompType.SPLIT_OUT, new int[] {in, inOut}, out);
+        fileNode.setSplit(split);
+        return fileNode;
     }
 
     @Override

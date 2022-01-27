@@ -2,6 +2,7 @@ package com.logic.custom;
 
 import com.logic.components.CompType;
 import com.logic.components.Constant;
+import com.logic.files.FileNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,11 @@ public class ConstantNode implements Node{
     @Override
     public int getSignal(int n) {
         return signal;
+    }
+
+    @Override
+    public FileNode serialize() {
+        return new FileNode(signal == 0 ? CompType.ZERO : CompType.ONE, null, null);
     }
 
     @Override
