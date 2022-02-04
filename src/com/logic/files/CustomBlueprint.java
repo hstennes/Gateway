@@ -1,5 +1,6 @@
 package com.logic.files;
 
+import com.logic.components.CompType;
 import com.logic.components.Constant;
 import com.logic.components.LComponent;
 import com.logic.custom.CustomType;
@@ -8,6 +9,7 @@ import com.logic.custom.NodeBox;
 import com.logic.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,9 +33,9 @@ public class CustomBlueprint {
     public int[] outNodes;
 
     /**
-     * Current idea is to have array with number of connections on each side. From RIGHT to UP.
+     * io[side][index on side] = 0 for input, 1 for output
      */
-    public int[] sides;
+    public int[][] io;
 
     public CustomBlueprint(CustomType type){
         label = type.getLabel();
@@ -48,13 +50,26 @@ public class CustomBlueprint {
         NodeBox nb = type.getNodeBox();
         outNodes = nb.getOutNodes();
 
-        sides = new int[4];
+        io = new int[4][];
         LComponent[][] content = type.getContent();
-        //TODO have to rework because inputs are different from outputs
-        for(int s = Constants.RIGHT; s <= Constants.UP; s++) sides[s] = content[s].length;
+        fillIOArray(compIndex, content, Constants.RIGHT);
+        fillIOArray(compIndex, content, Constants.UP);
+        fillIOArray(compIndex, content, Constants.LEFT);
+        fillIOArray(compIndex, content, Constants.DOWN);
 
         Node[] innerNodes = nb.getInnerNodes();
         nodes = new FileNode[innerNodes.length];
         for(int i = 0; i < nodes.length; i++) nodes[i] = innerNodes[i].serialize();
+    }
+
+    /**
+     * Completes one side of the io array based on the content from the custom component
+     * @param compIndex The compIndex map
+     * @param content The content from the custom component
+     * @param direction The direction to consider
+     */
+    private void fillIOArray(Map<LComponent, Integer> compIndex, LComponent[][] content, int direction){
+        io[direction] = new int[content[direction].length];
+        for(int i = 0; i < content[direction].length; i++) io[direction][i] = compIndex.get(content[direction][i]);
     }
 }

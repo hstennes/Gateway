@@ -16,12 +16,19 @@ public class CustomType {
 
     private final NodeBox nodeBox;
 
+    private final Node[] nodes;
+
     public CustomType(String label, LComponent[][] content, ArrayList<LComponent> innerComps, int typeID, NodeBox nodeBox){
         this.label = label;
         this.content = content;
         this.innerComps = innerComps;
         this.typeID = typeID;
         this.nodeBox = nodeBox;
+        nodes = nodeBox.getInnerNodes();
+    }
+
+    public Node[] getNodes() {
+        return nodes;
     }
 
     public ArrayList<LComponent> getInnerComps() {

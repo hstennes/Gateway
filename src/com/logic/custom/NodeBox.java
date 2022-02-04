@@ -115,6 +115,25 @@ public class NodeBox implements SpontNode{
      * @param outerActive If this NodeBox is inside another NodeBox, outerNodes is the parent active array (null otherwise)
      */
     private void update(int[] inputs, List<Integer> outerActive){
+
+        /*
+        Job of each node:
+        getSignal(int n) to get signal from certain output
+        update method must perform logic so that the next time getSignal is called, it returns values consistent with the inputs
+        update method must also mark the components that need to be updated next
+
+        Things that must be individual to each Custom/NodeBox
+        BasicGate: int signal
+        ClockNode: timing mechanism, int state, int signal
+        SingleInputGateNode: int signal
+        SplitInNode: int signal
+        SplitOutNode: int[] signal
+        StartNode: int signal
+
+        Keep equivalent of get method in NodeBox. Instead of getSignal from Node, hold array of signals.
+
+         */
+
         List<Integer> active = new ArrayList<>();
         for(int i = 0; i < inputs.length; i++){
             if(inputs[i] != inner[i].getSignal(0)) {

@@ -30,6 +30,6 @@ public class ConstantNode implements Node{
 
     @Override
     public Node duplicate() {
-        return null;
+        return new ConstantNode(signal == 0 ? CompType.ZERO : CompType.ONE);
     }
 }
