@@ -16,17 +16,19 @@ public class CustomType {
 
     public final LComponent[][] content;
 
+    private final Map<LComponent, Integer> compIndex;
+
+    public final NodeBox2 nodeBox;
+
+    public final ArraySignalProvider defaultSP;
+
     public final String label;
 
     public final int typeID;
 
-    public final NodeBox2 nodeBox;
-
     public final int width, height;
 
     public final CustomHelper helper;
-
-    public final ArraySignalProvider defaultSP;
 
     public CustomType(String label, LComponent[][] content, ArrayList<LComponent> lcomps, int typeID){
         this.label = label;
@@ -38,14 +40,14 @@ public class CustomType {
         height = helper.chooseHeight();
 
         //maps components to ID values. This should be the same as the indexes of the components in nodeComps.
-        Map<LComponent, Integer> compIndex = new HashMap<>();
+        compIndex = new HashMap<>();
         //the list of all components that will be converted to nodes. Starts with all Switches in the order that input connections will be considered
         ArrayList<LComponent> nodeComps = new ArrayList<>();
         //The index of the output connection corresponding to each Light. Used for creating outNodes array, which tells NodeBox how to set the output connections
         //based on Node states at the end of the update method.
         Map<Light, Integer> lightIndex = new HashMap<>();
         //Initialize connections, modifying the above 3 objects in the process
-        int[] numConnect = initConnections(content, compIndex, nodeComps, lightIndex);
+        int[] numConnect = mapIO(content, compIndex, nodeComps, lightIndex);
         int customCount = 0;
 
         for (LComponent lcomp : lcomps) {
@@ -95,6 +97,22 @@ public class CustomType {
         nodeBox = new NodeBox2(in, nodes, outNodes);
     }
 
+    public void projectInnerState(OpCustom2 custom){
+        if(custom.getCustomType() != this) throw new IllegalArgumentException("Custom component supplied to projectInnerState must be of the same CompType");
+        SignalProvider sp = custom.getNestedSP(0);
+
+        for(LComponent lcomp : lcomps){
+            if(lcomp instanceof Light) continue;
+            int id = compIndex.get(lcomp);
+            if(lcomp instanceof Switch) ((Switch) lcomp).setState(sp.getSignal(id, 0));
+            IOManager io = lcomp.getIO();
+            for(int i = 0; i < io.getNumOutputs(); i++){
+                OutputPin outputPin = io.outputConnection(i);
+                outputPin.setSignal(sp.getSignal(id, i));
+            }
+        }
+    }
+
     /**
      * Initializes connections and adds data to compIndex, nodeComps, and lightIndex
      * @param content The content array
@@ -102,7 +120,7 @@ public class CustomType {
      * @param nodeComps The nodeComps list
      * @param lightIndex The lightIndex map
      */
-    private int[] initConnections(LComponent[][] content, Map<LComponent, Integer> compIndex, ArrayList<LComponent> nodeComps, Map<Light, Integer> lightIndex){
+    private int[] mapIO(LComponent[][] content, Map<LComponent, Integer> compIndex, ArrayList<LComponent> nodeComps, Map<Light, Integer> lightIndex){
         int numInputs = 0, numOutputs = 0;
         for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
             LComponent[] side = content[s];

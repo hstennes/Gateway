@@ -105,6 +105,11 @@ public class OpCustom2 extends LComponent implements SignalProvider{
         return result;
     }
 
+    public ArrayList<LComponent> projectInnerStateToType(){
+        type.projectInnerState(this);
+        return type.lcomps;
+    }
+
     public CustomType getCustomType(){
         return type;
     }

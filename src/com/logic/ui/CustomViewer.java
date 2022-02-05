@@ -2,8 +2,12 @@ package com.logic.ui;
 
 import com.logic.components.Clock;
 import com.logic.components.LComponent;
+import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
 import com.logic.input.Camera;
+import com.logic.util.CompUtils;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -55,17 +59,14 @@ public class CustomViewer {
 	 * @param c The Custom component
 	 */
 	public void view(OpCustom2 c) {
-		//TODO fix custom viewer
-		/*CustomType customType = cp.getEditor().getCustomCreator().getCustomTypes().get(c.getTypeID());
-		ArrayList<LComponent> dispComps = customType.getInnerComps();
-		c.applySignals(dispComps, customType.getContent());
+		ArrayList<LComponent> dispComps = c.projectInnerStateToType();
 
 		oldComps.addAll(cp.lcomps);
 		cp.lcomps.clear();
 		cp.wires.clear();
 		cp.getEditor().getSelection().clear();
 		cp.getEditor().setEnabled(false);
-		cp.addLComps(dispComps);
+		cp.addLComps(c.getCustomType().lcomps);
 		
 		Camera cam = cp.getCamera();
 		oldCamZoom = cam.getZoom();
@@ -78,7 +79,7 @@ public class CustomViewer {
 		
 		cp.getProperties().refresh();
 		cp.dispMessage(new UserMessage(cp, "Viewing custom component, press ESC to exit"));
-		active = true;*/
+		active = true;
 	}
 	
 	/**
@@ -89,7 +90,7 @@ public class CustomViewer {
 		for(LComponent lcomp : cp.lcomps) {
 			//TODO spontaneous component support
 			/*if(lcomp instanceof OpCustom2) ((OpCustom2) lcomp).getNodeBox().stop();
-			else if(lcomp instanceof Clock) ((Clock) lcomp).stop();*/
+			else if(l comp instanceof Clock) ((Clock) lcomp).stop();*/
 		}
 		cp.lcomps.clear();
 		cp.wires.clear();
