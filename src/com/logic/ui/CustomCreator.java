@@ -6,7 +6,6 @@ import com.logic.components.Light;
 import com.logic.components.Switch;
 import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
-import com.logic.custom.SignalProviderFactory;
 import com.logic.input.CircuitState;
 import com.logic.input.Selection;
 import com.logic.util.CompUtils;

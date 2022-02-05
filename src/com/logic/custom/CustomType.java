@@ -74,6 +74,8 @@ public class CustomType {
             if(lcomp instanceof BasicGate) nodes[i] = new BasicGateNode(in, out, lcomp.getType());
             else if(lcomp instanceof SingleInputGate) nodes[i] = new SingleInputGateNode(in, out, lcomp.getType());
             else if(lcomp instanceof Switch) nodes[i] = new StartNode(in, out);
+            else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(in, out, ((SplitIn) lcomp).getSplit());
+            else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(in, out, ((SplitOut) lcomp).getSplit());
             else if(lcomp instanceof OpCustom2) {
                 OpCustom2 custom = (OpCustom2) lcomp;
                 nodes[i] = custom.getCustomType().nodeBox.duplicate(in, out, spIndexCounter);
