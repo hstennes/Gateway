@@ -16,7 +16,7 @@ public class NodeBox2 extends Node{
     private final int spIndex;
 
     public NodeBox2(int[] in, Node[] nodes, int[] outNodes) {
-        super(in, null);
+        super(in, new int[outNodes.length / 2][]);
         this.nodes = nodes;
         this.outNodes = outNodes;
         spIndex = 0;

@@ -26,6 +26,8 @@ public class CustomType {
 
     public final CustomHelper helper;
 
+    public final ArraySignalProvider defaultSP;
+
     public CustomType(String label, LComponent[][] content, ArrayList<LComponent> lcomps, int typeID){
         this.label = label;
         this.content = content;
@@ -44,10 +46,12 @@ public class CustomType {
         Map<Light, Integer> lightIndex = new HashMap<>();
         //Initialize connections, modifying the above 3 objects in the process
         int[] numConnect = initConnections(content, compIndex, nodeComps, lightIndex);
+        int customCount = 0;
 
         for (LComponent lcomp : lcomps) {
             //Ignore Lights because they have no nodes. Ignore Switches because they were already added.
             if(lcomp instanceof Light || lcomp instanceof Switch) continue;
+            if(lcomp instanceof OpCustom2) customCount++;
             compIndex.put(lcomp, nodeComps.size());
             nodeComps.add(lcomp);
         }
@@ -56,17 +60,24 @@ public class CustomType {
         Node[] nodes = new Node[nodeComps.size()];
         //final outNodes array. Goes in order of connections. Alternates component id, output connection number on that component
         int[] outNodes = new int[numConnect[1] * 2];
+        ArraySignalProvider[] nested = new ArraySignalProvider[customCount];
+        int[][] signals = new int[nodes.length][];
+
         int spIndexCounter = 0;
 
         for(int i = 0; i < nodes.length; i++){
             LComponent lcomp = nodeComps.get(i);
             int[] in = getNodeIn(lcomp, compIndex);
             int[][] out = getNodeOut(lcomp, compIndex, lightIndex, outNodes);
+            signals[i] = getSignals(lcomp);
 
             if(lcomp instanceof BasicGate) nodes[i] = new BasicGateNode(in, out, lcomp.getType());
             else if(lcomp instanceof SingleInputGate) nodes[i] = new SingleInputGateNode(in, out, lcomp.getType());
+            else if(lcomp instanceof Switch) nodes[i] = new StartNode(in, out);
             else if(lcomp instanceof OpCustom2) {
-                nodes[i] = ((OpCustom2) lcomp).getCustomType().nodeBox.duplicate(in, out, spIndexCounter);
+                OpCustom2 custom = (OpCustom2) lcomp;
+                nodes[i] = custom.getCustomType().nodeBox.duplicate(in, out, spIndexCounter);
+                nested[spIndexCounter] = custom.getNestedSP(0).duplicate();
                 spIndexCounter++;
             }
             else nodes[i] = new PlaceholderNode(lcomp.getType(), in, out);
@@ -77,6 +88,8 @@ public class CustomType {
             in[2 * i] = i;
             in[2 * i + 1] = 0;
         }
+
+        defaultSP = new ArraySignalProvider(signals, nested);
         nodeBox = new NodeBox2(in, nodes, outNodes);
     }
 
@@ -106,6 +119,15 @@ public class CustomType {
             }
         }
         return new int[] {numInputs, numOutputs};
+    }
+
+    public int[] getSignals(LComponent lcomp){
+        IOManager io = lcomp.getIO();
+        int[] signals = new int[io.getNumOutputs()];
+        for(int i = 0; i < signals.length; i++){
+            signals[i] = io.outputConnection(i).getSignal();
+        }
+        return signals;
     }
 
     /**
@@ -185,7 +207,7 @@ public class CustomType {
 
     public int[][] getIOStructure(){
         int[][] io = new int[4][];
-        for(int i = Constants.RIGHT; i < Constants.UP; i++){
+        for(int i = Constants.RIGHT; i <= Constants.UP; i++){
             io[i] = new int[content[i].length];
             for(int j = 0; j < content[i].length; j++) {
                 if(content[i][j] instanceof Light)

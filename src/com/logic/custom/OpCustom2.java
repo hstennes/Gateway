@@ -19,11 +19,18 @@ public class OpCustom2 extends LComponent implements SignalProvider{
 
     private int[] pendingOutput;
 
-    public OpCustom2(int x, int y, CustomType type, ArraySignalProvider sp) {
+    public OpCustom2(int x, int y, CustomType type) {
+        super(x, y, CompType.CUSTOM);
+        this.type = type;
+        this.sp = type.defaultSP.duplicate();
+        initConnections(type, type.getIOStructure());
+        pendingOutput = new int[io.getNumOutputs()];
+    }
+
+    private OpCustom2(int x, int y, CustomType type, ArraySignalProvider sp){
         super(x, y, CompType.CUSTOM);
         this.type = type;
         this.sp = sp;
-        initConnections(type, type.getIOStructure());
     }
 
     /**
@@ -94,6 +101,7 @@ public class OpCustom2 extends LComponent implements SignalProvider{
             result.getIO().outputConnection(i).changeBitWidth(c.getBitWidth());
         }
 
+        result.pendingOutput = new int[result.getIO().getNumOutputs()];
         return result;
     }
 
@@ -113,7 +121,7 @@ public class OpCustom2 extends LComponent implements SignalProvider{
     }
 
     @Override
-    public SignalProvider getNestedSP(int i) {
+    public ArraySignalProvider getNestedSP(int i) {
         return sp;
     }
 }

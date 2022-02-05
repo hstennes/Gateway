@@ -3,6 +3,7 @@ package com.logic.custom;
 import com.logic.components.LComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ArraySignalProvider implements SignalProvider{
 
@@ -16,6 +17,7 @@ public class ArraySignalProvider implements SignalProvider{
     }
 
     public int getSignal(int node, int nodeOut){
+        if(node == -1) return 0;
         return signals[node][nodeOut];
     }
 
@@ -28,7 +30,13 @@ public class ArraySignalProvider implements SignalProvider{
     }
 
     public ArraySignalProvider duplicate(){
-        return null;
-    }
+        ArraySignalProvider[] newNested = new ArraySignalProvider[nested.length];
+        for(int i = 0; i < newNested.length; i++) newNested[i] = nested[i].duplicate();
 
+        int[][] newSignals = new int[signals.length][];
+        for(int i = 0; i < newSignals.length; i++){
+            newSignals[i] = Arrays.copyOf(signals[i], signals[i].length);
+        }
+        return new ArraySignalProvider(newSignals, newNested);
+    }
 }
