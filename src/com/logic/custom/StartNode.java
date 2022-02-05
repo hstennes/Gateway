@@ -1,45 +1,24 @@
 package com.logic.custom;
 
-import com.logic.components.CompType;
 import com.logic.files.FileNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
-public class StartNode implements Node{
+public class StartNode extends Node{
 
-    private final int[] out;
-
-    public int signal;
-
-    public StartNode(int[] out, int signal){
-        this.out = out;
-        this.signal = signal;
+    public StartNode(int[] in, int[][] out) {
+        super(in, out);
     }
 
     @Override
-    public void update(NodeBox nb, List<Integer> active) {
-        active.addAll(Arrays.stream(out).boxed().collect(Collectors.toList()));
-    }
-
-    @Override
-    public int getSignal(int n) {
-        return signal;
+    public void update(SignalProvider sp, ArrayList<Integer> active, int id) {
+        active.addAll(Arrays.stream(out[0]).boxed().collect(Collectors.toList()));
     }
 
     @Override
     public FileNode serialize() {
-        return new FileNode(CompType.SWITCH, null, new int[][] {out});
-    }
-
-    @Override
-    public Node duplicate() {
-        return new StartNode(out, signal);
-    }
-
-    public void setSignal(int signal){
-        this.signal = signal;
+        return null;
     }
 }

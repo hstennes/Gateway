@@ -1,10 +1,9 @@
 package com.logic.ui;
 
 import com.logic.components.*;
-import com.logic.custom.OpCustom;
+import com.logic.custom.OpCustom2;
 
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * Stores images to speed up rendering
@@ -58,7 +57,7 @@ public class ImageCache {
         else if(lcomp instanceof Button) ext = Integer.toString(((Button) lcomp).getState());
         else if(lcomp instanceof Clock) ext = ((Clock) lcomp).isOn() ? "1" : "0";
         else if(lcomp instanceof Custom) ext = ((Custom) lcomp).getLabel();
-        else if(lcomp instanceof OpCustom) ext = ((OpCustom) lcomp).getLabel();
+        else if(lcomp instanceof OpCustom2) ext = ((OpCustom2) lcomp).getCustomType().label;
         else if(lcomp instanceof Splitter) ext = arrayString(((Splitter) lcomp).getSplit());
         else if(lcomp instanceof Display) ext = ((Display) lcomp).getValue() + lcomp.getRotation();
         return lcomp.getType().toString() + ext;

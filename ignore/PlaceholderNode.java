@@ -3,8 +3,6 @@ package com.logic.custom;
 import com.logic.components.CompType;
 import com.logic.files.FileNode;
 
-import java.util.ArrayList;
-
 public class PlaceholderNode extends Node{
 
     private final CompType type;
@@ -15,10 +13,12 @@ public class PlaceholderNode extends Node{
     }
 
     @Override
-    public void update(SignalProvider sp, ArrayList<Integer> active, int id) { }
+    public int[] update(NodeBox nb) {
+        return null;
+    }
 
     @Override
     public FileNode serialize() {
-        return null;
+        return new FileNode(type, in, out);
     }
 }

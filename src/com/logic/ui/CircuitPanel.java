@@ -1,7 +1,6 @@
 package com.logic.ui;
 
 import com.logic.components.*;
-import com.logic.custom.OpCustom;
 import com.logic.input.Camera;
 import com.logic.input.CircuitEditor;
 import com.logic.main.Window;
@@ -121,7 +120,9 @@ public class CircuitPanel extends JPanel {
 		lcomps.add(lcomp);
 		if(lcomp instanceof SComponent) ((SComponent) lcomp).start(this);
 		if(lcomp instanceof IComponent) addMouseListener((IComponent) lcomp);
-		if(lcomp instanceof OpCustom) ((OpCustom) lcomp).start(this);
+		//TODO spontaneous component support
+
+		// if(lcomp instanceof OpCustom) ((OpCustom) lcomp).start(this);
 	}
 
 	/**

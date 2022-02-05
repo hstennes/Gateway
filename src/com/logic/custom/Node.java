@@ -5,32 +5,26 @@ import com.logic.files.FileNode;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface Node {
+public abstract class Node {
+
+    public final int[] in;
+
+    public final int[][] out;
+
+    public Node(int[] in, int[][] out){
+        this.in = in;
+        this.out = out;
+    }
 
     /**
      * Updates the output signal based on inputs acquired from the given NodeBox
-     * @param nb The NodeBox containing the Node
-     * @param active The active array for marking components that must be updated
+     * @param sp The SignalProvider
      */
-    void update(NodeBox nb, List<Integer> active);
-
-    /**
-     * Returns the output signal at the given index
-     * @param n The index
-     * @return The signal
-     */
-    int getSignal(int n);
+    public abstract void update(SignalProvider sp, ArrayList<Integer> active, int id);
 
     /**
      * Creates a FileNode of this node for saving to JSON
      * @return The FileNode object
      */
-    FileNode serialize();
-
-    /**
-     * Duplicates the node. The duplicated node may reference the same data held by the original node, as long as this
-     * data will never be modified.
-     * @return A copy of the Node.
-     */
-    Node duplicate();
+    public abstract FileNode serialize();
 }

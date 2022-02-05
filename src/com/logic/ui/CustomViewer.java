@@ -1,15 +1,9 @@
 package com.logic.ui;
 
 import com.logic.components.Clock;
-import com.logic.components.Custom;
 import com.logic.components.LComponent;
-import com.logic.components.SComponent;
-import com.logic.custom.CustomType;
-import com.logic.custom.OpCustom;
+import com.logic.custom.OpCustom2;
 import com.logic.input.Camera;
-import com.logic.util.CompUtils;
-
-import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -60,8 +54,9 @@ public class CustomViewer {
 	 * repositions the camera, and displays the custom component message.
 	 * @param c The Custom component
 	 */
-	public void view(OpCustom c) {
-		CustomType customType = cp.getEditor().getCustomCreator().getCustomTypes().get(c.getTypeID());
+	public void view(OpCustom2 c) {
+		//TODO fix custom viewer
+		/*CustomType customType = cp.getEditor().getCustomCreator().getCustomTypes().get(c.getTypeID());
 		ArrayList<LComponent> dispComps = customType.getInnerComps();
 		c.applySignals(dispComps, customType.getContent());
 
@@ -83,7 +78,7 @@ public class CustomViewer {
 		
 		cp.getProperties().refresh();
 		cp.dispMessage(new UserMessage(cp, "Viewing custom component, press ESC to exit"));
-		active = true;
+		active = true;*/
 	}
 	
 	/**
@@ -92,9 +87,9 @@ public class CustomViewer {
 	 */
 	public void exit() {
 		for(LComponent lcomp : cp.lcomps) {
-			//TODO temporary solution for spontaneous components
-			if(lcomp instanceof OpCustom) ((OpCustom) lcomp).getNodeBox().stop();
-			else if(lcomp instanceof Clock) ((Clock) lcomp).stop();
+			//TODO spontaneous component support
+			/*if(lcomp instanceof OpCustom2) ((OpCustom2) lcomp).getNodeBox().stop();
+			else if(lcomp instanceof Clock) ((Clock) lcomp).stop();*/
 		}
 		cp.lcomps.clear();
 		cp.wires.clear();

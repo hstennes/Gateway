@@ -5,7 +5,8 @@ import com.logic.components.LComponent;
 import com.logic.components.Light;
 import com.logic.components.Switch;
 import com.logic.custom.CustomType;
-import com.logic.custom.OpCustom;
+import com.logic.custom.OpCustom2;
+import com.logic.custom.SignalProviderFactory;
 import com.logic.input.CircuitState;
 import com.logic.input.Selection;
 import com.logic.util.CompUtils;
@@ -107,10 +108,10 @@ public class CustomCreator {
 		String label = JOptionPane.showInputDialog(null, "New component label?");
 		if(label == null) return;
 
+		CustomType type = new CustomType(label, content, lcomps, customTypes.size());
 		int x = centerRect.x + centerRect.width + customPlacementOffset;
 		int y = centerRect.y + centerRect.height + customPlacementOffset;
-		OpCustom custom = new OpCustom(x, y, label, content, lcomps, customTypes.size());
-		customTypes.add(new CustomType(label, content, lcomps, customTypes.size(), custom.getNodeBox()));
+		OpCustom2 custom = new OpCustom2(x, y, type, new SignalProviderFactory(lcomps, content).makeSignalProvider());
 
 		cp.addLComp(custom);
 		cp.getEditor().getRevision().saveState(new CircuitState(cp));

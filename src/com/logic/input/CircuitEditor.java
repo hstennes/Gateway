@@ -1,9 +1,7 @@
 package com.logic.input;
 
-import com.logic.components.Custom;
 import com.logic.components.IComponent;
 import com.logic.components.LComponent;
-import com.logic.custom.OpCustom;
 import com.logic.ui.Renderer;
 import com.logic.ui.*;
 import com.logic.util.CompSearch;
@@ -265,17 +263,18 @@ public class CircuitEditor extends MouseAdapter {
 
 		if(result == CompSearch.TOUCHING_COMPONENT || result == CompSearch.TOUCHING_ACTION) {
 			LComponent lcomp = cs.getLComp();
-			if(doubleClick && lcomp instanceof OpCustom) {
+			//TODO fix custom viewer
+			/*if(doubleClick && lcomp instanceof OpCustom) {
 				customViewer.view((OpCustom) lcomp);
 			}
-			else {
+			else {*/
 				if(!selection.contains(lcomp)) {
 					if(!shiftDown) selection.clear();
 					selection.select(lcomp);
 				}
 				wireEditor.clear();
 				dragMode = DRAGGING_SELECTION;
-			}
+			//}
 		}
 		else if(result == CompSearch.TOUCHING_CONNECTION) {
 			if(wireBuilder.isWorking()) wireBuilder.endWire(cs.getConnection());

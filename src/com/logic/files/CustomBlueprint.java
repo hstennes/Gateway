@@ -1,15 +1,12 @@
 package com.logic.files;
 
-import com.logic.components.CompType;
-import com.logic.components.Constant;
 import com.logic.components.LComponent;
 import com.logic.custom.CustomType;
 import com.logic.custom.Node;
-import com.logic.custom.NodeBox;
+import com.logic.custom.NodeBox2;
 import com.logic.util.Constants;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +44,7 @@ public class CustomBlueprint {
         source = new FileComponent[innerComps.size()];
         for(int i = 0; i < innerComps.size(); i++) source[i] = new FileComponent(innerComps.get(i), compIndex, null, true);
 
-        NodeBox nb = type.getNodeBox();
+        NodeBox2 nb = type.getNodeBox();
         outNodes = nb.getOutNodes();
 
         io = new int[4][];

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.logic.components.*;
 import com.logic.custom.CustomType;
-import com.logic.custom.OpCustom;
+import com.logic.custom.OpCustom2;
 import com.logic.ui.CompProperties;
 import com.logic.util.CompUtils;
 
@@ -96,7 +96,7 @@ public class FileComponent {
         if(type == CompType.SWITCH) mState = ((Switch) lcomp).getState();
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
         else if(type == CompType.CUSTOM) {
-            cTypeId = ((OpCustom) lcomp).getTypeID();
+            cTypeId = ((OpCustom2) lcomp).getCustomType().typeID;
             //if(topLevel) cDataId = cDataIndex.get((OpCustom) lcomp);
         }
 
@@ -166,7 +166,9 @@ public class FileComponent {
      */
     private LComponent makeCustom(int version, CustomBlueprintCompat[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
         CustomType params = makeCustomParams(version, cTypes, cData, topLevel, providedCDataId);
-        return applyProperties(new OpCustom(pos[0], pos[1], params.getLabel(), params.getContent(), params.getInnerComps(), cTypeId));
+        // return applyProperties(new OpCustom(pos[0], pos[1], params.getLabel(), params.getContent(), params.getInnerComps(), cTypeId));
+        return null;
+        //TODO obviously files are completely broken
     }
 
     public CustomType makeCustomParams(int version, CustomBlueprintCompat[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
@@ -201,7 +203,9 @@ public class FileComponent {
                 lcomps.get(i).getIO().inputConnection(x).addWire(wire);
             }
         }
-        return new CustomType(b.label, content, lcomps, cTypeId, null);
+
+        //TODO very, very broken
+        return new CustomType(b.label, content, lcomps, cTypeId);
     }
 
     private Splitter makeSplitter(int version){

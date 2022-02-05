@@ -1,19 +1,17 @@
 package com.logic.ui;
 
 import com.logic.components.*;
-import com.logic.custom.OpCustom;
+import com.logic.custom.OpCustom2;
 import com.logic.main.LogicSimApp;
 import com.logic.util.CompUtils;
 import com.logic.util.Constants;
 import org.apache.batik.gvt.GraphicsNode;
 
-import javax.swing.plaf.basic.BasicIconFactory;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
-import java.util.concurrent.RecursiveAction;
 
 public class Renderer {
 
@@ -270,7 +268,7 @@ public class Renderer {
 
         //Special rendering currently for Custom, multi bit switch, multi bit light
         if(type == CompType.CUSTOM) {
-            drawCustomBody(g2d, (OpCustom) lcomp, -cb.x, -cb.y);
+            drawCustomBody(g2d, (OpCustom2) lcomp, -cb.x, -cb.y);
             return image;
         }
         if(type == CompType.SWITCH && ((Switch) lcomp).getBitWidth() > 1){
@@ -306,7 +304,7 @@ public class Renderer {
         return image;
     }
 
-    private void drawCustomBody(Graphics2D g2d, OpCustom custom, int dx, int dy){
+    private void drawCustomBody(Graphics2D g2d, OpCustom2 custom, int dx, int dy){
         Rectangle bounds = custom.getBoundsRight();
         bounds.translate(dx, dy);
         g2d.setColor(Color.WHITE);
@@ -317,8 +315,8 @@ public class Renderer {
 
         g2d.setFont(CUSTOM_LABEL_FONT);
         FontMetrics metrics = g2d.getFontMetrics(CUSTOM_LABEL_FONT);
-        g2d.drawString(custom.getLabel(),
-                (bounds.width - metrics.stringWidth(custom.getLabel())) / 2 + dx,
+        g2d.drawString(custom.getCustomType().label,
+                (bounds.width - metrics.stringWidth(custom.getCustomType().label)) / 2 + dx,
                 (bounds.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
     }
 
