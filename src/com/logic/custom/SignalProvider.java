@@ -44,4 +44,12 @@ public class SignalProvider {
         }
         return new SignalProvider(newSignals, newNested);
     }
+
+    public int[][] getRawSignals(){
+        return signals;
+    }
+
+    public SignalProvider[] getAllNested(){
+        return nested;
+    }
 }

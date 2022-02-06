@@ -59,7 +59,6 @@ public class JSONFile {
         camera = fd.getCamera();
         settings = fd.getSettings();
         List<LComponent> lcomps = fd.getLcomps();
-        List<Custom> customs = fd.getCustoms();
         List<CustomType> customTypes = fd.getCustomTypes();
 
         Map<LComponent, Integer> compIndex = new HashMap<>();
