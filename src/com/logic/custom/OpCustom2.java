@@ -11,20 +11,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OpCustom2 extends LComponent implements SignalProvider{
+public class OpCustom2 extends LComponent {
 
     private CustomType type;
 
     private ArraySignalProvider sp;
-
-    private int[] pendingOutput;
 
     public OpCustom2(int x, int y, CustomType type) {
         super(x, y, CompType.CUSTOM);
         this.type = type;
         this.sp = type.defaultSP.duplicate();
         initConnections(type, type.getIOStructure());
-        pendingOutput = new int[io.getNumOutputs()];
     }
 
     private OpCustom2(int x, int y, CustomType type, ArraySignalProvider sp){
@@ -57,11 +54,11 @@ public class OpCustom2 extends LComponent implements SignalProvider{
 
     @Override
     public void update(LogicEngine engine) {
-        type.nodeBox.update(this, null, io.getNumInputs());
+        int[] inputs = new int[io.getNumInputs()];
+        for(int i = 0; i < inputs.length; i++) inputs[i] = io.getInput(i);
 
-        for(int i = 0; i < io.getNumOutputs(); i++){
-            io.setOutput(i, pendingOutput[i], engine);
-        }
+        int[] outputs = type.nodeBox.update(sp, inputs);
+        for(int i = 0; i < io.getNumOutputs(); i++) io.setOutput(i, outputs[i], engine);
     }
 
     /**
@@ -101,7 +98,6 @@ public class OpCustom2 extends LComponent implements SignalProvider{
             result.getIO().outputConnection(i).changeBitWidth(c.getBitWidth());
         }
 
-        result.pendingOutput = new int[result.getIO().getNumOutputs()];
         return result;
     }
 
@@ -114,7 +110,7 @@ public class OpCustom2 extends LComponent implements SignalProvider{
         return type;
     }
 
-    @Override
+    /*@Override
     public int getSignal(int node, int nodeOut) {
         if(node == io.getNumInputs()) return pendingOutput[nodeOut];
         return io.getInput(node);
@@ -123,10 +119,9 @@ public class OpCustom2 extends LComponent implements SignalProvider{
     @Override
     public void setSignal(int node, int nodeOut, int signal) {
         pendingOutput[nodeOut] = signal;
-    }
+    }*/
 
-    @Override
-    public ArraySignalProvider getNestedSP(int i) {
+    public ArraySignalProvider getSignalProvider() {
         return sp;
     }
 }

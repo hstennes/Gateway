@@ -80,26 +80,20 @@ public class CustomType {
             else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(in, out, ((SplitOut) lcomp).getSplit());
             else if(lcomp instanceof OpCustom2) {
                 OpCustom2 custom = (OpCustom2) lcomp;
-                nodes[i] = custom.getCustomType().nodeBox.duplicate(in, out, spIndexCounter);
-                nested[spIndexCounter] = custom.getNestedSP(0).duplicate();
+                nodes[i] = new CustomNode(in, out, custom.getCustomType(), spIndexCounter);
+                nested[spIndexCounter] = custom.getSignalProvider().duplicate();
                 spIndexCounter++;
             }
             else nodes[i] = new PlaceholderNode(lcomp.getType(), in, out);
         }
 
-        int[] in = new int[numConnect[0] * 2];
-        for(int i = 0; i < numConnect[0]; i++){
-            in[2 * i] = i;
-            in[2 * i + 1] = 0;
-        }
-
         defaultSP = new ArraySignalProvider(signals, nested);
-        nodeBox = new NodeBox2(in, nodes, outNodes);
+        nodeBox = new NodeBox2(nodes, outNodes);
     }
 
     public void projectInnerState(OpCustom2 custom){
         if(custom.getCustomType() != this) throw new IllegalArgumentException("Custom component supplied to projectInnerState must be of the same CompType");
-        SignalProvider sp = custom.getNestedSP(0);
+        SignalProvider sp = custom.getSignalProvider();
 
         for(LComponent lcomp : lcomps){
             if(lcomp instanceof Light) continue;

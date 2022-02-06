@@ -7,36 +7,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NodeBox2 extends Node{
+public class NodeBox2 {
 
     private final Node[] nodes;
 
     private final int[] outNodes;
 
-    private final int spIndex;
-
-    public NodeBox2(int[] in, Node[] nodes, int[] outNodes) {
-        super(in, new int[outNodes.length / 2][]);
+    public NodeBox2(Node[] nodes, int[] outNodes) {
         this.nodes = nodes;
         this.outNodes = outNodes;
-        spIndex = 0;
     }
 
-    private NodeBox2(int[] in, int[][] out, Node[] nodes, int[] outNodes, int spIndex){
-        super(in, out);
-        this.nodes = nodes;
-        this.outNodes = outNodes;
-        this.spIndex = spIndex;
-    }
-
-    @Override
-    public void update(SignalProvider spOut, ArrayList<Integer> activeOut, int id) {
-        SignalProvider spIn = spOut.getNestedSP(spIndex);
-
+    public int[] update(SignalProvider spIn, int[] inputs) {
         ArrayList<Integer> activeIn = new ArrayList<>();
-        for(int i = 0; i < in.length / 2; i++){
+        for(int i = 0; i < inputs.length; i++){
             int currentSignal = spIn.getSignal(i, 0);
-            int newSignal = spOut.getSignal(in[i * 2], in[i * 2 + 1]);
+            int newSignal = inputs[i];
 
             if(currentSignal != newSignal) {
                 spIn.setSignal(i, 0, newSignal);
@@ -52,25 +38,11 @@ public class NodeBox2 extends Node{
             }
         }
 
-        boolean mark = activeOut != null;
-        for (int i = 0; i < out.length; i++) {
-            int currentSignal = spOut.getSignal(id, i);
-            int newSignal = spIn.getSignal(outNodes[i * 2], outNodes[i * 2 + 1]);
-
-            if (currentSignal != newSignal) {
-                spOut.setSignal(id, i, newSignal);
-                if(mark) activeOut.addAll(Arrays.stream(out[i]).boxed().collect(Collectors.toList()));
-            }
+        int[] outputs = new int[outNodes.length / 2];
+        for (int i = 0; i < outNodes.length / 2; i++) {
+            outputs[i] = spIn.getSignal(outNodes[i * 2], outNodes[i * 2 + 1]);
         }
-    }
-
-    public NodeBox2 duplicate(int[] in, int[][] out, int spIndex){
-        return new NodeBox2(in, out, nodes, outNodes, spIndex);
-    }
-
-    @Override
-    public FileNode serialize() {
-        return null;
+        return outputs;
     }
 
     public Node[] getInnerNodes(){
