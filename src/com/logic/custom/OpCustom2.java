@@ -2,32 +2,35 @@ package com.logic.custom;
 
 import com.logic.components.*;
 import com.logic.engine.LogicEngine;
-import com.logic.ui.Renderer;
+import com.logic.engine.LogicWorker;
+import com.logic.ui.CircuitPanel;
 import com.logic.util.Constants;
-import com.logic.util.CustomHelper;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class OpCustom2 extends LComponent {
 
     private CustomType type;
 
-    private ArraySignalProvider sp;
+    private SignalProvider sp;
+
+    private Timer[] timers;
 
     public OpCustom2(int x, int y, CustomType type) {
         super(x, y, CompType.CUSTOM);
         this.type = type;
         this.sp = type.defaultSP.duplicate();
         initConnections(type, type.getIOStructure());
+        timers = new Timer[type.clocks.size()];
     }
 
-    private OpCustom2(int x, int y, CustomType type, ArraySignalProvider sp){
+    private OpCustom2(int x, int y, CustomType type, SignalProvider sp){
         super(x, y, CompType.CUSTOM);
         this.type = type;
         this.sp = sp;
+        timers = new Timer[type.clocks.size()];
     }
 
     /**
@@ -50,6 +53,26 @@ public class OpCustom2 extends LComponent {
                 }
             }
         }
+    }
+
+    public void start(CircuitPanel cp){
+        for(int i = 0; i < timers.length; i++) {
+            if (timers[i] != null) timers[i].stop();
+            int[] clockInfo = type.clocks.get(i);
+            timers[i] = new Timer(clockInfo[0], e -> {
+                int[] address = new int[clockInfo.length - 1];
+                System.arraycopy(clockInfo, 1, address, 0, address.length);
+                int[] clockSignal = sp.getNestedSignal(address);
+                clockSignal[0] = ~clockSignal[0];
+                LogicWorker.startLogic(this);
+                cp.repaint();
+            });
+            timers[i].start();
+        }
+    }
+
+    public void stop(){
+        for(Timer timer : timers) timer.stop();
     }
 
     @Override
@@ -121,7 +144,7 @@ public class OpCustom2 extends LComponent {
         pendingOutput[nodeOut] = signal;
     }*/
 
-    public ArraySignalProvider getSignalProvider() {
+    public SignalProvider getSignalProvider() {
         return sp;
     }
 }

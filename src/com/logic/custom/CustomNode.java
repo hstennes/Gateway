@@ -39,4 +39,8 @@ public class CustomNode extends Node{
     public FileNode serialize() {
         return null;
     }
+
+    public CustomType getType(){
+        return type;
+    }
 }

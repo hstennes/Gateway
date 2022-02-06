@@ -59,6 +59,10 @@ public class CustomViewer {
 	 * @param c The Custom component
 	 */
 	public void view(OpCustom2 c) {
+		/*for(LComponent lcomp : cp.lcomps) {
+			if(lcomp instanceof OpCustom2) ((OpCustom2) lcomp).stop();
+			else if(lcomp instanceof Clock) ((Clock) lcomp).stop();
+		}*/
 		ArrayList<LComponent> dispComps = c.projectInnerStateToType();
 
 		oldComps.addAll(cp.lcomps);
@@ -88,9 +92,8 @@ public class CustomViewer {
 	 */
 	public void exit() {
 		for(LComponent lcomp : cp.lcomps) {
-			//TODO spontaneous component support
-			/*if(lcomp instanceof OpCustom2) ((OpCustom2) lcomp).getNodeBox().stop();
-			else if(l comp instanceof Clock) ((Clock) lcomp).stop();*/
+			if(lcomp instanceof OpCustom2) ((OpCustom2) lcomp).stop();
+			else if(lcomp instanceof Clock) ((Clock) lcomp).stop();
 		}
 		cp.lcomps.clear();
 		cp.wires.clear();

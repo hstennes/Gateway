@@ -13,9 +13,22 @@ public class NodeBox2 {
 
     private final int[] outNodes;
 
+    private final int[] spontaneous;
+
     public NodeBox2(Node[] nodes, int[] outNodes) {
         this.nodes = nodes;
         this.outNodes = outNodes;
+        spontaneous = findSpontaneous();
+    }
+
+    private int[] findSpontaneous(){
+        ArrayList<Integer> spontList = new ArrayList<>();
+        for(int i = 0; i < nodes.length; i++) {
+            if(nodes[i] instanceof ClockNode) spontList.add(i);
+            else if(nodes[i] instanceof CustomNode &&
+                    ((CustomNode) nodes[i]).getType().nodeBox.isSpontaneous()) spontList.add(i);
+        }
+        return spontList.stream().mapToInt(i->i).toArray();
     }
 
     public int[] update(SignalProvider spIn, int[] inputs) {
@@ -29,6 +42,7 @@ public class NodeBox2 {
                 nodes[i].update(spIn, activeIn, i);
             }
         }
+        activeIn.addAll(Arrays.stream(spontaneous).boxed().collect(Collectors.toList()));
 
         while(activeIn.size() > 0) {
             List<Integer> oldActive = activeIn;
@@ -51,5 +65,9 @@ public class NodeBox2 {
 
     public int[] getOutNodes(){
         return outNodes;
+    }
+
+    public boolean isSpontaneous(){
+        return spontaneous.length > 0;
     }
 }

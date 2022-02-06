@@ -5,10 +5,10 @@ import com.logic.ui.Renderer;
 import com.logic.util.Constants;
 import com.logic.util.CustomHelper;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CustomType {
 
@@ -20,7 +20,7 @@ public class CustomType {
 
     public final NodeBox2 nodeBox;
 
-    public final ArraySignalProvider defaultSP;
+    public final SignalProvider defaultSP;
 
     public final String label;
 
@@ -29,6 +29,10 @@ public class CustomType {
     public final int width, height;
 
     public final CustomHelper helper;
+
+    //first index shows delay
+    //Other indexes show where the clock is by listing spIndexes from outermost to innermost
+    public final ArrayList<int[]> clocks;
 
     public CustomType(String label, LComponent[][] content, ArrayList<LComponent> lcomps, int typeID){
         this.label = label;
@@ -48,6 +52,8 @@ public class CustomType {
         Map<Light, Integer> lightIndex = new HashMap<>();
         //Initialize connections, modifying the above 3 objects in the process
         int[] numConnect = mapIO(content, compIndex, nodeComps, lightIndex);
+        //Initialize clocks list
+        clocks = new ArrayList<>();
         int customCount = 0;
 
         for (LComponent lcomp : lcomps) {
@@ -62,7 +68,7 @@ public class CustomType {
         Node[] nodes = new Node[nodeComps.size()];
         //final outNodes array. Goes in order of connections. Alternates component id, output connection number on that component
         int[] outNodes = new int[numConnect[1] * 2];
-        ArraySignalProvider[] nested = new ArraySignalProvider[customCount];
+        SignalProvider[] nested = new SignalProvider[customCount];
         int[][] signals = new int[nodes.length][];
 
         int spIndexCounter = 0;
@@ -78,16 +84,25 @@ public class CustomType {
             else if(lcomp instanceof Switch) nodes[i] = new StartNode(in, out);
             else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(in, out, ((SplitIn) lcomp).getSplit());
             else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(in, out, ((SplitOut) lcomp).getSplit());
+            else if(lcomp instanceof Clock) {
+                clocks.add(new int[] {((Clock) lcomp).getDelay(), i});
+                nodes[i] = new ClockNode(in, out);
+            }
             else if(lcomp instanceof OpCustom2) {
+                int spc = spIndexCounter;
                 OpCustom2 custom = (OpCustom2) lcomp;
-                nodes[i] = new CustomNode(in, out, custom.getCustomType(), spIndexCounter);
-                nested[spIndexCounter] = custom.getSignalProvider().duplicate();
+                CustomType type = custom.getCustomType();
+                nodes[i] = new CustomNode(in, out, type, spc);
+                nested[spc] = custom.getSignalProvider().duplicate();
+                clocks.addAll(type.clocks.stream()
+                        .map(oldClock -> nestClock(oldClock, spc))
+                        .collect(Collectors.toList()));
                 spIndexCounter++;
             }
             else nodes[i] = new PlaceholderNode(lcomp.getType(), in, out);
         }
 
-        defaultSP = new ArraySignalProvider(signals, nested);
+        defaultSP = new SignalProvider(signals, nested);
         nodeBox = new NodeBox2(nodes, outNodes);
     }
 
@@ -133,6 +148,14 @@ public class CustomType {
             }
         }
         return new int[] {numInputs, numOutputs};
+    }
+
+    private int[] nestClock(int[] oldClock, int spIndex){
+        int[] newClock = new int[oldClock.length + 1];
+        newClock[0] = oldClock[0];
+        newClock[1] = spIndex;
+        System.arraycopy(oldClock, 1, newClock, 2, oldClock.length - 1);
+        return newClock;
     }
 
     public int[] getSignals(LComponent lcomp){
@@ -212,10 +235,7 @@ public class CustomType {
         }
 
         int[] out = new int[connected.size()];
-        for(int n = 0; n < out.length; n++){
-            LComponent dest = outputPin.getWire(n).getDestConnection().getLcomp();
-            out[n] = compIndex.get(dest);
-        }
+        for(int n = 0; n < out.length; n++) out[n] = compIndex.get(connected.get(n));
         return out;
     }
 
