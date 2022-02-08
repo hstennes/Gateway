@@ -156,26 +156,26 @@ public class LToolBar extends JToolBar implements ActionListener {
 		else if(command.equals("Redo")) cp.getEditor().getRevision().redo();
 		else if(command.equals("New")) LogicSimApp.newWindow(null);
 		else if(command.equals("Open")) {
-			//fileManager.open();
+			fileManager.open();
 
-			try {
+			/*try {
 				FileSignalProvider file = new ObjectMapper().readValue(Paths.get("C://Users/HPste/Documents/SPTest.gtw").toFile(), FileSignalProvider.class);
 				SignalProvider sp = file.createSignalProvider();
 				System.out.println("cool");
 			} catch (IOException ex) {
 				ex.printStackTrace();
-			}
+			}*/
 
 		}
 		else if(command.equals("Save")) {
-			//fileManager.save();
+			fileManager.save();
 
-			FileSignalProvider file = new FileSignalProvider(((OpCustom2) cp.getEditor().getSelection().get(0)).getSignalProvider());
+			/*FileSignalProvider file = new FileSignalProvider(((OpCustom2) cp.getEditor().getSelection().get(0)).getSignalProvider());
 			try {
 				new ObjectMapper().writeValue(Paths.get("C://Users/HPste/Documents/SPTest.gtw").toFile(), file);
 			} catch (IOException ex) {
 				ex.printStackTrace();
-			}
+			}*/
 		}
 		else if(command.equals("Create Custom Component")) cp.getEditor().getCustomCreator().createCustom();
 	}

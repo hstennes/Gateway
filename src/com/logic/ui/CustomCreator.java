@@ -110,6 +110,7 @@ public class CustomCreator {
 		CustomType type = new CustomType(label, content, lcomps, customTypes.size());
 		int x = centerRect.x + centerRect.width + customPlacementOffset;
 		int y = centerRect.y + centerRect.height + customPlacementOffset;
+		customTypes.add(type);
 		OpCustom2 custom = new OpCustom2(x, y, type);
 
 		cp.addLComp(custom);

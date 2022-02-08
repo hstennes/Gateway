@@ -12,18 +12,22 @@ import java.util.stream.Collectors;
 
 public class CustomType {
 
+    //serialized
     public final ArrayList<LComponent> lcomps;
 
+    //serialized
     public final LComponent[][] content;
 
     private final Map<LComponent, Integer> compIndex;
 
-    public final NodeBox2 nodeBox;
+    public NodeBox2 nodeBox;
 
-    public final SignalProvider defaultSP;
+    public SignalProvider defaultSP;
 
+    //serialized
     public final String label;
 
+    //serialized
     public final int typeID;
 
     public final int width, height;
@@ -32,6 +36,7 @@ public class CustomType {
 
     //first index shows delay
     //Other indexes show where the clock is by listing spIndexes from outermost to innermost
+    //serialized
     public final ArrayList<int[]> clocks;
 
     public CustomType(String label, LComponent[][] content, ArrayList<LComponent> lcomps, int typeID){
@@ -42,9 +47,14 @@ public class CustomType {
         helper = new CustomHelper(content);
         width = helper.chooseWidth(label, Renderer.CUSTOM_LABEL_FONT);
         height = helper.chooseHeight();
-
-        //maps components to ID values. This should be the same as the indexes of the components in nodeComps.
         compIndex = new HashMap<>();
+        clocks = new ArrayList<>();
+        init();
+    }
+
+    private void init(){
+        //maps components to ID values. This should be the same as the indexes of the components in nodeComps.
+
         //the list of all components that will be converted to nodes. Starts with all Switches in the order that input connections will be considered
         ArrayList<LComponent> nodeComps = new ArrayList<>();
         //The index of the output connection corresponding to each Light. Used for creating outNodes array, which tells NodeBox how to set the output connections
@@ -52,8 +62,6 @@ public class CustomType {
         Map<Light, Integer> lightIndex = new HashMap<>();
         //Initialize connections, modifying the above 3 objects in the process
         int[] numConnect = mapIO(content, compIndex, nodeComps, lightIndex);
-        //Initialize clocks list
-        clocks = new ArrayList<>();
         int customCount = 0;
 
         for (LComponent lcomp : lcomps) {
@@ -91,10 +99,10 @@ public class CustomType {
             else if(lcomp instanceof OpCustom2) {
                 int spc = spIndexCounter;
                 OpCustom2 custom = (OpCustom2) lcomp;
-                CustomType type = custom.getCustomType();
-                nodes[i] = new CustomNode(in, out, type, spc);
+                nodes[i] = new CustomNode(in, out, custom.getCustomType(), spc);
                 nested[spc] = custom.getSignalProvider().duplicate();
-                clocks.addAll(type.clocks.stream()
+                clocks.addAll(custom.getCustomType().clocks
+                        .stream()
                         .map(oldClock -> nestClock(oldClock, spc))
                         .collect(Collectors.toList()));
                 spIndexCounter++;

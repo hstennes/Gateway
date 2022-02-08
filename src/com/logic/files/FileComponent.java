@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.logic.components.*;
 import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
+import com.logic.custom.SignalProvider;
 import com.logic.ui.CompProperties;
 import com.logic.util.CompUtils;
 
@@ -83,10 +84,9 @@ public class FileComponent {
      * Creates a representation of the given component that can be serialized to a json file.
      * @param lcomp The component
      * @param compIndex The mapping of components in the same list as this component to their indexes in the list
-     * @param cDataIndex The mapping of custom components to the index in the cData list where their data is stored
      * @param topLevel true if this component is in the top level components list as opposed to being inside a custom component.
      */
-    public FileComponent(LComponent lcomp, Map<LComponent, Integer> compIndex, Map<Custom, Integer> cDataIndex, boolean topLevel){
+    public FileComponent(LComponent lcomp, Map<LComponent, Integer> compIndex, int cSignalsIndex, boolean topLevel){
         type = lcomp.getType();
         pos = new int[] {lcomp.getX(), lcomp.getY()};
         rot = lcomp.getRotation();
@@ -97,7 +97,7 @@ public class FileComponent {
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
         else if(type == CompType.CUSTOM) {
             cTypeId = ((OpCustom2) lcomp).getCustomType().typeID;
-            //if(topLevel) cDataId = cDataIndex.get((OpCustom) lcomp);
+            if(topLevel) cDataId = cSignalsIndex;
         }
 
         IOManager io = lcomp.getIO();
@@ -127,15 +127,12 @@ public class FileComponent {
     /**
      * Converts this FileComponent back to an LComponent
      * @param version The version of the file being loaded
-     * @param cTypes cTypesArray to use if this component is a custom
      * @param cData cData array to use if this component is a custom
-     * @param topLevel see constructor
-     * @param providedCDataId gives the index for custom data; overrides internal cDataId value if this is not a top level component
      * @return The LComponent
      */
     @JsonIgnore
-    public LComponent makeComponent(int version, CustomBlueprintCompat[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
-        if(type == CompType.CUSTOM) return makeCustom(version, cTypes, cData, topLevel, providedCDataId);
+    public LComponent makeComponent(int version, FileSignalProvider cData, ArrayList<CustomType> cTypes){
+        if(type == CompType.CUSTOM) return applyProperties(makeCustom(cData, cTypes));
         if(type == CompType.SPLIT_IN || type == CompType.SPLIT_OUT) return applyProperties(makeSplitter(version));
 
         LComponent lcomp = applyProperties(CompUtils.makeComponent(type.toString(), pos[0], pos[1]));
@@ -157,55 +154,12 @@ public class FileComponent {
 
     /**
      * Helper method for converting to a custom component
-     * @param version The version of the file being loaded
-     * @param cTypes The cTypes
      * @param cData The cData
-     * @param topLevel The topLevel flag
-     * @param providedCDataId the providedCDataId
      * @return Custom component
      */
-    private LComponent makeCustom(int version, CustomBlueprintCompat[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
-        CustomType params = makeCustomParams(version, cTypes, cData, topLevel, providedCDataId);
-        // return applyProperties(new OpCustom(pos[0], pos[1], params.getLabel(), params.getContent(), params.getInnerComps(), cTypeId));
-        return null;
-        //TODO obviously files are completely broken
-    }
-
-    public CustomType makeCustomParams(int version, CustomBlueprintCompat[] cTypes, ArrayList<Integer[][]> cData, boolean topLevel, int providedCDataId){
-        int realCDataId = topLevel ? cDataId : providedCDataId;
-
-        CustomBlueprintCompat b = cTypes[cTypeId];
-        ArrayList<LComponent> lcomps = new ArrayList<>();
-        for(int i = 0; i < b.components.length; i++) {
-            if(b.components[i].type.toString().equals("CUSTOM")) {
-                Integer[] compData = cData.get(realCDataId)[i];
-                lcomps.add(b.components[i].makeComponent(version, cTypes, cData, false, compData[compData.length - 1]));
-            }
-            else lcomps.add(b.components[i].makeComponent(version, cTypes, cData, false, -1));
-        }
-
-        LComponent[][] content = new LComponent[4][];
-        for(int i = 0; i < content.length; i++) {
-            content[i] = new LComponent[b.io[i].length];
-            for(int x = 0; x < b.io[i].length; x++) content[i][x] = lcomps.get(b.io[i][x]);
-        }
-
-        for(int i = 0; i < b.components.length; i++){
-            FileComponent fc = b.components[i];
-            if(fc.input == null) continue;
-            for(int x = 0; x < fc.input.length; x++){
-                int[] input = fc.input[x];
-                if(JSONFile.isEmptyConnection(input, version)) continue;
-                Wire wire = new Wire();
-                OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
-                source.setSignal(cData.get(realCDataId)[i][x]);
-                source.addWire(wire);
-                lcomps.get(i).getIO().inputConnection(x).addWire(wire);
-            }
-        }
-
-        //TODO very, very broken
-        return new CustomType(b.label, content, lcomps, cTypeId);
+    private LComponent makeCustom(FileSignalProvider cData, ArrayList<CustomType> cTypes){
+        SignalProvider sp = cData.createSignalProvider(cDataId);
+        return new OpCustom2(pos[0], pos[1], cTypes.get(cTypeId), sp);
     }
 
     private Splitter makeSplitter(int version){

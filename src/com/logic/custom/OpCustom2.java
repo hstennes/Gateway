@@ -21,15 +21,16 @@ public class OpCustom2 extends LComponent {
     public OpCustom2(int x, int y, CustomType type) {
         super(x, y, CompType.CUSTOM);
         this.type = type;
-        this.sp = type.defaultSP.duplicate();
+        sp = type.defaultSP;
         initConnections(type, type.getIOStructure());
         timers = new Timer[type.clocks.size()];
     }
 
-    private OpCustom2(int x, int y, CustomType type, SignalProvider sp){
+    public OpCustom2(int x, int y, CustomType type, SignalProvider sp){
         super(x, y, CompType.CUSTOM);
         this.type = type;
         this.sp = sp;
+        initConnections(type, type.getIOStructure());
         timers = new Timer[type.clocks.size()];
     }
 
@@ -108,19 +109,6 @@ public class OpCustom2 extends LComponent {
         OpCustom2 result = new OpCustom2(x, y, type, sp.duplicate());
         result.setRotation(rotation);
         result.setName(getName());
-
-        for(int i = 0; i < io.getNumInputs(); i++){
-            Connection c = io.inputConnection(i);
-            result.getIO().addConnection(c.getX(), c.getY(), Connection.INPUT, c.getDirection());
-            result.getIO().inputConnection(i).changeBitWidth(c.getBitWidth());
-        }
-
-        for(int i = 0; i < io.getNumOutputs(); i++){
-            Connection c = io.outputConnection(i);
-            result.getIO().addConnection(c.getX(), c.getY(), Connection.OUTPUT, c.getDirection());
-            result.getIO().outputConnection(i).changeBitWidth(c.getBitWidth());
-        }
-
         return result;
     }
 
@@ -132,17 +120,6 @@ public class OpCustom2 extends LComponent {
     public CustomType getCustomType(){
         return type;
     }
-
-    /*@Override
-    public int getSignal(int node, int nodeOut) {
-        if(node == io.getNumInputs()) return pendingOutput[nodeOut];
-        return io.getInput(node);
-    }
-
-    @Override
-    public void setSignal(int node, int nodeOut, int signal) {
-        pendingOutput[nodeOut] = signal;
-    }*/
 
     public SignalProvider getSignalProvider() {
         return sp;

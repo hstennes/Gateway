@@ -27,7 +27,12 @@ public class FileManager {
 	/**
 	 * The file format version. Should be incremented when the file format is changed in any way.
 	 */
-	public static final int FILE_FORMAT_VERSION = 4;
+	public static final int FILE_FORMAT_VERSION = 5;
+
+	/**
+	 * Option that uses readable json formatting for testing the file saving system
+	 */
+	public static final boolean PRETTY_FILE_OUTPUT = true;
 
 	/**
 	 * A filter that only allows for the selection of files that are compatible with Gateway
@@ -121,7 +126,8 @@ public class FileManager {
 					cp.getEditor().getCustomCreator().getCustomTypes(),
 					new float[] {cam.getX(), cam.getY(), cam.getZoom()},
 					new int[] {cp.getEditor().isSnap() ? 1 : 0, cp.isShowGrid() ? 1 : 0, cp.isHighQuality() ? 1 : 0}));
-			new ObjectMapper().writeValue(Paths.get(path).toFile(), file);
+			if(PRETTY_FILE_OUTPUT) new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(Paths.get(path).toFile(), file);
+			else new ObjectMapper().writeValue(Paths.get(path).toFile(), file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -3,6 +3,7 @@ package com.logic.files;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.logic.components.*;
 import com.logic.custom.CustomType;
+import com.logic.custom.OpCustom2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,14 +43,14 @@ public class JSONFile {
     /**
      * The list of custom types from CompCreator.customs.
      */
-    public CustomBlueprintCompat[] cTypes;
-
-    public CustomBlueprint[] cPrints;
+    public CustomBlueprint[] cTypes;
 
     /**
      * Holds all wire data associated with custom components, including nested customs
      */
     public ArrayList<Integer[][]> cData;
+
+    public FileSignalProvider cSignals;
 
     /**
      * Creates a new JSONFile object, which is then ready to be saved
@@ -62,60 +63,29 @@ public class JSONFile {
         List<CustomType> customTypes = fd.getCustomTypes();
 
         Map<LComponent, Integer> compIndex = new HashMap<>();
-        Map<Custom, Integer> cDataIndex = new HashMap<>();
-        cData = new ArrayList<>();
+
+        cSignals = new FileSignalProvider();
 
         for(int i = 0; i < lcomps.size(); i++) {
             LComponent lcomp = lcomps.get(i);
             compIndex.put(lcomp, i);
-            //if(lcomp.getType() == CompType.CUSTOM) cDataIndex.put((Custom) lcomp, populateCustomData((Custom) lcomp));
         }
 
-        /*for (Custom custom : customs) {
-            populateCustomData(custom);
-            cDataIndex.put(custom, cData.size() - 1);
-        }*/
-
-        cPrints = new CustomBlueprint[customTypes.size()];
+        cTypes = new CustomBlueprint[customTypes.size()];
         for(int i = 0; i < customTypes.size(); i++){
-            cPrints[i] = new CustomBlueprint(customTypes.get(i));
+            cTypes[i] = new CustomBlueprint();
+            cTypes[i].init(customTypes.get(i), cSignals);
         }
 
         components = new FileComponent[lcomps.size()];
-        for(int i = 0; i < lcomps.size(); i++) components[i] = new FileComponent(lcomps.get(i), compIndex, cDataIndex, true);
-
-        /*cTypes = new CustomBlueprintCompat[customs.size()];
-        for(int i = 0; i < customs.size(); i++) cTypes[i] = new CustomBlueprintCompat(customs.get(i));*/
-
-        /*cExamples = new FileComponent[customs.size()];
-        for(int i = 0; i < customs.size(); i++) cExamples[i] = new FileComponent(customs.get(i), null, cDataIndex, true);*/
-    }
-
-    /**
-     * Recursively adds the wire state data for this custom component and each custom it contains to the cData list and returns the index
-     * in cData where the data is stored. This index can vary because the data for this custom component will be placed AFTER the data for nested
-     * customs. The data for this component holds the index of the data for each nested component so that the state can be reconstructed.
-     * @param custom The custom component
-     * @return The index of the data
-     */
-    private int populateCustomData(Custom custom){
-        ArrayList<LComponent> innerComps = custom.getInnerComps();
-        Integer[][] data = new Integer[innerComps.size()][];
-        for(int i = 0; i < innerComps.size(); i++){
-            LComponent lcomp = innerComps.get(i);
-            IOManager io = lcomp.getIO();
-            data[i] = new Integer[lcomp.getType() == CompType.CUSTOM ? io.getNumInputs() + 1 : io.getNumInputs()];
-            for(int x = 0; x < io.getNumInputs(); x++){
-                Connection conn = io.inputConnection(x);
-                if(conn.numWires() > 0) data[i][x] = conn.getWire().getSignal();
-            }
+        for(int i = 0; i < lcomps.size(); i++) {
+            LComponent lcomp = lcomps.get(i);
             if(lcomp.getType() == CompType.CUSTOM) {
-                populateCustomData((Custom) lcomp);
-                data[i][data[i].length - 1] = cData.size() - 1;
+                int cSignalsIndex = cSignals.addSignalProvider(((OpCustom2) lcomp).getSignalProvider());
+                components[i] = new FileComponent(lcomps.get(i), compIndex, cSignalsIndex, true);
             }
+            else components[i] = new FileComponent(lcomps.get(i), compIndex, 0, true);
         }
-        cData.add(data);
-        return cData.size() - 1;
     }
 
     /**
@@ -131,7 +101,16 @@ public class JSONFile {
     public FileData getFileData(){
         ArrayList<CustomType> customs = new ArrayList<>();
         ArrayList<LComponent> lcomps = new ArrayList<>();
-        for(FileComponent fc : components) lcomps.add(fc.makeComponent(version, cTypes, cData, true, -1));
+
+        for(int i = 0; i < cTypes.length; i++){
+            CustomBlueprint cType = cTypes[i];
+            customs.add(cType.makeCustomType(version, i, cSignals, customs));
+        }
+
+        for(FileComponent fc : components) {
+            LComponent lcomp = fc.makeComponent(version, cSignals, customs);
+            lcomps.add(lcomp);
+        }
         //for(FileComponent fc : cExamples) customs.add(fc.makeCustomParams(version, cTypes, cData, true, -1));
 
         for(int i = 0; i < components.length; i++){

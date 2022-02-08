@@ -13,7 +13,7 @@ public class NodeBox2 {
 
     private final int[] outNodes;
 
-    private final int[] spontaneous;
+    private int[] spontaneous;
 
     public NodeBox2(Node[] nodes, int[] outNodes) {
         this.nodes = nodes;
@@ -57,14 +57,6 @@ public class NodeBox2 {
             outputs[i] = spIn.getSignal(outNodes[i * 2], outNodes[i * 2 + 1]);
         }
         return outputs;
-    }
-
-    public Node[] getInnerNodes(){
-        return nodes;
-    }
-
-    public int[] getOutNodes(){
-        return outNodes;
     }
 
     public boolean isSpontaneous(){

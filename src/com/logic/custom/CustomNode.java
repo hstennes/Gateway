@@ -7,13 +7,12 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class CustomNode extends Node{
-    //this really scary
 
     private CustomType type;
 
     private int spIndex;
 
-    public CustomNode(int[] in, int[][] out, CustomType type, int spIndex) {
+    public CustomNode(int[] in, int[][] out, CustomType type, int spIndex){
         super(in, out);
         this.type = type;
         this.spIndex = spIndex;

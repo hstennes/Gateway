@@ -9,13 +9,12 @@ public class FileSignalProvider {
 
     public ArrayList<int[][]> data;
 
-    public FileSignalProvider(SignalProvider sp){
-        data = new ArrayList<>();
+    public FileSignalProvider(){ }
+
+    public int addSignalProvider(SignalProvider sp){
+        if(data == null) data = new ArrayList<>();
         populateData(sp);
-    }
-
-    public FileSignalProvider(){
-
+        return data.size() - 1;
     }
 
     private void populateData(SignalProvider sp){
