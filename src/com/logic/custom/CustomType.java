@@ -272,16 +272,4 @@ public class CustomType {
     public String getLabel() {
         return label;
     }
-
-    public int getTypeID() {
-        return typeID;
-    }
-
-    public NodeBox2 getNodeBox(){
-        return nodeBox;
-    }
-
-    public CustomHelper getHelper() {
-        return helper;
-    }
 }

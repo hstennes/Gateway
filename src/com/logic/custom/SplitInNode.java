@@ -21,7 +21,7 @@ public class SplitInNode extends Node{
         int newSignal = 0;
         int shift = 0;
         for(int i = 0; i < split.length; i++){
-            newSignal |= sp.getSignal(in[i * 2], in[i * 2 + 1]) << shift;
+            newSignal |= (sp.getSignal(in[i * 2], in[i * 2 + 1]) & (1 << split[i] - 1)) << shift;
             shift += split[i];
         }
         if(newSignal == sp.getSignal(id, 0)) return;

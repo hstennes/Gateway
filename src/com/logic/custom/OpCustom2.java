@@ -24,6 +24,7 @@ public class OpCustom2 extends LComponent {
         sp = type.defaultSP;
         initConnections(type, type.getIOStructure());
         timers = new Timer[type.clocks.size()];
+        //TODO haven't tested clocks with files
     }
 
     public OpCustom2(int x, int y, CustomType type, SignalProvider sp){
