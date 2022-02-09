@@ -1,7 +1,6 @@
 package com.logic.custom;
 
 import com.logic.components.CompType;
-import com.logic.files.FileNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +21,5 @@ public class SingleInputGateNode extends Node {
         if(newSignal == sp.getSignal(id, 0)) return;
         sp.setSignal(id, 0, newSignal);
         active.addAll(Arrays.stream(out[0]).boxed().collect(Collectors.toList()));
-    }
-
-    @Override
-    public FileNode serialize() {
-        return new FileNode(mask == -1 ? CompType.NOT : CompType.BUFFER, in, out);
     }
 }

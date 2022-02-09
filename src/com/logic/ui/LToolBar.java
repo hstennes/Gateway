@@ -1,12 +1,6 @@
 package com.logic.ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.logic.custom.OpCustom2;
-import com.logic.custom.SignalProvider;
-import com.logic.files.FileData;
 import com.logic.files.FileManager;
-import com.logic.files.FileSignalProvider;
-import com.logic.files.JSONFile;
 import com.logic.main.LogicSimApp;
 import com.logic.util.Constants;
 
@@ -14,8 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  * A tool bar for the program

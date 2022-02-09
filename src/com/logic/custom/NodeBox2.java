@@ -1,7 +1,5 @@
 package com.logic.custom;
 
-import com.logic.files.FileNode;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,9 +9,15 @@ public class NodeBox2 {
 
     private final Node[] nodes;
 
+    /**
+     * Maps nodes to signal outputs in the format {node 1 ID, node 1 output index, node 2 ID, node 2 output index...}
+     */
     private final int[] outNodes;
 
-    private int[] spontaneous;
+    /**
+     * Lists spontaneous nodes that must always be updated (clocks, CustomNodes containing clocks)
+     */
+    private final int[] spontaneous;
 
     public NodeBox2(Node[] nodes, int[] outNodes) {
         this.nodes = nodes;

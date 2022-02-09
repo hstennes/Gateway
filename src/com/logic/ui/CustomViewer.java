@@ -2,7 +2,6 @@ package com.logic.ui;
 
 import com.logic.components.Clock;
 import com.logic.components.LComponent;
-import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
 import com.logic.input.Camera;
 import com.logic.util.CompUtils;
@@ -49,7 +48,7 @@ public class CustomViewer {
 	 */
 	public CustomViewer(CircuitPanel cp) {
 		this.cp = cp;
-		oldComps = new ArrayList<LComponent>();
+		oldComps = new ArrayList<>();
 	}
 	
 	/**
@@ -59,10 +58,6 @@ public class CustomViewer {
 	 * @param c The Custom component
 	 */
 	public void view(OpCustom2 c) {
-		/*for(LComponent lcomp : cp.lcomps) {
-			if(lcomp instanceof OpCustom2) ((OpCustom2) lcomp).stop();
-			else if(lcomp instanceof Clock) ((Clock) lcomp).stop();
-		}*/
 		ArrayList<LComponent> dispComps = c.projectInnerStateToType();
 
 		oldComps.addAll(cp.lcomps);

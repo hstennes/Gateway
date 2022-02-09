@@ -1,6 +1,8 @@
 package com.logic.test;
 
-import com.logic.components.*;
+import com.logic.components.BasicGate;
+import com.logic.components.SplitIn;
+import com.logic.components.SplitOut;
 import com.logic.ui.CircuitPanel;
 
 import java.util.HashMap;

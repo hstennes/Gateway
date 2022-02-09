@@ -14,7 +14,6 @@ import com.logic.util.CompUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.Locale;
 
 /**
  * This class holds the code for adding components to the CircuitPanel

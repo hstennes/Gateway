@@ -64,15 +64,6 @@ public class FileData {
         return customTypes;
     }
 
-    /**
-     * This method does nothing because saving OpCustoms is not yet supported.
-     * @return null
-     */
-    @Deprecated
-    public ArrayList<Custom> getCustoms(){
-        return null;
-    }
-
     public float[] getCamera() {
         return camera;
     }

@@ -1,7 +1,7 @@
 package com.logic.ui;
 
-import com.logic.components.*;
 import com.logic.components.Button;
+import com.logic.components.*;
 import com.logic.main.LogicSimApp;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.bridge.*;
@@ -14,7 +14,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BaseMultiResolutionImage;
 import java.awt.image.BufferedImage;
-import java.awt.image.MultiResolutionImage;
 import java.io.IOException;
 
 /**

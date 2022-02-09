@@ -1,9 +1,6 @@
 package com.logic.custom;
 
-import com.logic.files.FileNode;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Node {
 
@@ -21,10 +18,4 @@ public abstract class Node {
      * @param sp The SignalProvider
      */
     public abstract void update(SignalProvider sp, ArrayList<Integer> active, int id);
-
-    /**
-     * Creates a FileNode of this node for saving to JSON
-     * @return The FileNode object
-     */
-    public abstract FileNode serialize();
 }

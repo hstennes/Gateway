@@ -1,15 +1,9 @@
 package com.logic.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.logic.files.FileData;
-import com.logic.files.FileManager;
-import com.logic.files.JSONFile;
-import com.logic.input.Camera;
-import com.logic.ui.CircuitPanel;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.HashMap;
 
 public class JacksonTest {
 

@@ -2,11 +2,7 @@ package com.logic.util;
 
 import com.logic.components.Button;
 import com.logic.components.*;
-import com.logic.main.LogicSimApp;
-import com.logic.ui.Renderer;
-import com.logic.ui.SplitterOptionPanel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;

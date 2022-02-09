@@ -1,8 +1,5 @@
 package com.logic.custom;
 
-import com.logic.components.CompType;
-import com.logic.files.FileNode;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -27,12 +24,5 @@ public class SplitInNode extends Node{
         if(newSignal == sp.getSignal(id, 0)) return;
         sp.setSignal(id, 0, newSignal);
         active.addAll(Arrays.stream(out[0]).boxed().collect(Collectors.toList()));
-    }
-
-    @Override
-    public FileNode serialize() {
-        FileNode fileNode = new FileNode(CompType.SPLIT_IN, in, out);
-        fileNode.setSplit(split);
-        return fileNode;
     }
 }

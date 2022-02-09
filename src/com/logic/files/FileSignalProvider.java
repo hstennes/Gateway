@@ -1,6 +1,5 @@
 package com.logic.files;
 
-import com.logic.components.*;
 import com.logic.custom.SignalProvider;
 
 import java.util.ArrayList;
@@ -11,6 +10,11 @@ public class FileSignalProvider {
 
     public FileSignalProvider(){ }
 
+    /**
+     * Adds a signal provider to be serialized and returns the index where it was stored
+     * @param sp The SignalProvider
+     * @return The location of the entry point to the signal data
+     */
     public int addSignalProvider(SignalProvider sp){
         if(data == null) data = new ArrayList<>();
         populateData(sp);
@@ -33,10 +37,11 @@ public class FileSignalProvider {
         data.add(newData);
     }
 
-    public SignalProvider createSignalProvider(){
-        return createSignalProvider(data.size() - 1);
-    }
-
+    /**
+     * De-serializes the SignalProvider saved at the given index
+     * @param index The index from addSignalProvider
+     * @return The SignalProvider
+     */
     public SignalProvider createSignalProvider(int index){
         int[][] spData = data.get(index);
         int[] refs = spData[0];

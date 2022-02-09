@@ -1,6 +1,5 @@
 package com.logic.engine;
 
-import com.logic.components.Connection;
 import com.logic.components.IOManager;
 import com.logic.components.LComponent;
 import com.logic.ui.CircuitPanel;

@@ -1,7 +1,10 @@
 package com.logic.files;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.logic.components.*;
+import com.logic.components.CompType;
+import com.logic.components.LComponent;
+import com.logic.components.OutputPin;
+import com.logic.components.Wire;
 import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
 
@@ -61,9 +64,7 @@ public class JSONFile {
         settings = fd.getSettings();
         List<LComponent> lcomps = fd.getLcomps();
         List<CustomType> customTypes = fd.getCustomTypes();
-
         Map<LComponent, Integer> compIndex = new HashMap<>();
-
         cSignals = new FileSignalProvider();
 
         for(int i = 0; i < lcomps.size(); i++) {
@@ -111,7 +112,6 @@ public class JSONFile {
             LComponent lcomp = fc.makeComponent(version, cSignals, customs);
             lcomps.add(lcomp);
         }
-        //for(FileComponent fc : cExamples) customs.add(fc.makeCustomParams(version, cTypes, cData, true, -1));
 
         for(int i = 0; i < components.length; i++){
             FileComponent fc = components[i];

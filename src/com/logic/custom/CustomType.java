@@ -12,31 +12,55 @@ import java.util.stream.Collectors;
 
 public class CustomType {
 
-    //serialized
+    /**
+     * All inner components included in the custom chips
+     */
     public final ArrayList<LComponent> lcomps;
 
-    //serialized
+    /**
+     * Specifies how lights and switches correspond to connections on the chip. Format content[side number][index on side]
+     */
     public final LComponent[][] content;
 
+    /**
+     * Maps components to their index in the Node system
+     */
     private final Map<LComponent, Integer> compIndex;
 
+    /**
+     * Holds an optimized representation of the components in the chip
+     */
     public NodeBox2 nodeBox;
 
+    /**
+     * A SignalProvider based on the signals of the LComponents originally used to create the chip
+     */
     public SignalProvider defaultSP;
 
-    //serialized
+    /**
+     * The custom chip label
+     */
     public final String label;
 
-    //serialized
+    /**
+     * An ID value that corresponds to the index of this CustomType in the main CustomTypes list
+     */
     public final int typeID;
 
+    /**
+     * Width and height of the custom chip in the UI
+     */
     public final int width, height;
 
+    /**
+     * The CustomHelper, which provides useful UI related functionality for the chip
+     */
     public final CustomHelper helper;
 
-    //first index shows delay
-    //Other indexes show where the clock is by listing spIndexes from outermost to innermost
-    //serialized
+    /**
+     * Each int[] corresponds to an individual clock nested at any level in the custom chip. Each int[] has the the format
+     * {clock delay, ID in enclosing NodeBox, innermost spIndex, ...outermost spIndex}
+     */
     public final ArrayList<int[]> clocks;
 
     public CustomType(String label, LComponent[][] content, ArrayList<LComponent> lcomps, int typeID){
@@ -53,17 +77,14 @@ public class CustomType {
     }
 
     private void init(){
-        //maps components to ID values. This should be the same as the indexes of the components in nodeComps.
-
         //the list of all components that will be converted to nodes. Starts with all Switches in the order that input connections will be considered
         ArrayList<LComponent> nodeComps = new ArrayList<>();
-        //The index of the output connection corresponding to each Light. Used for creating outNodes array, which tells NodeBox how to set the output connections
-        //based on Node states at the end of the update method.
+        //The index of the output connection corresponding to each Light.
         Map<Light, Integer> lightIndex = new HashMap<>();
-        //Initialize connections, modifying the above 3 objects in the process
+        //First step: consider lights and switches and add to nodeComps and lightIndex
         int[] numConnect = mapIO(content, compIndex, nodeComps, lightIndex);
-        int customCount = 0;
 
+        int customCount = 0;
         for (LComponent lcomp : lcomps) {
             //Ignore Lights because they have no nodes. Ignore Switches because they were already added.
             if(lcomp instanceof Light || lcomp instanceof Switch) continue;
@@ -74,13 +95,14 @@ public class CustomType {
 
         //final nodes array that goes to NodeBox
         Node[] nodes = new Node[nodeComps.size()];
-        //final outNodes array. Goes in order of connections. Alternates component id, output connection number on that component
+        //final outNodes array that goes to NodeBox
         int[] outNodes = new int[numConnect[1] * 2];
+        //Collects signal providers from nested chips, which are used to construct the signal provider for this chip
         SignalProvider[] nested = new SignalProvider[customCount];
+        //The top-level signals for the chip
         int[][] signals = new int[nodes.length][];
 
         int spIndexCounter = 0;
-
         for(int i = 0; i < nodes.length; i++){
             LComponent lcomp = nodeComps.get(i);
             int[] in = getNodeIn(lcomp, compIndex);
@@ -247,6 +269,10 @@ public class CustomType {
         return out;
     }
 
+    /**
+     * Follows same format as CustomType.content, but the ints represent the bit width of each connection
+     * @return IO structure array
+     */
     public int[][] getIOStructure(){
         int[][] io = new int[4][];
         for(int i = Constants.RIGHT; i <= Constants.UP; i++){
@@ -259,17 +285,5 @@ public class CustomType {
             }
         }
         return io;
-    }
-
-    public ArrayList<LComponent> getInnerComps() {
-        return lcomps;
-    }
-
-    public LComponent[][] getContent() {
-        return content;
-    }
-
-    public String getLabel() {
-        return label;
     }
 }

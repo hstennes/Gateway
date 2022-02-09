@@ -4,9 +4,15 @@ import java.util.Arrays;
 
 public class SignalProvider {
 
-    private int[][] signals;
+    /**
+     * Holds all signal data for this level of the custom chip. Format signals[component id][output number]
+     */
+    private final int[][] signals;
 
-    private SignalProvider[] nested;
+    /**
+     * Nested SignalProviders, which are identified by CustomNode.spIndex
+     */
+    private final SignalProvider[] nested;
 
     public SignalProvider(int[][] signals, SignalProvider[] nested){
         this.signals = signals;
@@ -22,6 +28,11 @@ public class SignalProvider {
         this.signals[node][nodeOut] = signal;
     }
 
+    /**
+     * Returns a signal at any layer in the SignalProvider. Uses the same format as CustomType.clocks to represent addresses.
+     * @param address The component address
+     * @return The signals for the component
+     */
     public int[] getNestedSignal(int[] address){
         if(address.length == 1) return signals[address[0]];
 

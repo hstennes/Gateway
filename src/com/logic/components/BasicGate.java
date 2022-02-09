@@ -3,7 +3,6 @@ package com.logic.components;
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicFunctions;
 import com.logic.ui.Renderer;
-import com.logic.util.CompUtils;
 import com.logic.util.ConnectionLayout;
 import com.logic.util.Constants;
 

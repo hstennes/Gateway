@@ -1,7 +1,6 @@
 package com.logic.custom;
 
 import com.logic.components.CompType;
-import com.logic.files.FileNode;
 
 import java.util.ArrayList;
 
@@ -16,9 +15,4 @@ public class PlaceholderNode extends Node{
 
     @Override
     public void update(SignalProvider sp, ArrayList<Integer> active, int id) { }
-
-    @Override
-    public FileNode serialize() {
-        return null;
-    }
 }

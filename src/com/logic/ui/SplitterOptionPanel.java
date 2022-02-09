@@ -1,8 +1,6 @@
 package com.logic.ui;
 
 import com.logic.components.CompType;
-import com.logic.components.SplitOut;
-import com.logic.components.Splitter;
 
 import javax.swing.*;
 import java.awt.*;

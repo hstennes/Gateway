@@ -1,6 +1,9 @@
 package com.logic.files;
 
-import com.logic.components.*;
+import com.logic.components.CompType;
+import com.logic.components.LComponent;
+import com.logic.components.OutputPin;
+import com.logic.components.Wire;
 import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
 import com.logic.util.Constants;
@@ -29,19 +32,17 @@ public class CustomBlueprint {
      */
     public int[][] io;
 
-    public ArrayList<int[]> clocks;
-
     public CustomBlueprint() { }
 
-    public void init(CustomType custom, FileSignalProvider cSignals){
-        label = custom.getLabel();
+    public void init(CustomType type, FileSignalProvider cSignals){
+        label = type.label;
 
-        ArrayList<LComponent> innerComps = custom.getInnerComps();
+        ArrayList<LComponent> innerComps = type.lcomps;
         Map<LComponent, Integer> compIndex = new HashMap<>();
         for(int i = 0; i < innerComps.size(); i++) compIndex.put(innerComps.get(i), i);
 
         io = new int[4][];
-        LComponent[][] content = custom.getContent();
+        LComponent[][] content = type.content;
         fillIOArray(compIndex, content, Constants.RIGHT);
         fillIOArray(compIndex, content, Constants.UP);
         fillIOArray(compIndex, content, Constants.LEFT);
@@ -56,8 +57,6 @@ public class CustomBlueprint {
             }
             else components[i] = new FileComponent(innerComps.get(i), compIndex, 0, true);
         }
-
-        clocks = custom.clocks;
     }
 
     public CustomType makeCustomType(int version, int typeID, FileSignalProvider cData, ArrayList<CustomType> cTypes){

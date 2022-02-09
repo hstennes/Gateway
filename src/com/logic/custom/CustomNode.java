@@ -1,16 +1,14 @@
 package com.logic.custom;
 
-import com.logic.files.FileNode;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class CustomNode extends Node{
 
-    private CustomType type;
+    private final CustomType type;
 
-    private int spIndex;
+    private final int spIndex;
 
     public CustomNode(int[] in, int[][] out, CustomType type, int spIndex){
         super(in, out);
@@ -32,11 +30,6 @@ public class CustomNode extends Node{
             spOut.setSignal(id, i, newSignal);
             active.addAll(Arrays.stream(out[i]).boxed().collect(Collectors.toList()));
         }
-    }
-
-    @Override
-    public FileNode serialize() {
-        return null;
     }
 
     public CustomType getType(){

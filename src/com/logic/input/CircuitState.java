@@ -1,9 +1,7 @@
 package com.logic.input;
 
 import com.logic.components.LComponent;
-import com.logic.engine.LogicWorker;
 import com.logic.ui.CircuitPanel;
-import com.logic.util.CompUtils;
 
 import java.util.ArrayList;
 
