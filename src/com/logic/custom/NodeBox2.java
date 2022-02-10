@@ -66,4 +66,8 @@ public class NodeBox2 {
     public boolean isSpontaneous(){
         return spontaneous.length > 0;
     }
+
+    public Node[] getNodes(){
+        return nodes;
+    }
 }

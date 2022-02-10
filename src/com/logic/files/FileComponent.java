@@ -84,9 +84,8 @@ public class FileComponent {
      * Creates a representation of the given component that can be serialized to a json file.
      * @param lcomp The component
      * @param compIndex The mapping of components in the same list as this component to their indexes in the list
-     * @param topLevel true if this component is in the top level components list as opposed to being inside a custom component.
      */
-    public FileComponent(LComponent lcomp, Map<LComponent, Integer> compIndex, int cSignalsIndex, boolean topLevel){
+    public FileComponent(LComponent lcomp, Map<LComponent, Integer> compIndex, int cSignalsIndex){
         type = lcomp.getType();
         pos = new int[] {lcomp.getX(), lcomp.getY()};
         rot = lcomp.getRotation();
@@ -97,11 +96,11 @@ public class FileComponent {
         else if(type == CompType.CLOCK) delay = ((Clock) lcomp).getDelay();
         else if(type == CompType.CUSTOM) {
             cTypeId = ((OpCustom2) lcomp).getCustomType().typeID;
-            if(topLevel) cDataId = cSignalsIndex;
+            cDataId = cSignalsIndex;
         }
 
         IOManager io = lcomp.getIO();
-        input = new int[io.getNumInputs()][topLevel ? 4 : 3];
+        input = new int[io.getNumInputs()][4];
         for(int i = 0; i < io.getNumInputs(); i++){
             Connection conn = io.inputConnection(i);
             if(conn.numWires() > 0) {
@@ -110,7 +109,7 @@ public class FileComponent {
                 input[i][0] = compIndex.get(source.getLcomp());
                 input[i][1] = source.getIndex();
                 input[i][2] = conn.getBitWidth();
-                if(topLevel) input[i][3] = w.getSignal();
+                input[i][3] = w.getSignal();
             }
             else input[i] = new int[] {-1, -1, conn.getBitWidth()};
         }
@@ -127,12 +126,12 @@ public class FileComponent {
     /**
      * Converts this FileComponent back to an LComponent
      * @param version The version of the file being loaded
-     * @param cData cData array to use if this component is a custom
+     * @param cSignals cSignals array to use if this component is a custom
      * @return The LComponent
      */
     @JsonIgnore
-    public LComponent makeComponent(int version, FileSignalProvider cData, ArrayList<CustomType> cTypes){
-        if(type == CompType.CUSTOM) return applyProperties(makeCustom(cData, cTypes));
+    public LComponent makeComponent(int version, FileSignalProvider cSignals, ArrayList<CustomType> cTypes){
+        if(type == CompType.CUSTOM) return applyProperties(makeCustom(version, cSignals, cTypes));
         if(type == CompType.SPLIT_IN || type == CompType.SPLIT_OUT) return applyProperties(makeSplitter(version));
 
         LComponent lcomp = applyProperties(CompUtils.makeComponent(type.toString(), pos[0], pos[1]));
@@ -154,11 +153,11 @@ public class FileComponent {
 
     /**
      * Helper method for converting to a custom component
-     * @param cData The cData
      * @return Custom component
      */
-    private LComponent makeCustom(FileSignalProvider cData, ArrayList<CustomType> cTypes){
-        SignalProvider sp = cData.createSignalProvider(cDataId);
+    private LComponent makeCustom(int version, FileSignalProvider cSignals, ArrayList<CustomType> cTypes){
+        SignalProvider sp = null;
+        if(version >= 5) sp = cSignals.createSignalProvider(cDataId);
         return new OpCustom2(pos[0], pos[1], cTypes.get(cTypeId), sp);
     }
 

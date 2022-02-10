@@ -25,7 +25,7 @@ public class CustomType {
     /**
      * Maps components to their index in the Node system
      */
-    private final Map<LComponent, Integer> compIndex;
+    public final Map<LComponent, Integer> compIndex;
 
     /**
      * Holds an optimized representation of the components in the chip
@@ -57,6 +57,8 @@ public class CustomType {
      */
     public final CustomHelper helper;
 
+    private int customCount = 0;
+
     /**
      * Each int[] corresponds to an individual clock nested at any level in the custom chip. Each int[] has the the format
      * {clock delay, ID in enclosing NodeBox, innermost spIndex, ...outermost spIndex}
@@ -84,7 +86,6 @@ public class CustomType {
         //First step: consider lights and switches and add to nodeComps and lightIndex
         int[] numConnect = mapIO(content, compIndex, nodeComps, lightIndex);
 
-        int customCount = 0;
         for (LComponent lcomp : lcomps) {
             //Ignore Lights because they have no nodes. Ignore Switches because they were already added.
             if(lcomp instanceof Light || lcomp instanceof Switch) continue;
@@ -285,5 +286,9 @@ public class CustomType {
             }
         }
         return io;
+    }
+
+    public int getCustomCount(){
+        return customCount;
     }
 }

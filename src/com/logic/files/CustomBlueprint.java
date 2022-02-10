@@ -1,9 +1,6 @@
 package com.logic.files;
 
-import com.logic.components.CompType;
-import com.logic.components.LComponent;
-import com.logic.components.OutputPin;
-import com.logic.components.Wire;
+import com.logic.components.*;
 import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
 import com.logic.util.Constants;
@@ -53,15 +50,24 @@ public class CustomBlueprint {
             LComponent lcomp = innerComps.get(i);
             if(lcomp.getType() == CompType.CUSTOM) {
                 int cSignalsIndex = cSignals.addSignalProvider(((OpCustom2) lcomp).getSignalProvider());
-                components[i] = new FileComponent(innerComps.get(i), compIndex, cSignalsIndex, true);
+                components[i] = new FileComponent(innerComps.get(i), compIndex, cSignalsIndex);
             }
-            else components[i] = new FileComponent(innerComps.get(i), compIndex, 0, true);
+            else components[i] = new FileComponent(innerComps.get(i), compIndex, 0);
         }
     }
 
-    public CustomType makeCustomType(int version, int typeID, FileSignalProvider cData, ArrayList<CustomType> cTypes){
+    public CustomType makeCustomType(int version, int typeID, FileSignalProvider cSignals, ArrayList<CustomType> cTypes, ArrayList<int[][]> oldCData, int oldCDataID){
         ArrayList<LComponent> lcomps = new ArrayList<>();
-        for (FileComponent component : components) lcomps.add(component.makeComponent(version, cData, cTypes));
+        for (int i = 0; i < components.length; i++) {
+            FileComponent component = components[i];
+            LComponent lcomp = component.makeComponent(version, cSignals, cTypes);
+            if(version < 5 && lcomp instanceof OpCustom2){
+                int[] compData = oldCData.get(oldCDataID)[i];
+                OpCustom2 custom = (OpCustom2) lcomp;
+                custom.setSignalProvider(FileSignalProvider.buildSPFromOldCData(custom.getCustomType(), oldCData, compData[compData.length - 1]));
+            }
+            lcomps.add(lcomp);
+        }
 
         LComponent[][] content = new LComponent[4][];
         for(int i = 0; i < content.length; i++) {
@@ -77,6 +83,8 @@ public class CustomBlueprint {
                 if(JSONFile.isEmptyConnection(input, version)) continue;
                 Wire wire = new Wire();
                 OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
+                if(version >= 5) JSONFile.applySignal(version, source, input);
+                else source.setSignal(oldCData.get(oldCDataID)[i][x]);
                 source.addWire(wire);
                 lcomps.get(i).getIO().inputConnection(x).addWire(wire);
             }

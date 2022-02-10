@@ -35,4 +35,8 @@ public class CustomNode extends Node{
     public CustomType getType(){
         return type;
     }
+
+    public int getSpIndex() {
+        return spIndex;
+    }
 }

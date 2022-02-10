@@ -1,5 +1,12 @@
 package com.logic.files;
 
+import com.logic.components.IOManager;
+import com.logic.components.InputPin;
+import com.logic.components.LComponent;
+import com.logic.components.OutputPin;
+import com.logic.custom.CustomNode;
+import com.logic.custom.CustomType;
+import com.logic.custom.OpCustom2;
 import com.logic.custom.SignalProvider;
 
 import java.util.ArrayList;
@@ -52,5 +59,33 @@ public class FileSignalProvider {
         int[][] rawData = new int[spData.length - 1][];
         System.arraycopy(spData, 1, rawData, 0, rawData.length);
         return new SignalProvider(rawData, nested);
+    }
+
+    public static SignalProvider buildSPFromOldCData(CustomType type, ArrayList<int[][]> oldCData, int oldCDataID){
+        int[][] signals = new int[type.nodeBox.getNodes().length][];
+        SignalProvider[] nested = new SignalProvider[type.getCustomCount()];
+
+        for(int i = 0; i < type.lcomps.size(); i++){
+            int[] compData = oldCData.get(oldCDataID)[i];
+            LComponent lcomp = type.lcomps.get(i);
+            IOManager io = lcomp.getIO();
+            for(int x = 0; x < io.getNumInputs(); x++){
+                InputPin inputPin = io.inputConnection(x);
+                if(inputPin.numWires() == 0) continue;
+                OutputPin outputPin = inputPin.getWire(0).getSourceConnection();
+                LComponent source = outputPin.getLcomp();
+                if(type.compIndex.containsKey(source)){
+                    int nodeID = type.compIndex.get(source);
+                    if(signals[nodeID] == null) signals[nodeID] = new int[source.getIO().getNumOutputs()];
+                    signals[nodeID][outputPin.getIndex()] = compData[x];
+                }
+            }
+            if(lcomp instanceof OpCustom2){
+                int innerCDataID = compData[compData.length - 1];
+                int spIndex = ((CustomNode) type.nodeBox.getNodes()[type.compIndex.get(lcomp)]).getSpIndex();
+                nested[spIndex] = buildSPFromOldCData(((OpCustom2) lcomp).getCustomType(), oldCData, innerCDataID);
+            }
+        }
+        return new SignalProvider(signals, nested);
     }
 }

@@ -51,7 +51,7 @@ public class JSONFile {
     /**
      * Holds all wire data associated with custom components, including nested customs
      */
-    public ArrayList<Integer[][]> cData;
+    public ArrayList<int[][]> cData;
 
     public FileSignalProvider cSignals;
 
@@ -83,9 +83,9 @@ public class JSONFile {
             LComponent lcomp = lcomps.get(i);
             if(lcomp.getType() == CompType.CUSTOM) {
                 int cSignalsIndex = cSignals.addSignalProvider(((OpCustom2) lcomp).getSignalProvider());
-                components[i] = new FileComponent(lcomps.get(i), compIndex, cSignalsIndex, true);
+                components[i] = new FileComponent(lcomps.get(i), compIndex, cSignalsIndex);
             }
-            else components[i] = new FileComponent(lcomps.get(i), compIndex, 0, true);
+            else components[i] = new FileComponent(lcomps.get(i), compIndex, 0);
         }
     }
 
@@ -105,11 +105,16 @@ public class JSONFile {
 
         for(int i = 0; i < cTypes.length; i++){
             CustomBlueprint cType = cTypes[i];
-            customs.add(cType.makeCustomType(version, i, cSignals, customs));
+            int exampleCDataID = version < 5 ? cExamples[i].cDataId : -1;
+            customs.add(cType.makeCustomType(version, i, cSignals, customs, cData, exampleCDataID));
         }
 
         for(FileComponent fc : components) {
             LComponent lcomp = fc.makeComponent(version, cSignals, customs);
+            if(version < 5 && lcomp instanceof OpCustom2){
+                OpCustom2 custom = (OpCustom2) lcomp;
+                custom.setSignalProvider(FileSignalProvider.buildSPFromOldCData(custom.getCustomType(), cData, fc.cDataId));
+            }
             lcomps.add(lcomp);
         }
 
@@ -121,7 +126,7 @@ public class JSONFile {
                 if(isEmptyConnection(input, version)) continue;
                 Wire wire = new Wire();
                 OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
-                applySignal(source, input);
+                applySignal(version, source, input);
                 source.addWire(wire);
                 lcomps.get(i).getIO().inputConnection(x).addWire(wire);
             }
@@ -133,7 +138,7 @@ public class JSONFile {
         return version <= 3 && input.length == 0 || version > 3 && input[0] == -1;
     }
 
-    private void applySignal(OutputPin source, int[] input){
+    public static void applySignal(int version, OutputPin source, int[] input){
         source.setSignal(input[version > 3 ? 3 : 2]);
     }
 }
