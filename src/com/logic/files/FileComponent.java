@@ -158,7 +158,9 @@ public class FileComponent {
     private LComponent makeCustom(int version, FileSignalProvider cSignals, ArrayList<CustomType> cTypes){
         SignalProvider sp = null;
         if(version >= 5) sp = cSignals.createSignalProvider(cDataId);
-        return new OpCustom2(pos[0], pos[1], cTypes.get(cTypeId), sp);
+        //return new OpCustom2(pos[0], pos[1], cTypes.get(cTypeId), sp);
+        return null;
+        //TODO broken
     }
 
     private Splitter makeSplitter(int version){

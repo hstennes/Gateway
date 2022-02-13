@@ -16,22 +16,22 @@ public class OpCustom2 extends LComponent {
 
     private CustomType type;
 
-    private SignalProvider sp;
+    private int[] signals;
 
     private Timer[] timers;
 
     public OpCustom2(int x, int y, CustomType type) {
         super(x, y, CompType.CUSTOM);
         this.type = type;
-        sp = type.defaultSP;
+        signals = type.defaultSignals;
         initConnections(type, type.getIOStructure());
         timers = new Timer[type.clocks.size()];
     }
 
-    public OpCustom2(int x, int y, CustomType type, SignalProvider sp){
+    public OpCustom2(int x, int y, CustomType type, int[] signals){
         super(x, y, CompType.CUSTOM);
         this.type = type;
-        this.sp = sp;
+        this.signals = signals;
         initConnections(type, type.getIOStructure());
         timers = new Timer[type.clocks.size()];
     }
@@ -59,7 +59,7 @@ public class OpCustom2 extends LComponent {
     }
 
     public void start(CircuitPanel cp){
-        for(int i = 0; i < timers.length; i++) {
+        /*for(int i = 0; i < timers.length; i++) {
             if (timers[i] != null) timers[i].stop();
             int[] clockInfo = type.clocks.get(i);
             timers[i] = new Timer(clockInfo[0], e -> {
@@ -71,7 +71,8 @@ public class OpCustom2 extends LComponent {
                 cp.repaint();
             });
             timers[i].start();
-        }
+        }*/
+        //TODO clocks are very, very broken
     }
 
     public void stop(){
@@ -83,7 +84,7 @@ public class OpCustom2 extends LComponent {
         int[] inputs = new int[io.getNumInputs()];
         for(int i = 0; i < inputs.length; i++) inputs[i] = io.getInput(i);
 
-        int[] outputs = type.nodeBox.update(sp, inputs);
+        int[] outputs = type.nodeBox.update(signals, inputs, 0);
         for(int i = 0; i < io.getNumOutputs(); i++) io.setOutput(i, outputs[i], engine);
     }
 
@@ -108,7 +109,9 @@ public class OpCustom2 extends LComponent {
 
     @Override
     public LComponent makeCopy() {
-        OpCustom2 result = new OpCustom2(x, y, type, sp.duplicate());
+        int[] newSignals = new int[signals.length];
+        System.arraycopy(signals, 0, newSignals, 0, signals.length);
+        OpCustom2 result = new OpCustom2(x, y, type, newSignals);
         result.setRotation(rotation);
         result.setName(getName());
         return result;
@@ -119,15 +122,19 @@ public class OpCustom2 extends LComponent {
         return type.lcomps;
     }
 
+    public int[] getSignals(){
+        return signals;
+    }
+
     public CustomType getCustomType(){
         return type;
     }
 
     public SignalProvider getSignalProvider() {
-        return sp;
+        return null;
     }
 
     public void setSignalProvider(SignalProvider sp){
-        this.sp = sp;
+
     }
 }

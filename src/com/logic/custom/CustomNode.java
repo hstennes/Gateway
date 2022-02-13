@@ -8,35 +8,32 @@ public class CustomNode extends Node{
 
     private final CustomType type;
 
-    private final int spIndex;
+    //Start position for the signal data relative to the position of the enclosing NodeBox
+    private final int innerOffset;
 
-    public CustomNode(int[] in, int[][] out, CustomType type, int spIndex){
-        super(in, out);
+    public CustomNode(int[] in, int[][] mark, int address, CustomType type, int innerOffset){
+        super(in, mark, address);
         this.type = type;
-        this.spIndex = spIndex;
+        this.innerOffset = innerOffset;
     }
 
     @Override
-    public void update(SignalProvider spOut, ArrayList<Integer> active, int id) {
-        SignalProvider spIn = spOut.getNestedSP(spIndex);
-        int[] inputs = new int[in.length / 2];
-        for(int i = 0; i < inputs.length; i++) inputs[i] = spOut.getSignal(in[i * 2], in[i * 2 + 1]);
+    public void update(int[] signals, int offset, ArrayList<Integer> active) {
+        int[] inputs = new int[in.length];
+        for(int i = 0; i < inputs.length; i++) inputs[i] = signals[offset + in[i]];
 
-        int[] outputs = type.nodeBox.update(spIn, inputs);
+        int[] outputs = type.nodeBox.update(signals, inputs, offset + innerOffset);
         for(int i = 0; i < outputs.length; i++){
+            int index = address + offset + i;
             int newSignal = outputs[i];
-            int oldSignal = spOut.getSignal(id, i);
+            int oldSignal = signals[index];
             if(newSignal == oldSignal) continue;
-            spOut.setSignal(id, i, newSignal);
-            active.addAll(Arrays.stream(out[i]).boxed().collect(Collectors.toList()));
+            signals[index] = newSignal;
+            active.addAll(Arrays.stream(mark[i]).boxed().collect(Collectors.toList()));
         }
     }
 
     public CustomType getType(){
         return type;
-    }
-
-    public int getSpIndex() {
-        return spIndex;
     }
 }

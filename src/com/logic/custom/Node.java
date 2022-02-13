@@ -4,18 +4,22 @@ import java.util.ArrayList;
 
 public abstract class Node {
 
+    //Relative index in big array of the input signals, in order
     public final int[] in;
 
-    public final int[][] out;
+    //Index in Nodes array of the nodes to mark
+    public final int[][] mark;
 
-    public Node(int[] in, int[][] out){
+    public final int address;
+
+    public Node(int[] in, int[][] mark, int address){
         this.in = in;
-        this.out = out;
+        this.mark = mark;
+        this.address = address;
     }
 
     /**
      * Updates the output signal based on inputs acquired from the given NodeBox
-     * @param sp The SignalProvider
      */
-    public abstract void update(SignalProvider sp, ArrayList<Integer> active, int id);
+    public abstract void update(int[] signals, int offset, ArrayList<Integer> active);
 }

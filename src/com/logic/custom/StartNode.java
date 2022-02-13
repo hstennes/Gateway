@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 
 public class StartNode extends Node{
 
-    public StartNode(int[] in, int[][] out) {
-        super(in, out);
+    public StartNode(int[] in, int[][] mark, int address) {
+        super(in, mark, address);
     }
 
     @Override
-    public void update(SignalProvider sp, ArrayList<Integer> active, int id) {
-        active.addAll(Arrays.stream(out[0]).boxed().collect(Collectors.toList()));
+    public void update(int[] signals, int offset, ArrayList<Integer> active) {
+        active.addAll(Arrays.stream(mark[0]).boxed().collect(Collectors.toList()));
     }
 }

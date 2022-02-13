@@ -11,18 +11,18 @@ public class BasicGateNode extends Node{
 
     private final byte function;
 
-    public BasicGateNode(int[] in, int[][] out, CompType type) {
-        super(in, out);
+    public BasicGateNode(int[] in, int[][] mark, int address, CompType type) {
+        super(in, mark, address);
         function = (byte) LogicFunctions.getFunctionIndex(type);
     }
 
     @Override
-    public void update(SignalProvider sp, ArrayList<Integer> active, int id) {
-        int[] inputs = new int[in.length / 2];
-        for(int i = 0; i < inputs.length; i++) inputs[i] = sp.getSignal(in[i * 2], in[i * 2 + 1]);
+    public void update(int[] signals, int offset, ArrayList<Integer> active) {
+        int[] inputs = new int[in.length];
+        for(int i = 0; i < inputs.length; i++) inputs[i] = signals[in[i] + offset];
         int newSignal = LogicFunctions.basicLogic(inputs, function);
-        if(newSignal == sp.getSignal(id, 0)) return;
-        sp.setSignal(id, 0, newSignal);
-        active.addAll(Arrays.stream(out[0]).boxed().collect(Collectors.toList()));
+        if(newSignal == signals[address + offset]) return;
+        signals[address + offset] = newSignal;
+        active.addAll(Arrays.stream(mark[0]).boxed().collect(Collectors.toList()));
     }
 }

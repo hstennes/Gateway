@@ -1,7 +1,8 @@
 package com.logic.custom;
 
 import com.logic.components.CompType;
-import com.logic.files.FileNode;
+
+import java.util.ArrayList;
 
 public class PlaceholderNode extends Node{
 
@@ -13,12 +14,5 @@ public class PlaceholderNode extends Node{
     }
 
     @Override
-    public int[] update(NodeBox nb) {
-        return null;
-    }
-
-    @Override
-    public FileNode serialize() {
-        return new FileNode(type, in, out);
-    }
+    public void update(SignalProvider sp, ArrayList<Integer> active, int id) { }
 }

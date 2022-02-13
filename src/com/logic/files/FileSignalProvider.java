@@ -62,7 +62,7 @@ public class FileSignalProvider {
     }
 
     public static SignalProvider buildSPFromOldCData(CustomType type, ArrayList<int[][]> oldCData, int oldCDataID){
-        int[][] signals = new int[type.nodeBox.getNodes().length][];
+        /*int[][] signals = new int[type.nodeBox.getNodes().length][];
         SignalProvider[] nested = new SignalProvider[type.getCustomCount()];
 
         for(int i = 0; i < type.lcomps.size(); i++){
@@ -86,6 +86,9 @@ public class FileSignalProvider {
                 nested[spIndex] = buildSPFromOldCData(((OpCustom2) lcomp).getCustomType(), oldCData, innerCDataID);
             }
         }
-        return new SignalProvider(signals, nested);
+        return new SignalProvider(signals, nested);*/
+        //TODO file reading is very, very broken
+
+        return null;
     }
 }
