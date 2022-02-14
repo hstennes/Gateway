@@ -169,7 +169,8 @@ public class FileComponent {
             signals = cSigs.get(cDataId);
         }
         else if(version == 5) {
-            signals = cSignals.createSigs(new int[cTypes.get(cTypeId).defaultSignals.length], cDataId, 0);
+            signals = new int[cTypes.get(cTypeId).defaultSignals.length];
+            cSignals.createSigs(signals, cDataId, 0);
         }
         return new OpCustom2(pos[0], pos[1], cTypes.get(cTypeId), signals);
     }

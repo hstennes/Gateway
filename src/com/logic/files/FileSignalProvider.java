@@ -61,7 +61,7 @@ public class FileSignalProvider {
         return new SignalProvider(rawData, nested);
     }
 
-    public int[] createSigs(int[] flat, int cDataID, int sigOffset){
+    public int createSigs(int[] flat, int cDataID, int sigOffset){
         int[][] spData = data.get(cDataID);
         int address = sigOffset + 1;
         for(int i = 1; i < spData.length; i++){
@@ -71,9 +71,9 @@ public class FileSignalProvider {
 
         int[] refs = spData[0];
         for(int i = 0; i < refs.length; i++){
-            createSigs(flat, refs[i], address);
+            address = createSigs(flat, refs[i], address);
         }
-        return flat;
+        return address;
     }
 
     public static SignalProvider buildSPFromOldCData(CustomType type, ArrayList<int[][]> oldCData, int oldCDataID){
