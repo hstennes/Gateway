@@ -27,12 +27,12 @@ public class FileManager {
 	/**
 	 * The file format version. Should be incremented when the file format is changed in any way.
 	 */
-	public static final int FILE_FORMAT_VERSION = 5;
+	public static final int FILE_FORMAT_VERSION = 6;
 
 	/**
 	 * Option that uses readable json formatting for testing the file saving system
 	 */
-	public static final boolean PRETTY_FILE_OUTPUT = false;
+	public static final boolean PRETTY_FILE_OUTPUT = true;
 
 	/**
 	 * A filter that only allows for the selection of files that are compatible with Gateway

@@ -59,7 +59,7 @@ public class CustomType {
      */
     public final CustomHelper helper;
 
-    private int customCount = 0;
+    public int nestedAddressStart;
 
     /**
      * Each int[] corresponds to an individual clock nested at any level in the custom chip. Each int[] has the the format
@@ -162,6 +162,7 @@ public class CustomType {
             nodeComps.add(lcomp);
             sigLength += lcomp.getIO().getNumOutputs();
         }
+        nestedAddressStart = sigLength;
 
         for(OpCustom2 custom : customs){
             nestedIndex.put(custom, sigLength);
@@ -184,10 +185,10 @@ public class CustomType {
             System.arraycopy(lcompSignals, 0, signals, sigIndex.get(lcomp), lcompSignals.length);
 
             if(lcomp instanceof BasicGate) nodes[i] = new BasicGateNode(in, mark, address, lcomp.getType());
-                //else if(lcomp instanceof SingleInputGate) nodes[i] = new SingleInputGateNode(in, out, lcomp.getType());
+            else if(lcomp instanceof SingleInputGate) nodes[i] = new SingleInputGateNode(in, mark, address, lcomp.getType());
             else if(lcomp instanceof Switch) nodes[i] = new StartNode(in, mark, address);
-                //else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(in, out, ((SplitIn) lcomp).getSplit());
-                //else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(in, out, ((SplitOut) lcomp).getSplit());
+            else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(in, mark, address, ((SplitIn) lcomp).getSplit());
+            else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(in, mark, address, ((SplitOut) lcomp).getSplit());
             else if(lcomp instanceof Clock) {
                 //clocks.add(new int[] {((Clock) lcomp).getDelay(), i});
                 //nodes[i] = new ClockNode(in, out);
@@ -393,7 +394,7 @@ public class CustomType {
         return io;
     }
 
-    public int getCustomCount(){
-        return customCount;
+    public Node getNode(LComponent lcomp){
+        return nodeBox.getNodes()[nbIndex.get(lcomp)];
     }
 }

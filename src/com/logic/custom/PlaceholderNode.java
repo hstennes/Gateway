@@ -8,11 +8,11 @@ public class PlaceholderNode extends Node{
 
     private final CompType type;
 
-    public PlaceholderNode(CompType type, int[] in, int[][] out){
-        super(in, out);
+    public PlaceholderNode(int[] in, int[][] mark, int address, CompType type){
+        super(in, mark, address);
         this.type = type;
     }
 
     @Override
-    public void update(SignalProvider sp, ArrayList<Integer> active, int id) { }
+    public void update(int[] signals, int offset, ArrayList<Integer> active) { }
 }

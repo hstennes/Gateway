@@ -123,6 +123,14 @@ public class FileComponent {
      */
     public FileComponent(){ }
 
+    public LComponent makeComponent(int version, FileSignalProvider cSignals, ArrayList<CustomType> cTypes){
+        return makeComponent(version, null, cSignals, cTypes);
+    }
+
+    public LComponent makeComponent(int version, ArrayList<int[]> cSigs, ArrayList<CustomType> cTypes){
+        return makeComponent(version, cSigs, null, cTypes);
+    }
+
     /**
      * Converts this FileComponent back to an LComponent
      * @param version The version of the file being loaded
@@ -130,8 +138,8 @@ public class FileComponent {
      * @return The LComponent
      */
     @JsonIgnore
-    public LComponent makeComponent(int version, FileSignalProvider cSignals, ArrayList<CustomType> cTypes){
-        if(type == CompType.CUSTOM) return applyProperties(makeCustom(version, cSignals, cTypes));
+    private LComponent makeComponent(int version, ArrayList<int[]> cSigs, FileSignalProvider cSignals, ArrayList<CustomType> cTypes){
+        if(type == CompType.CUSTOM) return applyProperties(makeCustom(version, cSigs, cSignals, cTypes));
         if(type == CompType.SPLIT_IN || type == CompType.SPLIT_OUT) return applyProperties(makeSplitter(version));
 
         LComponent lcomp = applyProperties(CompUtils.makeComponent(type.toString(), pos[0], pos[1]));
@@ -155,12 +163,15 @@ public class FileComponent {
      * Helper method for converting to a custom component
      * @return Custom component
      */
-    private LComponent makeCustom(int version, FileSignalProvider cSignals, ArrayList<CustomType> cTypes){
-        SignalProvider sp = null;
-        if(version >= 5) sp = cSignals.createSignalProvider(cDataId);
-        //return new OpCustom2(pos[0], pos[1], cTypes.get(cTypeId), sp);
-        return null;
-        //TODO broken
+    private LComponent makeCustom(int version, ArrayList<int[]> cSigs, FileSignalProvider cSignals, ArrayList<CustomType> cTypes){
+        int[] signals = null;
+        if(version >= 6) {
+            signals = cSigs.get(cDataId);
+        }
+        else if(version == 5) {
+            signals = cSignals.createSigs(new int[cTypes.get(cTypeId).defaultSignals.length], cDataId, 0);
+        }
+        return new OpCustom2(pos[0], pos[1], cTypes.get(cTypeId), signals);
     }
 
     private Splitter makeSplitter(int version){

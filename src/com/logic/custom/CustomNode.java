@@ -36,4 +36,8 @@ public class CustomNode extends Node{
     public CustomType getType(){
         return type;
     }
+
+    public int getInnerOffset(){
+        return innerOffset;
+    }
 }

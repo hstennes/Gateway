@@ -55,6 +55,8 @@ public class JSONFile {
 
     public FileSignalProvider cSignals;
 
+    public ArrayList<int[]> cSigs;
+
     /**
      * Creates a new JSONFile object, which is then ready to be saved
      * @param fd The FileData to use
@@ -66,6 +68,7 @@ public class JSONFile {
         List<CustomType> customTypes = fd.getCustomTypes();
         Map<LComponent, Integer> compIndex = new HashMap<>();
         cSignals = new FileSignalProvider();
+        cSigs = new ArrayList<>();
 
         for(int i = 0; i < lcomps.size(); i++) {
             LComponent lcomp = lcomps.get(i);
@@ -75,15 +78,15 @@ public class JSONFile {
         cTypes = new CustomBlueprint[customTypes.size()];
         for(int i = 0; i < customTypes.size(); i++){
             cTypes[i] = new CustomBlueprint();
-            cTypes[i].init(customTypes.get(i), cSignals);
+            cTypes[i].init(customTypes.get(i), cSigs);
         }
 
         components = new FileComponent[lcomps.size()];
         for(int i = 0; i < lcomps.size(); i++) {
             LComponent lcomp = lcomps.get(i);
             if(lcomp.getType() == CompType.CUSTOM) {
-                int cSignalsIndex = cSignals.addSignalProvider(((OpCustom2) lcomp).getSignalProvider());
-                components[i] = new FileComponent(lcomps.get(i), compIndex, cSignalsIndex);
+                cSigs.add(((OpCustom2) lcomp).getSignals());
+                components[i] = new FileComponent(lcomps.get(i), compIndex, cSigs.size() - 1);
             }
             else components[i] = new FileComponent(lcomps.get(i), compIndex, 0);
         }
@@ -106,11 +109,15 @@ public class JSONFile {
         for(int i = 0; i < cTypes.length; i++){
             CustomBlueprint cType = cTypes[i];
             int exampleCDataID = version < 5 ? cExamples[i].cDataId : -1;
-            customs.add(cType.makeCustomType(version, i, cSignals, customs, cData, exampleCDataID));
+            if(version >= 6) customs.add(cType.makeCustomTypeV6(version, i, cSigs, customs, cData, exampleCDataID));
+            else customs.add(cType.makeCustomTypeV5(version, i, cSignals, customs, cData, exampleCDataID));
         }
 
         for(FileComponent fc : components) {
-            LComponent lcomp = fc.makeComponent(version, cSignals, customs);
+            LComponent lcomp;
+            if(version >= 6) lcomp = fc.makeComponent(version, cSigs, customs);
+            else lcomp = fc.makeComponent(version, cSignals, customs);
+
             if(version < 5 && lcomp instanceof OpCustom2){
                 OpCustom2 custom = (OpCustom2) lcomp;
                 custom.setSignalProvider(FileSignalProvider.buildSPFromOldCData(custom.getCustomType(), cData, fc.cDataId));

@@ -61,6 +61,21 @@ public class FileSignalProvider {
         return new SignalProvider(rawData, nested);
     }
 
+    public int[] createSigs(int[] flat, int cDataID, int sigOffset){
+        int[][] spData = data.get(cDataID);
+        int address = sigOffset + 1;
+        for(int i = 1; i < spData.length; i++){
+            System.arraycopy(spData[i], 0, flat, address, spData[i].length);
+            address += spData[i].length;
+        }
+
+        int[] refs = spData[0];
+        for(int i = 0; i < refs.length; i++){
+            createSigs(flat, refs[i], address);
+        }
+        return flat;
+    }
+
     public static SignalProvider buildSPFromOldCData(CustomType type, ArrayList<int[][]> oldCData, int oldCDataID){
         /*int[][] signals = new int[type.nodeBox.getNodes().length][];
         SignalProvider[] nested = new SignalProvider[type.getCustomCount()];
