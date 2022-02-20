@@ -22,7 +22,7 @@ public class SplitOutNode extends Node{
             int index = address + offset + i;
             if(newSignal == signals[index]) continue;
             signals[index] = newSignal;
-            active.addAll(Arrays.stream(mark[i]).boxed().collect(Collectors.toList()));
+            active.addAll(mark.get(i));
         }
     }
 }

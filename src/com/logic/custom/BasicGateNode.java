@@ -18,11 +18,12 @@ public class BasicGateNode extends Node{
 
     @Override
     public void update(int[] signals, int offset, ArrayList<Integer> active) {
-        int[] inputs = new int[in.length];
-        for(int i = 0; i < inputs.length; i++) inputs[i] = signals[in[i] + offset];
-        int newSignal = LogicFunctions.basicLogic(inputs, function);
+        int newSignal = signals[in[0] + offset];
+        for(int i = 1; i < in.length; i++){
+            newSignal = LogicFunctions.twoInput.get(function).apply(newSignal, signals[in[i] + offset]);
+        }
         if(newSignal == signals[address + offset]) return;
         signals[address + offset] = newSignal;
-        active.addAll(Arrays.stream(mark[0]).boxed().collect(Collectors.toList()));
+        active.addAll(mark.get(0));
     }
 }

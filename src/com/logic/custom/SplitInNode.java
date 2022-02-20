@@ -23,6 +23,6 @@ public class SplitInNode extends Node{
         }
         if(newSignal == signals[address + offset]) return;
         signals[address + offset] = newSignal;
-        active.addAll(Arrays.stream(mark[0]).boxed().collect(Collectors.toList()));
+        active.addAll(mark.get(0));
     }
 }

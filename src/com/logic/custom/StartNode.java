@@ -12,6 +12,6 @@ public class StartNode extends Node{
 
     @Override
     public void update(int[] signals, int offset, ArrayList<Integer> active) {
-        active.addAll(Arrays.stream(mark[0]).boxed().collect(Collectors.toList()));
+        active.addAll(mark.get(0));
     }
 }

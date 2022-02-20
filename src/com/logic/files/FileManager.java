@@ -32,7 +32,7 @@ public class FileManager {
 	/**
 	 * Option that uses readable json formatting for testing the file saving system
 	 */
-	public static final boolean PRETTY_FILE_OUTPUT = true;
+	public static final boolean PRETTY_FILE_OUTPUT = false;
 
 	/**
 	 * A filter that only allows for the selection of files that are compatible with Gateway

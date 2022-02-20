@@ -29,7 +29,7 @@ public class CustomNode extends Node{
             int oldSignal = signals[index];
             if(newSignal == oldSignal) continue;
             signals[index] = newSignal;
-            active.addAll(Arrays.stream(mark[i]).boxed().collect(Collectors.toList()));
+            active.addAll(mark.get(i));
         }
     }
 
