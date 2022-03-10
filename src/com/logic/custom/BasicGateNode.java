@@ -17,13 +17,13 @@ public class BasicGateNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ArrayList<Integer> active) {
+    public void update(int[] signals, int offset, ActiveStack active) {
         int newSignal = signals[in[0] + offset];
         for(int i = 1; i < in.length; i++){
             newSignal = LogicFunctions.twoInput.get(function).apply(newSignal, signals[in[i] + offset]);
         }
         if(newSignal == signals[address + offset]) return;
         signals[address + offset] = newSignal;
-        active.addAll(mark.get(0));
+        active.mark(mark[0]);
     }
 }

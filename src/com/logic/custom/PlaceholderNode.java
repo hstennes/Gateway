@@ -14,5 +14,5 @@ public class PlaceholderNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ArrayList<Integer> active) { }
+    public void update(int[] signals, int offset, ActiveStack active) { }
 }

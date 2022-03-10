@@ -14,7 +14,7 @@ public class SplitInNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ArrayList<Integer> active) {
+    public void update(int[] signals, int offset, ActiveStack active) {
         int newSignal = 0;
         int shift = 0;
         for(int i = 0; i < split.length; i++){
@@ -23,6 +23,6 @@ public class SplitInNode extends Node{
         }
         if(newSignal == signals[address + offset]) return;
         signals[address + offset] = newSignal;
-        active.addAll(mark.get(0));
+        active.mark(mark[0]);
     }
 }

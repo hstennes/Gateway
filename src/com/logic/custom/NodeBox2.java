@@ -37,8 +37,7 @@ public class NodeBox2 {
         return spontList.stream().mapToInt(i->i).toArray();
     }*/
 
-    public int[] update(int[] signals, int[] in, int offset) {
-        ArrayList<Integer> activeIn = new ArrayList<>();
+    public int[] update(int[] signals, int[] in, int offset, ActiveStack active) {
         for(int i = 0; i < in.length; i++){
             int address = nodes[i].address + offset;
             int currentSignal = signals[address];
@@ -46,16 +45,14 @@ public class NodeBox2 {
 
             if(currentSignal != newSignal) {
                 signals[address] = newSignal;
-                nodes[i].update(signals, offset, activeIn);
+                nodes[i].update(signals, offset, active);
             }
         }
         //activeIn.addAll(Arrays.stream(spontaneous).boxed().collect(Collectors.toList()));
 
-        while(activeIn.size() > 0) {
-            List<Integer> oldActive = activeIn;
-            activeIn = new ArrayList<>();
-            for (int n : oldActive) {
-                nodes[n].update(signals, offset, activeIn);
+        while(active.nextIteration()) {
+            while(active.hasNext()) {
+                nodes[active.next()].update(signals, offset, active);
             }
         }
 

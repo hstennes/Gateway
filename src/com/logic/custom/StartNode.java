@@ -11,7 +11,7 @@ public class StartNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ArrayList<Integer> active) {
-        active.addAll(mark.get(0));
+    public void update(int[] signals, int offset, ActiveStack active) {
+        active.mark(mark[0]);
     }
 }

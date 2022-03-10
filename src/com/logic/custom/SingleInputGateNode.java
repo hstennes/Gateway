@@ -16,10 +16,10 @@ public class SingleInputGateNode extends Node {
     }
 
     @Override
-    public void update(int[] signals, int offset, ArrayList<Integer> active) {
+    public void update(int[] signals, int offset, ActiveStack active) {
         int newSignal = signals[in[0] + offset] ^ mask;
         if(newSignal == signals[address + offset]) return;
         signals[address + offset] = newSignal;
-        active.addAll(mark.get(0));
+        active.mark(mark[0]);
     }
 }

@@ -18,18 +18,20 @@ public class CustomNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ArrayList<Integer> active) {
+    public void update(int[] signals, int offset, ActiveStack active) {
         int[] inputs = new int[in.length];
         for(int i = 0; i < inputs.length; i++) inputs[i] = signals[offset + in[i]];
 
-        int[] outputs = type.nodeBox.update(signals, inputs, offset + innerOffset);
+        active.startInner();
+        int[] outputs = type.nodeBox.update(signals, inputs, offset + innerOffset, active);
+        active.finishInner();
         for(int i = 0; i < outputs.length; i++){
             int index = address + offset + i;
             int newSignal = outputs[i];
             int oldSignal = signals[index];
             if(newSignal == oldSignal) continue;
             signals[index] = newSignal;
-            active.addAll(mark.get(i));
+            active.mark(mark[i]);
         }
     }
 

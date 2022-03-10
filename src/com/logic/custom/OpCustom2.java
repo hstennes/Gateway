@@ -84,7 +84,7 @@ public class OpCustom2 extends LComponent {
         int[] inputs = new int[io.getNumInputs()];
         for(int i = 0; i < inputs.length; i++) inputs[i] = io.getInput(i);
 
-        int[] outputs = type.nodeBox.update(signals, inputs, 0);
+        int[] outputs = type.nodeBox.update(signals, inputs, 0, new ActiveStack());
         for(int i = 0; i < io.getNumOutputs(); i++) io.setOutput(i, outputs[i], engine);
     }
 
