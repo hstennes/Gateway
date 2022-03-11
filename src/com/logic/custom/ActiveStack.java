@@ -6,15 +6,11 @@ import java.util.Stack;
 
 public class ActiveStack implements Iterator<Integer> {
 
-    private Stack<Integer> activeA;
+    private final Stack<Integer> activeA;
 
-    private Stack<Integer> activeB;
+    private final Stack<Integer> activeB;
 
-    private Stack<Boolean> flipStack;
-
-    private Stack<Integer> markCountStack;
-
-    private Stack<Integer> remainCountStack;
+    private final Stack<LevelData> levelStack;
 
     private Stack<Integer> markStackPtr;
 
@@ -29,18 +25,14 @@ public class ActiveStack implements Iterator<Integer> {
     public ActiveStack(){
         activeA = new Stack<>();
         activeB = new Stack<>();
-        flipStack = new Stack<>();
-        markCountStack = new Stack<>();
-        remainCountStack = new Stack<>();
+        levelStack = new Stack<>();
 
         markStackPtr = activeA;
         remainStackPtr = activeB;
     }
 
     public void startInner(){
-        markCountStack.push(markCount);
-        remainCountStack.push(remainCount);
-        flipStack.push(flip);
+        levelStack.push(new LevelData(markCount, remainCount, flip));
         markCount = 0;
         remainCount = 0;
         flip = false;
@@ -49,9 +41,10 @@ public class ActiveStack implements Iterator<Integer> {
     }
 
     public void finishInner(){
-        markCount = markCountStack.pop();
-        remainCount = remainCountStack.pop();
-        flip = flipStack.pop();
+        LevelData ld = levelStack.pop();
+        markCount = ld.markCount;
+        remainCount = ld.remainCount;
+        flip = ld.flip;
         if(flip){
             remainStackPtr = activeA;
             markStackPtr = activeB;
@@ -62,9 +55,9 @@ public class ActiveStack implements Iterator<Integer> {
         }
     }
 
-    public void mark(int[] n){
+    public void mark(Integer[] n){
         markCount += n.length;
-        for(int i : n) markStackPtr.push(i);
+        for(Integer i : n) markStackPtr.push(i);
     }
 
     public boolean nextIteration(){
@@ -94,5 +87,17 @@ public class ActiveStack implements Iterator<Integer> {
     public Integer next() {
         remainCount--;
         return remainStackPtr.pop();
+    }
+
+    private static class LevelData{
+        public int markCount;
+        public int remainCount;
+        public boolean flip;
+
+        public LevelData(int markCount, int remainCount, boolean flip) {
+            this.remainCount = remainCount;
+            this.markCount = markCount;
+            this.flip = flip;
+        }
     }
 }

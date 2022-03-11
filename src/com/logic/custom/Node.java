@@ -12,13 +12,17 @@ public abstract class Node {
     public final int[] in;
 
     //Index in Nodes array of the nodes to mark
-    public final int[][] mark;
+    public final Integer[][] mark;
 
     public final int address;
 
-    public Node(int[] in, int[][] mark, int address){
+    public Node(int[] in, int[][] rawMark, int address){
         this.in = in;
-        this.mark = mark;
+        mark = new Integer[rawMark.length][];
+        for(int i = 0; i < mark.length; i++){
+            this.mark[i] = new Integer[rawMark[i].length];
+            for(int x = 0; x < mark[i].length; x++) mark[i][x] = rawMark[i][x];
+        }
         this.address = address;
     }
 
