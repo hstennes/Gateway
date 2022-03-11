@@ -8,20 +8,21 @@ public class SplitOutNode extends Node{
 
     private final int[] split;
 
-    public SplitOutNode(int[] in, int[][] out, int[] split) {
-        super(in, out);
+    public SplitOutNode(int[] in, int[][] mark, int address, int[] split) {
+        super(in, mark, address);
         this.split = split;
     }
 
     @Override
-    public void update(SignalProvider sp, ArrayList<Integer> active, int id) {
-        int input = sp.getSignal(in[0], in[1]);
+    public void update(int[] signals, int offset, ActiveStack active) {
+        int input = signals[in[0] + offset];
         for(int i = 0; i < split.length; i++){
             int newSignal = input & (1 << split[i]) - 1;
             input >>= split[i];
-            if(newSignal == sp.getSignal(id, i)) continue;
-            sp.setSignal(id, i, newSignal);
-            active.addAll(Arrays.stream(out[i]).boxed().collect(Collectors.toList()));
+            int index = address + offset + i;
+            if(newSignal == signals[index]) continue;
+            signals[index] = newSignal;
+            active.mark(mark[i]);
         }
     }
 }

@@ -10,16 +10,16 @@ public class SingleInputGateNode extends Node {
 
     private final int mask;
 
-    public SingleInputGateNode(int[] in, int[][] out, CompType type) {
-        super(in, out);
+    public SingleInputGateNode(int[] in, int[][] mark, int address, CompType type) {
+        super(in, mark, address);
         mask = type == CompType.NOT ? -1 : 0;
     }
 
     @Override
-    public void update(SignalProvider sp, ArrayList<Integer> active, int id) {
-        int newSignal = sp.getSignal(in[0], in[1]) ^ mask;
-        if(newSignal == sp.getSignal(id, 0)) return;
-        sp.setSignal(id, 0, newSignal);
-        active.addAll(Arrays.stream(out[0]).boxed().collect(Collectors.toList()));
+    public void update(int[] signals, int offset, ActiveStack active) {
+        int newSignal = signals[in[0] + offset] ^ mask;
+        if(newSignal == signals[address + offset]) return;
+        signals[address + offset] = newSignal;
+        active.mark(mark[0]);
     }
 }

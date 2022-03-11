@@ -1,6 +1,7 @@
 package com.logic.files;
 
 import com.logic.components.*;
+import com.logic.custom.CustomNode;
 import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
 import com.logic.util.Constants;
@@ -31,7 +32,7 @@ public class CustomBlueprint {
 
     public CustomBlueprint() { }
 
-    public void init(CustomType type, FileSignalProvider cSignals){
+    public void init(CustomType type, ArrayList<int[]> cSigs){
         label = type.label;
 
         ArrayList<LComponent> innerComps = type.lcomps;
@@ -49,22 +50,35 @@ public class CustomBlueprint {
         for(int i = 0; i < innerComps.size(); i++) {
             LComponent lcomp = innerComps.get(i);
             if(lcomp.getType() == CompType.CUSTOM) {
-                int cSignalsIndex = cSignals.addSignalProvider(((OpCustom2) lcomp).getSignalProvider());
-                components[i] = new FileComponent(innerComps.get(i), compIndex, cSignalsIndex);
+                OpCustom2 custom = (OpCustom2) lcomp;
+                cSigs.add(custom.getSignals());
+                components[i] = new FileComponent(lcomp, compIndex, cSigs.size() - 1);
             }
-            else components[i] = new FileComponent(innerComps.get(i), compIndex, 0);
+            else components[i] = new FileComponent(lcomp, compIndex, 0);
         }
     }
 
-    public CustomType makeCustomType(int version, int typeID, FileSignalProvider cSignals, ArrayList<CustomType> cTypes, ArrayList<int[][]> oldCData, int oldCDataID){
+    public CustomType makeCustomTypeV5(int version, int typeID, FileSignalProvider cSignals, ArrayList<CustomType> cTypes, ArrayList<int[][]> oldCData, int oldCDataID){
+        return makeCustomType(version, typeID, null, cSignals, cTypes, oldCData, oldCDataID);
+    }
+
+    public CustomType makeCustomTypeV6(int version, int typeID, ArrayList<int[]> cSigs, ArrayList<CustomType> cTypes, ArrayList<int[][]> oldCData, int oldCDataID){
+        return makeCustomType(version, typeID, cSigs, null, cTypes, oldCData, oldCDataID);
+    }
+
+    private CustomType makeCustomType(int version, int typeID, ArrayList<int[]> cSigs, FileSignalProvider cSignals, ArrayList<CustomType> cTypes, ArrayList<int[][]> oldCData, int oldCDataID){
         ArrayList<LComponent> lcomps = new ArrayList<>();
         for (int i = 0; i < components.length; i++) {
             FileComponent component = components[i];
-            LComponent lcomp = component.makeComponent(version, cSignals, cTypes);
+            LComponent lcomp;
+            if(version >= 6) lcomp = component.makeComponent(version, cSigs, cTypes);
+            else lcomp = component.makeComponent(version, cSignals, cTypes);
+
             if(version < 5 && lcomp instanceof OpCustom2){
-                int[] compData = oldCData.get(oldCDataID)[i];
+                /*int[] compData = oldCData.get(oldCDataID)[i];
                 OpCustom2 custom = (OpCustom2) lcomp;
-                custom.setSignalProvider(FileSignalProvider.buildSPFromOldCData(custom.getCustomType(), oldCData, compData[compData.length - 1]));
+                custom.setSignalProvider(FileSignalProvider.buildSPFromOldCData(custom.getCustomType(), oldCData, compData[compData.length - 1]));*/
+                //TODO load files older than v5
             }
             lcomps.add(lcomp);
         }

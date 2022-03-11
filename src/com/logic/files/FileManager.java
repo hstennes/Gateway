@@ -27,7 +27,7 @@ public class FileManager {
 	/**
 	 * The file format version. Should be incremented when the file format is changed in any way.
 	 */
-	public static final int FILE_FORMAT_VERSION = 5;
+	public static final int FILE_FORMAT_VERSION = 6;
 
 	/**
 	 * Option that uses readable json formatting for testing the file saving system

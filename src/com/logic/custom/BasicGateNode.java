@@ -3,26 +3,41 @@ package com.logic.custom;
 import com.logic.components.CompType;
 import com.logic.engine.LogicFunctions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 public class BasicGateNode extends Node{
 
     private final byte function;
 
-    public BasicGateNode(int[] in, int[][] out, CompType type) {
-        super(in, out);
+    public BasicGateNode(int[] in, int[][] mark, int address, CompType type) {
+        super(in, mark, address);
         function = (byte) LogicFunctions.getFunctionIndex(type);
     }
 
     @Override
-    public void update(SignalProvider sp, ArrayList<Integer> active, int id) {
-        int[] inputs = new int[in.length / 2];
-        for(int i = 0; i < inputs.length; i++) inputs[i] = sp.getSignal(in[i * 2], in[i * 2 + 1]);
-        int newSignal = LogicFunctions.basicLogic(inputs, function);
-        if(newSignal == sp.getSignal(id, 0)) return;
-        sp.setSignal(id, 0, newSignal);
-        active.addAll(Arrays.stream(out[0]).boxed().collect(Collectors.toList()));
+    public void update(int[] signals, int offset, ActiveStack active) {
+        int newSignal = signals[in[0] + offset];
+        switch(function){
+            case 0:
+                for(int i = 1; i < in.length; i++) newSignal &= signals[in[i] + offset];
+                break;
+            case 1:
+                for(int i = 1; i < in.length; i++) newSignal |= signals[in[i] + offset];
+                break;
+            case 2:
+                for(int i = 1; i < in.length; i++) newSignal ^= signals[in[i] + offset];
+                break;
+            case 3:
+                for(int i = 1; i < in.length; i++) newSignal = ~(newSignal & signals[in[i] + offset]);
+                break;
+            case 4:
+                for(int i = 1; i < in.length; i++) newSignal = ~(newSignal | signals[in[i] + offset]);
+                break;
+            case 5:
+                for(int i = 1; i < in.length; i++) newSignal = ~(newSignal ^ signals[in[i] + offset]);
+                break;
+        }
+
+        if(newSignal == signals[address + offset]) return;
+        signals[address + offset] = newSignal;
+        active.mark(mark[0]);
     }
 }
