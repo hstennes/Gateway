@@ -53,18 +53,13 @@ public class ActiveStack implements Iterator<Integer> {
         remainCount = remainCountStack.pop();
         flip = flipStack.pop();
         if(flip){
-            remainStackPtr = activeB;
-            markStackPtr = activeA;
-        }
-        else{
             remainStackPtr = activeA;
             markStackPtr = activeB;
         }
-    }
-
-    public void mark(int n){
-        markStackPtr.push(n);
-        markCount++;
+        else{
+            remainStackPtr = activeB;
+            markStackPtr = activeA;
+        }
     }
 
     public void mark(int[] n){
@@ -78,15 +73,15 @@ public class ActiveStack implements Iterator<Integer> {
         markCount = 0;
 
         //flip is true -> A is remain stack, B is mark stack
+        flip = !flip;
         if(flip){
-            remainStackPtr = activeB;
-            markStackPtr = activeA;
-        }
-        else{
             remainStackPtr = activeA;
             markStackPtr = activeB;
         }
-        flip = !flip;
+        else{
+            remainStackPtr = activeB;
+            markStackPtr = activeA;
+        }
         return true;
     }
 
