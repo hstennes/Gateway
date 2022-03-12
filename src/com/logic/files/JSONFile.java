@@ -119,6 +119,7 @@ public class JSONFile {
             else lcomp = fc.makeComponent(version, cSignals, customs);
 
             if(version < 5 && lcomp instanceof OpCustom2){
+                //TODO file loading before version 5 not supported yet
                 OpCustom2 custom = (OpCustom2) lcomp;
                 custom.setSignalProvider(FileSignalProvider.buildSPFromOldCData(custom.getCustomType(), cData, fc.cDataId));
             }

@@ -8,7 +8,6 @@ import com.logic.util.CustomHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class CustomType {
 
@@ -25,17 +24,12 @@ public class CustomType {
     /**
      * Maps components to their index in the Node system
      */
-    public final Map<LComponent, Integer> nbIndex;
+    private final Map<LComponent, Integer> nbIndex;
 
     /**
      * Holds an optimized representation of the components in the chip
      */
     public NodeBox2 nodeBox;
-
-    /**
-     * A SignalProvider based on the signals of the LComponents originally used to create the chip
-     */
-    public SignalProvider defaultSP;
 
     /**
      * The custom chip label
@@ -59,8 +53,6 @@ public class CustomType {
      */
     public final CustomHelper helper;
 
-    public int nestedAddressStart;
-
     /**
      * Each int[] corresponds to an individual clock nested at any level in the custom chip. Each int[] has the the format
      * {clock delay, ID in enclosing NodeBox, innermost spIndex, ...outermost spIndex}
@@ -77,70 +69,10 @@ public class CustomType {
         height = helper.chooseHeight();
         nbIndex = new HashMap<>();
         clocks = new ArrayList<>();
-        init2();
+        init();
     }
 
     private void init(){
-        /*//the list of all components that will be converted to nodes. Starts with all Switches in the order that input connections will be considered
-        ArrayList<LComponent> nodeComps = new ArrayList<>();
-        //The index of the output connection corresponding to each Light.
-        Map<Light, Integer> lightIndex = new HashMap<>();
-        //First step: consider lights and switches and add to nodeComps and lightIndex
-        int[] numConnect = mapIO(content, compIndex, nodeComps, lightIndex);
-
-        for (LComponent lcomp : lcomps) {
-            //Ignore Lights because they have no nodes. Ignore Switches because they were already added.
-            if(lcomp instanceof Light || lcomp instanceof Switch) continue;
-            if(lcomp instanceof OpCustom2) customCount++;
-            compIndex.put(lcomp, nodeComps.size());
-            nodeComps.add(lcomp);
-        }
-
-        //final nodes array that goes to NodeBox
-        Node[] nodes = new Node[nodeComps.size()];
-        //final outNodes array that goes to NodeBox
-        int[] outNodes = new int[numConnect[1] * 2];
-        //Collects signal providers from nested chips, which are used to construct the signal provider for this chip
-        SignalProvider[] nested = new SignalProvider[customCount];
-        //The top-level signals for the chip
-        int[][] signals = new int[nodes.length][];
-
-        int spIndexCounter = 0;
-        for(int i = 0; i < nodes.length; i++){
-            LComponent lcomp = nodeComps.get(i);
-            int[] in = getNodeIn(lcomp, compIndex);
-            int[][] out = getNodeOut(lcomp, compIndex, lightIndex, outNodes);
-            signals[i] = getSignals(lcomp);
-
-            if(lcomp instanceof BasicGate) nodes[i] = new BasicGateNode(in, out, lcomp.getType());
-            //else if(lcomp instanceof SingleInputGate) nodes[i] = new SingleInputGateNode(in, out, lcomp.getType());
-            else if(lcomp instanceof Switch) nodes[i] = new StartNode(in, out);
-            //else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(in, out, ((SplitIn) lcomp).getSplit());
-            //else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(in, out, ((SplitOut) lcomp).getSplit());
-            else if(lcomp instanceof Clock) {
-                //clocks.add(new int[] {((Clock) lcomp).getDelay(), i});
-                //nodes[i] = new ClockNode(in, out);
-            }
-            else if(lcomp instanceof OpCustom2) {
-                int spc = spIndexCounter;
-                OpCustom2 custom = (OpCustom2) lcomp;
-                nodes[i] = new CustomNode(in, out, custom.getCustomType(), spc);
-                nested[spc] = custom.getSignalProvider().duplicate();
-                clocks.addAll(custom.getCustomType().clocks
-                        .stream()
-                        .map(oldClock -> nestClock(oldClock, spc))
-                        .collect(Collectors.toList()));
-                spIndexCounter++;
-            }
-            //else nodes[i] = new PlaceholderNode(lcomp.getType(), in, out);
-        }
-
-        defaultSP = new SignalProvider(signals, nested);
-        nodeBox = new NodeBox2(nodes, outNodes);*/
-    }
-
-    private void init2(){
-        HashMap<LComponent, Integer> nbIndex = new HashMap<>();
         HashMap<LComponent, Integer> sigIndex = new HashMap<>();
         HashMap<OpCustom2, Integer> nestedIndex = new HashMap<>();
 
@@ -162,7 +94,6 @@ public class CustomType {
             nodeComps.add(lcomp);
             sigLength += lcomp.getIO().getNumOutputs();
         }
-        nestedAddressStart = sigLength;
 
         for(OpCustom2 custom : customs){
             nestedIndex.put(custom, sigLength);
@@ -178,7 +109,7 @@ public class CustomType {
 
         for(int i = 0; i < nodes.length; i++){
             LComponent lcomp = nodeComps.get(i);
-            int[] in = getNodeIn2(lcomp, sigIndex);
+            int[] in = getNodeIn(lcomp, sigIndex);
             int[][] mark = getMarkList(lcomp, nbIndex, sigIndex, lightIndex, outNodes);
             int address = sigIndex.get(lcomp);
             int[] lcompSignals = getSignals(lcomp);
@@ -205,7 +136,7 @@ public class CustomType {
                         .collect(Collectors.toList()));*/
                 //TODO clocks are very, very broken
             }
-            //else nodes[i] = new PlaceholderNode(lcomp.getType(), in, out);
+            else nodes[i] = new PlaceholderNode(in, mark, address, lcomp.getType());
         }
 
         defaultSignals = signals;
@@ -214,16 +145,17 @@ public class CustomType {
 
     public void projectInnerState(OpCustom2 custom){
         if(custom.getCustomType() != this) throw new IllegalArgumentException("Custom component supplied to projectInnerState must be of the same CompType");
-        SignalProvider sp = custom.getSignalProvider();
+        int[] signals = custom.getSignals();
+        Node[] nodes = nodeBox.getNodes();
 
         for(LComponent lcomp : lcomps){
             if(lcomp instanceof Light) continue;
             int id = nbIndex.get(lcomp);
-            if(lcomp instanceof Switch) ((Switch) lcomp).setState(sp.getSignal(id, 0));
+            if(lcomp instanceof Switch) ((Switch) lcomp).setState(signals[nodes[id].address]);
             IOManager io = lcomp.getIO();
             for(int i = 0; i < io.getNumOutputs(); i++){
                 OutputPin outputPin = io.outputConnection(i);
-                outputPin.setSignal(sp.getSignal(id, i));
+                outputPin.setSignal(signals[nodes[id].address + i]);
             }
         }
     }
@@ -267,31 +199,7 @@ public class CustomType {
         return signals;
     }
 
-    /**
-     * Creates the node input array for the given component
-     * @param lcomp The component
-     * @param compIndex The compIndex map
-     * @return The input array for the new Node
-     */
-    private int[] getNodeIn(LComponent lcomp, Map<LComponent, Integer> compIndex){
-        IOManager io = lcomp.getIO();
-        int[] in = new int[io.getNumInputs() * 2];
-        for(int n = 0; n < io.getNumInputs(); n++){
-            InputPin inputPin = io.inputConnection(n);
-            if(inputPin.numWires() > 0) {
-                OutputPin source = inputPin.getWire().getSourceConnection();
-                in[2 * n] = compIndex.get(source.getLcomp());
-                in[2 * n + 1] = source.getIndex();
-            }
-            else{
-                in[2 * n] = -1;
-                in[2 * n + 1] = -1;
-            }
-        }
-        return in;
-    }
-
-    private int[] getNodeIn2(LComponent lcomp, Map<LComponent, Integer> sigIndex){
+    private int[] getNodeIn(LComponent lcomp, Map<LComponent, Integer> sigIndex){
         IOManager io = lcomp.getIO();
         int[] in = new int[io.getNumInputs()];
         for(int n = 0; n < in.length; n++){
@@ -303,25 +211,6 @@ public class CustomType {
             else in[n] = 0;
         }
         return in;
-    }
-
-    /**
-     * Creates the node output array for the given component. The outNodes array will be modified if the component is connected
-     * to any output lights
-     * @param lcomp The component
-     * @param compIndex The component index map
-     * @param lightIndex The light index map
-     * @param outNodes The outNodes array (may be modified)
-     * @return The out array for the new Node
-     */
-    private int[][] getNodeOut(LComponent lcomp, Map<LComponent, Integer> compIndex, Map<Light, Integer> lightIndex, int[] outNodes){
-        IOManager io = lcomp.getIO();
-        int[][] out = new int[io.getNumOutputs()][];
-        for(int n = 0; n < io.getNumOutputs(); n++) {
-            OutputPin outputPin = io.outputConnection(n);
-            out[n] = checkAndSetOutputs(lcomp, outputPin, compIndex, lightIndex, outNodes);
-        }
-        return out;
     }
 
     private int[][] getMarkList(LComponent lcomp, Map<LComponent, Integer> nbIndex, Map<LComponent, Integer> sigIndex, Map<Light, Integer> lightIndex, int[] outNodes){
@@ -345,35 +234,6 @@ public class CustomType {
             for(int o = 0; o < mark[n].length; o++) mark[n][o] = nbIndex.get(connected.get(o));
         }
         return mark;
-    }
-
-    /**
-     * Gets the output array (list of connected component IDs) for the given OutputPin. If some connected components are Lights, which correspond to
-     * the outputs of this Custom component, then the lightIndex list is used to get the index of that output connection, which is used to place the correct data
-     * in the outNodes array.
-     * @param lcomp The LComponent, needed if this component is going to be a part of outIndex
-     * @param outputPin The pin on the component being considered
-     * @param compIndex The compIndex map
-     * @param lightIndex The lightIndex map
-     * @param outNodes The outNodes array, which will be modified if necessary
-     * @return The out array for this connection, which holds connected node IDs
-     */
-    private int[] checkAndSetOutputs(LComponent lcomp, OutputPin outputPin, Map<LComponent, Integer> compIndex, Map<Light, Integer> lightIndex, int[] outNodes){
-        ArrayList<LComponent> connected = new ArrayList<>();
-        for(int n = 0; n < outputPin.numWires(); n++){
-            LComponent dest = outputPin.getWire(n).getDestConnection().getLcomp();
-            if(compIndex.containsKey(dest))
-                connected.add(dest);
-            else if(lightIndex.containsKey(dest)){
-                int index = lightIndex.get(dest);
-                outNodes[2 * index] = compIndex.get(lcomp);
-                outNodes[2 * index + 1] = outputPin.getIndex();
-            }
-        }
-
-        int[] out = new int[connected.size()];
-        for(int n = 0; n < out.length; n++) out[n] = compIndex.get(connected.get(n));
-        return out;
     }
 
     /**

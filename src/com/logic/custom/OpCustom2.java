@@ -130,10 +130,6 @@ public class OpCustom2 extends LComponent {
         return type;
     }
 
-    public SignalProvider getSignalProvider() {
-        return null;
-    }
-
     public void setSignalProvider(SignalProvider sp){
 
     }
