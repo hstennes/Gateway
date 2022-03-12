@@ -2,12 +2,14 @@ package com.logic.ui;
 
 import com.logic.components.Clock;
 import com.logic.components.LComponent;
+import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
 import com.logic.input.Camera;
 import com.logic.util.CompUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A class that displays the components that make up custom components
@@ -36,6 +38,8 @@ public class CustomViewer {
 	 * The position of the camera before this CustomViewer became active
 	 */
 	private float oldCamX, oldCamY;
+
+	private CustomType viewingType;
 	
 	/**
 	 * The CircuitPanel
@@ -58,13 +62,15 @@ public class CustomViewer {
 	 * @param c The Custom component
 	 */
 	public void view(OpCustom2 c) {
+		viewingType = c.getCustomType();
 		ArrayList<LComponent> dispComps = c.projectInnerStateToType();
 
 		oldComps.addAll(cp.lcomps);
 		cp.lcomps.clear();
 		cp.wires.clear();
 		cp.getEditor().getSelection().clear();
-		cp.getEditor().setEnabled(false);
+		//TODO prevent user from modifying lights and switches
+		//cp.getEditor().setEnabled(false);
 		cp.addLComps(c.getCustomType().lcomps);
 		
 		Camera cam = cp.getCamera();
@@ -86,6 +92,9 @@ public class CustomViewer {
 	 * the CircuitEditor, and repositioning the camera.
 	 */
 	public void exit() {
+		HashMap<LComponent, LComponent> oldToNew = CompUtils.mapDuplicate(cp.lcomps, null, false);
+		viewingType.modify(oldToNew);
+
 		for(LComponent lcomp : cp.lcomps) {
 			if(lcomp instanceof OpCustom2) ((OpCustom2) lcomp).stop();
 			else if(lcomp instanceof Clock) ((Clock) lcomp).stop();
@@ -93,8 +102,21 @@ public class CustomViewer {
 		cp.lcomps.clear();
 		cp.wires.clear();
 		cp.addLComps(oldComps);
-		cp.getEditor().setEnabled(true);
-		
+
+		ArrayList<CustomType> customTypes = cp.getEditor().getCustomCreator().getCustomTypes();
+		for(int i = viewingType.typeID + 1; i < customTypes.size(); i++){
+			CustomType type = customTypes.get(i);
+			if(type.dependsOn(viewingType)) type.rebuildDefaultSignals();
+		}
+		for(LComponent lcomp : cp.lcomps){
+			if(lcomp instanceof OpCustom2){
+				OpCustom2 custom = (OpCustom2) lcomp;
+				if(custom.getCustomType().dependsOn(viewingType)) custom.rebuildSignals();
+				else if(custom.getCustomType() == viewingType) custom.takeDefaultSignals();
+			}
+		}
+
+		//cp.getEditor().setEnabled(true);
 		Camera cam = cp.getCamera();
 		cam.setZoom(oldCamZoom);
 		cam.setX(oldCamX);
