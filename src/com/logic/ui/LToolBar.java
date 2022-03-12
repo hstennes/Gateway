@@ -1,7 +1,9 @@
 package com.logic.ui;
 
+import com.logic.custom.OpCustom2;
 import com.logic.files.FileManager;
 import com.logic.main.LogicSimApp;
+import com.logic.test.MemTest;
 import com.logic.util.Constants;
 
 import javax.swing.*;
@@ -169,7 +171,11 @@ public class LToolBar extends JToolBar implements ActionListener {
 				ex.printStackTrace();
 			}*/
 		}
-		else if(command.equals("Create Custom Component")) cp.getEditor().getCustomCreator().createCustom();
+		else if(command.equals("Create Custom Component")) {
+			//TODO this button is being used for testing
+			//cp.getEditor().getCustomCreator().createCustom();
+			new MemTest((OpCustom2) cp.getEditor().getSelection().get(0)).execute();
+		}
 	}
 	
 	/**
