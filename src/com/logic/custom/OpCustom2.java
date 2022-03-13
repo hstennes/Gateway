@@ -130,12 +130,17 @@ public class OpCustom2 extends LComponent {
         return type;
     }
 
-    public void rebuildSignals(){
-        signals = type.rebuildSignals(signals);
-    }
-
-    public void takeDefaultSignals(){
-        signals = type.defaultSignals;
+    public boolean invalidate(){
+        if(type.didRebuild()) {
+            signals = type.rebuildSignals(signals);
+            return true;
+        }
+        else if(type.didModify()) {
+            signals = new int[type.defaultSignals.length];
+            System.arraycopy(type.defaultSignals, 0, signals, 0, signals.length);
+            return true;
+        }
+        return false;
     }
 
     public void setSignalProvider(SignalProvider sp){

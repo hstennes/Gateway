@@ -55,6 +55,10 @@ public class CustomType {
      */
     public final CustomHelper helper;
 
+    private boolean didRebuild = false;
+
+    private boolean didModify = false;
+
     /**
      * Each int[] corresponds to an individual clock nested at any level in the custom chip. Each int[] has the the format
      * {clock delay, ID in enclosing NodeBox, innermost spIndex, ...outermost spIndex}
@@ -148,32 +152,31 @@ public class CustomType {
         nodeBox = new NodeBox2(nodes, outNodes);
     }
 
-    public void modify(HashMap<LComponent, LComponent> oldToNew){
-        this.lcomps = new ArrayList<>(oldToNew.values());
-        for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
-            LComponent[] side = content[s];
-            for(int i = 0; i < side.length; i++) side[i] = oldToNew.get(side[i]);
-        }
+    public void modify(ArrayList<LComponent> newComps){
+        this.lcomps = newComps;
         nbIndex.clear();
         init();
+        didModify = true;
     }
 
-    public void rebuildDefaultSignals(){
-        defaultSignals = rebuildSignals(defaultSignals);
+    public void invalidate(){
+        for(OpCustom2 custom : customs){
+            if(custom.invalidate()) didRebuild = true;
+        }
+        if(didRebuild) defaultSignals = rebuildSignals(defaultSignals);
     }
 
     public int[] rebuildSignals(int[] oldSignals) {
         int nestedSignalsSize = 0;
         for(OpCustom2 custom : customs){
-            nestedSignalsSize += custom.getCustomType().defaultSignals.length;
-            //TODO The custom components in lcomps / customs are not updated for modifications, but in practice it doesn't really matter
+            nestedSignalsSize += custom.getSignals().length;
         }
         int[] newSignals = new int[nestedAddressStart + nestedSignalsSize];
         System.arraycopy(oldSignals, 0, newSignals, 0, nestedAddressStart);
 
         int address = nestedAddressStart;
         for(OpCustom2 custom : customs){
-            int[] innerSignals = custom.getCustomType().defaultSignals;
+            int[] innerSignals = custom.getSignals();
             System.arraycopy(innerSignals, 0, newSignals, address, innerSignals.length);
         }
         return newSignals;
@@ -272,13 +275,6 @@ public class CustomType {
         return mark;
     }
 
-    public boolean dependsOn(CustomType type) {
-        for(OpCustom2 custom : customs){
-            if(custom.getCustomType() == type) return true;
-        }
-        return false;
-    }
-
     /**
      * Follows same format as CustomType.content, but the ints represent the bit width of each connection
      * @return IO structure array
@@ -299,5 +295,17 @@ public class CustomType {
 
     public Node getNode(LComponent lcomp){
         return nodeBox.getNodes()[nbIndex.get(lcomp)];
+    }
+
+    public boolean didRebuild(){
+        return didRebuild;
+    }
+
+    public boolean didModify(){
+        return didModify;
+    }
+
+    public void rebuildingComplete(){
+        didRebuild = false;
     }
 }

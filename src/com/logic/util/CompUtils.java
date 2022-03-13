@@ -100,10 +100,6 @@ public class CompUtils {
 	 * @return The list of duplicated components
 	 */
 	public static ArrayList<LComponent> duplicate(List<LComponent> lcomps, Point pos, boolean move) {
-		return new ArrayList<>(mapDuplicate(lcomps, pos, move).values());
-	}
-
-	public static HashMap<LComponent, LComponent> mapDuplicate(List<LComponent> lcomps, Point pos, boolean move){
 		HashMap<LComponent, LComponent> oldToNew = new HashMap<>();
 		ArrayList<Wire> oldWires = new ArrayList<>();
 
@@ -144,7 +140,7 @@ public class CompUtils {
 			newDestConnection.addWire(newWire);
 		}
 
-		return oldToNew;
+		return new ArrayList<>(oldToNew.values());
 	}
 	
 	/**

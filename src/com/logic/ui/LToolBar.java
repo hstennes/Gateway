@@ -173,8 +173,8 @@ public class LToolBar extends JToolBar implements ActionListener {
 		}
 		else if(command.equals("Create Custom Component")) {
 			//TODO this button is being used for testing
-			//cp.getEditor().getCustomCreator().createCustom();
-			new MemTest((OpCustom2) cp.getEditor().getSelection().get(0)).execute();
+			cp.getEditor().getCustomCreator().createCustom();
+			//new MemTest((OpCustom2) cp.getEditor().getSelection().get(0)).execute();
 		}
 	}
 	
