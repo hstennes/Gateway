@@ -16,10 +16,13 @@ public class CustomType {
      */
     public ArrayList<LComponent> lcomps;
 
+    /**
+     * References to all custom components from the lcomps list
+     */
     private ArrayList<OpCustom2> customs;
 
     /**
-     * Specifies how lights and switches correspond to connections on the chip. Format content[side number][index on side]
+     * Specifies how lights and switches correspond to connections on the chip. Format content[side number][index on side].
      */
     public final LComponent[][] content;
 
@@ -48,6 +51,11 @@ public class CustomType {
      */
     public final int width, height;
 
+    /**
+     * A universal "example" signals array for this type of custom chip. The signals are generated based on those of the components
+     * originally used to make the chip, and are recomputed if the chip is modified. If a chip that this type depends on is modified,
+     * the rebuilding process will maintain top level signals, but nested signals may change.
+     */
     public int[] defaultSignals;
 
     /**
@@ -55,8 +63,17 @@ public class CustomType {
      */
     public final CustomHelper helper;
 
+    /**
+     * Indicates that this CustomType has been rebuilt in the current rebuilding cycle. After rebuildingComplete is called,
+     * the value is reset to false.
+     */
     private boolean didRebuild = false;
 
+    /**
+     * Indicates that this CustomType was modified in the current rebuilding cycle. The term "modified" in this case refers
+     * to changing the contents of the chip, which causes a full recompilation. After rebuildingComplete is called, the value
+     * is reset to false.
+     */
     private boolean didModify = false;
 
     /**
@@ -65,7 +82,10 @@ public class CustomType {
      */
     public final ArrayList<int[]> clocks;
 
-    private int nestedAddressStart;
+    /**
+     * The signals array contains all top level signals followed by the signals for inner custom chips, which start at this index.
+     */
+    private int nestedAddr;
 
     public CustomType(String label, LComponent[][] content, ArrayList<LComponent> lcomps, int typeID){
         this.label = label;
@@ -83,14 +103,13 @@ public class CustomType {
     private void init(){
         HashMap<LComponent, Integer> sigIndex = new HashMap<>();
         HashMap<OpCustom2, Integer> nestedIndex = new HashMap<>();
-
-        //the list of all components that will be converted to nodes. Starts with all Switches in the order that input connections will be considered
+        /*the list of all components that will be converted to nodes. Starts with all Switches in the order that input
+        connections will be considered*/
         ArrayList<LComponent> nodeComps = new ArrayList<>();
         //The index of the output connection corresponding to each Light.
         Map<Light, Integer> lightIndex = new HashMap<>();
         //First step: consider lights and switches and add to nodeComps and lightIndex
         int[] numConnect = mapIO(content, nbIndex, sigIndex, lightIndex, nodeComps);
-
         int sigLength = numConnect[0] + 1;
         customs = new ArrayList<>();
 
@@ -102,7 +121,7 @@ public class CustomType {
             nodeComps.add(lcomp);
             sigLength += lcomp.getIO().getNumOutputs();
         }
-        nestedAddressStart = sigLength;
+        nestedAddr = sigLength;
 
         for(OpCustom2 custom : customs){
             nestedIndex.put(custom, sigLength);
@@ -130,6 +149,7 @@ public class CustomType {
             else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(in, mark, address, ((SplitIn) lcomp).getSplit());
             else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(in, mark, address, ((SplitOut) lcomp).getSplit());
             else if(lcomp instanceof Clock) {
+                //TODO clocks inside custom chips are currently not supported
                 //clocks.add(new int[] {((Clock) lcomp).getDelay(), i});
                 //nodes[i] = new ClockNode(in, out);
             }
@@ -143,7 +163,6 @@ public class CustomType {
                         .stream()
                         .map(oldClock -> nestClock(oldClock, spc))
                         .collect(Collectors.toList()));*/
-                //TODO clocks are very, very broken
             }
             else nodes[i] = new PlaceholderNode(in, mark, address, lcomp.getType());
         }
@@ -159,27 +178,38 @@ public class CustomType {
         didModify = true;
     }
 
+    /**
+     * Causes the component to rebuild if necessary. This will occur if a Custom chip contained within this chip is marked with
+     * didModify or didRebuild for this update cycle. Rebuilding updates the signal array to reflect changes to inner components.
+     */
     public void invalidate(){
         for(OpCustom2 custom : customs){
+            //didRebuild is used so that we don't have to make another boolean, but here it's more like "mustRebuild"
             if(custom.invalidate()) didRebuild = true;
         }
-        if(didRebuild) defaultSignals = rebuildSignals(defaultSignals);
+        if(didRebuild) rebuild();
     }
 
-    public int[] rebuildSignals(int[] oldSignals) {
-        int nestedSignalsSize = 0;
+    /**
+     * Rebuilds the type. Rebuilding rewrites the signal array to reflect changes to inner components and updates the innerOffset
+     * value in each CustomNode to reflect the new structure.
+     */
+    private void rebuild() {
+        int pos = nestedAddr;
         for(OpCustom2 custom : customs){
-            nestedSignalsSize += custom.getSignals().length;
+            pos += custom.getSignals().length;
         }
-        int[] newSignals = new int[nestedAddressStart + nestedSignalsSize];
-        System.arraycopy(oldSignals, 0, newSignals, 0, nestedAddressStart);
+        int[] newSignals = new int[pos];
+        System.arraycopy(defaultSignals, 0, newSignals, 0, nestedAddr);
 
-        int address = nestedAddressStart;
+        pos = nestedAddr;
         for(OpCustom2 custom : customs){
+            ((CustomNode) nodeBox.getNodes()[nbIndex.get(custom)]).setInnerOffset(pos);
             int[] innerSignals = custom.getSignals();
-            System.arraycopy(innerSignals, 0, newSignals, address, innerSignals.length);
+            System.arraycopy(innerSignals, 0, newSignals, pos, innerSignals.length);
+            pos += innerSignals.length;
         }
-        return newSignals;
+        defaultSignals = newSignals;
     }
 
     public void projectInnerState(OpCustom2 custom){
@@ -207,7 +237,7 @@ public class CustomType {
             for (LComponent lComponent : side) {
                 if (lComponent instanceof Switch) {
                     nbIndex.put(lComponent, numInputs);
-                    //signals[0] will be left as 0. Empty input connections are directed to this address.
+                    //signals[0] will be left as 0. Empty input connections point to this address.
                     sigIndex.put(lComponent, numInputs + 1);
                     nodeComps.add(lComponent);
                     numInputs++;
@@ -229,7 +259,7 @@ public class CustomType {
         return newClock;
     }
 
-    public int[] getSignals(LComponent lcomp){
+    private int[] getSignals(LComponent lcomp){
         IOManager io = lcomp.getIO();
         int[] signals = new int[io.getNumOutputs()];
         for(int i = 0; i < signals.length; i++){
@@ -293,8 +323,8 @@ public class CustomType {
         return io;
     }
 
-    public Node getNode(LComponent lcomp){
-        return nodeBox.getNodes()[nbIndex.get(lcomp)];
+    public int getNestedAddr(){
+        return nestedAddr;
     }
 
     public boolean didRebuild(){
@@ -306,6 +336,7 @@ public class CustomType {
     }
 
     public void rebuildingComplete(){
+        didModify = false;
         didRebuild = false;
     }
 }

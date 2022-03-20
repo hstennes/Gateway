@@ -9,7 +9,7 @@ public class CustomNode extends Node{
     private final CustomType type;
 
     //Start position for the signal data relative to the position of the enclosing NodeBox
-    private final int innerOffset;
+    private int innerOffset;
 
     public CustomNode(int[] in, int[][] mark, int address, CustomType type, int innerOffset){
         super(in, mark, address);
@@ -41,5 +41,9 @@ public class CustomNode extends Node{
 
     public int getInnerOffset(){
         return innerOffset;
+    }
+
+    public void setInnerOffset(int innerOffset){
+        this.innerOffset = innerOffset;
     }
 }

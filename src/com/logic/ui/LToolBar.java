@@ -128,7 +128,6 @@ public class LToolBar extends JToolBar implements ActionListener {
 			button.setMargin(padding);
 			add(button);
 		}
-	
 	}
 	
 	/**
@@ -149,28 +148,8 @@ public class LToolBar extends JToolBar implements ActionListener {
 		else if(command.equals("Undo")) cp.getEditor().getRevision().undo();
 		else if(command.equals("Redo")) cp.getEditor().getRevision().redo();
 		else if(command.equals("New")) LogicSimApp.newWindow(null);
-		else if(command.equals("Open")) {
-			fileManager.open();
-
-			/*try {
-				FileSignalProvider file = new ObjectMapper().readValue(Paths.get("C://Users/HPste/Documents/SPTest.gtw").toFile(), FileSignalProvider.class);
-				SignalProvider sp = file.createSignalProvider();
-				System.out.println("cool");
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}*/
-
-		}
-		else if(command.equals("Save")) {
-			fileManager.save();
-
-			/*FileSignalProvider file = new FileSignalProvider(((OpCustom2) cp.getEditor().getSelection().get(0)).getSignalProvider());
-			try {
-				new ObjectMapper().writeValue(Paths.get("C://Users/HPste/Documents/SPTest.gtw").toFile(), file);
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}*/
-		}
+		else if(command.equals("Open")) fileManager.open();
+		else if(command.equals("Save")) fileManager.save();
 		else if(command.equals("Create Custom Component")) {
 			//TODO this button is being used for testing
 			cp.getEditor().getCustomCreator().createCustom();

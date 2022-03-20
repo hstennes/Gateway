@@ -24,7 +24,7 @@ public class OpCustom2 extends LComponent {
         super(x, y, CompType.CUSTOM);
         this.type = type;
         signals = type.defaultSignals;
-        initConnections(type, type.getIOStructure());
+        initConnections();
         timers = new Timer[type.clocks.size()];
     }
 
@@ -32,15 +32,15 @@ public class OpCustom2 extends LComponent {
         super(x, y, CompType.CUSTOM);
         this.type = type;
         this.signals = signals;
-        initConnections(type, type.getIOStructure());
+        initConnections();
         timers = new Timer[type.clocks.size()];
     }
 
     /**
      * Initializes connections and adds data to compIndex, nodeComps, and lightIndex
-     * @param type The CustomType
      */
-    private void initConnections(CustomType type, int[][] ioStructure){
+    private void initConnections(){
+        int[][] ioStructure = type.getIOStructure();
         for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
             int[] side = ioStructure[s];
             if(side == null) continue;
@@ -130,12 +130,31 @@ public class OpCustom2 extends LComponent {
         return type;
     }
 
+    /**
+     * Makes necessary changes to the signal array if dependent chips have changed (this method must be called after the CustomType
+     * is up-to-date). If the type was modified, the signals take their new default values from the type. If the type was rebuilt,
+     * this component keeps its own top-level signals, but any inner signals are copied from type defaults.
+     * @return True if action was required (the type was modified or rebuilt), false otherwise
+     */
     public boolean invalidate(){
         if(type.didRebuild()) {
-            signals = type.rebuildSignals(signals);
+            /*Since the type rebuilt (due to modification of a dependency), the top level signals have maintained the same
+            structure, but the nested signals have changed unpredictably. We can keep this instance's top level signals,
+            but the nested signals must be discarded and reset to default values from the CustomType.*/
+            int nestedAddr = type.getNestedAddr();
+            int[] newSignals = new int[type.defaultSignals.length];;
+            System.arraycopy(signals, 0, newSignals, 0, nestedAddr);
+            System.arraycopy(type.defaultSignals,
+                    nestedAddr,
+                    newSignals,
+                    nestedAddr,
+                    type.defaultSignals.length - nestedAddr);
+            signals = newSignals;
             return true;
         }
         else if(type.didModify()) {
+            /*The type was modified, so the entirety of the signals array may have changed. This instance's signals array is
+            reset to default values from the CustomType, which are now based on the live circuit the user edited.*/
             signals = new int[type.defaultSignals.length];
             System.arraycopy(type.defaultSignals, 0, signals, 0, signals.length);
             return true;
@@ -143,7 +162,5 @@ public class OpCustom2 extends LComponent {
         return false;
     }
 
-    public void setSignalProvider(SignalProvider sp){
-
-    }
+    public void setSignalProvider(SignalProvider sp){ }
 }
