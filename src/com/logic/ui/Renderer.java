@@ -268,7 +268,7 @@ public class Renderer {
 
         //Special rendering currently for Custom, multi bit switch, multi bit light
         if(type == CompType.CUSTOM) {
-            drawCustomBody(g2d, (OpCustom2) lcomp, -cb.x, -cb.y);
+            drawBoxComponent(g2d, lcomp.getBoundsRight(), ((OpCustom2) lcomp).getCustomType().label, -cb.x, -cb.y);
             return image;
         }
         if(type == CompType.SWITCH && ((Switch) lcomp).getBitWidth() > 1){
@@ -284,6 +284,9 @@ public class Renderer {
                     ((Light) lcomp).getBitWidth(),
                     -cb.x, -cb.y);
             return image;
+        }
+        if(type == CompType.ROM){
+            drawBoxComponent(g2d, lcomp.getBoundsRight(), "ROM", -cb.x, -cb.y);
         }
 
         //Otherwise render component image if there is one
@@ -304,8 +307,7 @@ public class Renderer {
         return image;
     }
 
-    private void drawCustomBody(Graphics2D g2d, OpCustom2 custom, int dx, int dy){
-        Rectangle bounds = custom.getBoundsRight();
+    private void drawBoxComponent(Graphics2D g2d, Rectangle bounds, String label, int dx, int dy){
         bounds.translate(dx, dy);
         g2d.setColor(Color.WHITE);
         g2d.fill(bounds);
@@ -315,8 +317,8 @@ public class Renderer {
 
         g2d.setFont(CUSTOM_LABEL_FONT);
         FontMetrics metrics = g2d.getFontMetrics(CUSTOM_LABEL_FONT);
-        g2d.drawString(custom.getCustomType().label,
-                (bounds.width - metrics.stringWidth(custom.getCustomType().label)) / 2 + dx,
+        g2d.drawString(label,
+                (bounds.width - metrics.stringWidth(label)) / 2 + dx,
                 (bounds.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
     }
 

@@ -75,6 +75,9 @@ public class CompUtils {
 			case "display":
 				lcomp = new Display(x, y);
 				break;
+			case "rom":
+				lcomp = new ROM(x, y);
+				break;
 			case "splitter":
 				throw new IllegalArgumentException("CompUtils.makeComponent does not support splitters");
 			default:

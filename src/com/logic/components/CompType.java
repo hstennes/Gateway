@@ -24,5 +24,6 @@ public enum CompType {
 	DISPLAY(),
 	CUSTOM(),
 	SPLIT_OUT(),
-	SPLIT_IN();
+	SPLIT_IN(),
+	ROM();
 }

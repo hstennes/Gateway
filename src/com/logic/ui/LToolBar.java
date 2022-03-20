@@ -1,5 +1,6 @@
 package com.logic.ui;
 
+import com.logic.components.ROM;
 import com.logic.custom.OpCustom2;
 import com.logic.files.FileManager;
 import com.logic.main.LogicSimApp;
@@ -152,8 +153,11 @@ public class LToolBar extends JToolBar implements ActionListener {
 		else if(command.equals("Save")) fileManager.save();
 		else if(command.equals("Create Custom Component")) {
 			//TODO this button is being used for testing
-			cp.getEditor().getCustomCreator().createCustom();
+			//cp.getEditor().getCustomCreator().createCustom();
 			//new MemTest((OpCustom2) cp.getEditor().getSelection().get(0)).execute();
+			ROM rom = new ROM(0, 0);
+			rom.setProgram(new int[] {1, 1, 2, 3, 5, 8, 13});
+			cp.addLComp(rom);
 		}
 	}
 	
