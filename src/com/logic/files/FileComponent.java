@@ -81,6 +81,12 @@ public class FileComponent {
     public int cDataId;
 
     /**
+     * If this component is a ROM chip, stores the program array.
+     */
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public int[] program;
+
+    /**
      * Creates a representation of the given component that can be serialized to a json file.
      * @param lcomp The component
      * @param compIndex The mapping of components in the same list as this component to their indexes in the list
@@ -98,6 +104,7 @@ public class FileComponent {
             cTypeId = ((OpCustom2) lcomp).getCustomType().typeID;
             cDataId = cSignalsIndex;
         }
+        else if(type == CompType.ROM) program = ((ROM) lcomp).getProgram();
 
         IOManager io = lcomp.getIO();
         input = new int[io.getNumInputs()][4];
@@ -153,7 +160,8 @@ public class FileComponent {
             if(state) ((Switch) lcomp).setState(1);
             else ((Switch) lcomp).setState(mState);
         }
-        if(type == CompType.CLOCK) ((Clock) lcomp).setDelay(delay);
+        else if(type == CompType.CLOCK) ((Clock) lcomp).setDelay(delay);
+        else if(type == CompType.ROM) ((ROM) lcomp).setProgram(program);
         if(lcomp instanceof LabeledComponent) ((LabeledComponent) lcomp).setShowLabel(showLabel);
         if(lcomp instanceof BasicGate) ((BasicGate) lcomp).setNumInputs(input.length);
         return lcomp;

@@ -2,12 +2,14 @@ package com.logic.ui;
 
 import com.logic.components.Clock;
 import com.logic.components.LComponent;
+import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
 import com.logic.input.Camera;
 import com.logic.util.CompUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A class that displays the components that make up custom components
@@ -36,6 +38,8 @@ public class CustomViewer {
 	 * The position of the camera before this CustomViewer became active
 	 */
 	private float oldCamX, oldCamY;
+
+	private CustomType viewingType;
 	
 	/**
 	 * The CircuitPanel
@@ -55,17 +59,18 @@ public class CustomViewer {
 	 * Displays the inner components in the given custom component using its dispComps list. This method stores the current CircuitPanel
 	 * state, clears the CircuitPanel and selection, disables the CircuitEditor, adds the inner components to the the CircuitPanel, 
 	 * repositions the camera, and displays the custom component message.
-	 * @param c The Custom component
+	 * @param custom The Custom component
 	 */
-	public void view(OpCustom2 c) {
-		ArrayList<LComponent> dispComps = c.projectInnerStateToType();
+	public void view(OpCustom2 custom) {
+		viewingType = custom.getCustomType();
+		ArrayList<LComponent> dispComps = custom.projectInnerStateToType();
 
 		oldComps.addAll(cp.lcomps);
 		cp.lcomps.clear();
 		cp.wires.clear();
 		cp.getEditor().getSelection().clear();
-		cp.getEditor().setEnabled(false);
-		cp.addLComps(c.getCustomType().lcomps);
+		//TODO prevent user from modifying lights and switches
+		cp.addLComps(custom.getCustomType().lcomps);
 		
 		Camera cam = cp.getCamera();
 		oldCamZoom = cam.getZoom();
@@ -86,6 +91,9 @@ public class CustomViewer {
 	 * the CircuitEditor, and repositioning the camera.
 	 */
 	public void exit() {
+		ArrayList<LComponent> newComps = new ArrayList<>(cp.lcomps);
+		viewingType.modify(newComps);
+
 		for(LComponent lcomp : cp.lcomps) {
 			if(lcomp instanceof OpCustom2) ((OpCustom2) lcomp).stop();
 			else if(lcomp instanceof Clock) ((Clock) lcomp).stop();
@@ -93,8 +101,9 @@ public class CustomViewer {
 		cp.lcomps.clear();
 		cp.wires.clear();
 		cp.addLComps(oldComps);
-		cp.getEditor().setEnabled(true);
-		
+
+		rebuildDependentComponents();
+
 		Camera cam = cp.getCamera();
 		cam.setZoom(oldCamZoom);
 		cam.setX(oldCamX);
@@ -106,6 +115,17 @@ public class CustomViewer {
 		active = false;
 		oldComps.clear();
 	}
+
+	private void rebuildDependentComponents(){
+		ArrayList<CustomType> customTypes = cp.getEditor().getCustomCreator().getCustomTypes();
+		for(int i = viewingType.typeID + 1; i < customTypes.size(); i++){
+			customTypes.get(i).invalidate();
+		}
+		for(LComponent lcomp : cp.lcomps){
+			if(lcomp instanceof OpCustom2) ((OpCustom2) lcomp).invalidate();
+		}
+		for(CustomType type : customTypes) type.rebuildingComplete();
+	}
 	
 	/**
 	 * Tells whether this CustomViewer is currently active
@@ -114,5 +134,4 @@ public class CustomViewer {
 	public boolean isActive() {
 		return active;
 	}
-	
 }

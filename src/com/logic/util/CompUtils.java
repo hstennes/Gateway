@@ -75,6 +75,9 @@ public class CompUtils {
 			case "display":
 				lcomp = new Display(x, y);
 				break;
+			case "rom":
+				lcomp = new ROM(x, y);
+				break;
 			case "splitter":
 				throw new IllegalArgumentException("CompUtils.makeComponent does not support splitters");
 			default:
@@ -100,9 +103,8 @@ public class CompUtils {
 	 * @return The list of duplicated components
 	 */
 	public static ArrayList<LComponent> duplicate(List<LComponent> lcomps, Point pos, boolean move) {
-		HashMap<LComponent, LComponent> oldToNew = new HashMap<LComponent, LComponent>();
-		ArrayList<LComponent> newComps = new ArrayList<LComponent>();
-		ArrayList<Wire> oldWires = new ArrayList<Wire>();
+		HashMap<LComponent, LComponent> oldToNew = new HashMap<>();
+		ArrayList<Wire> oldWires = new ArrayList<>();
 
 		int offX = 0, offY = 0;
 		if(move) {
@@ -110,15 +112,14 @@ public class CompUtils {
 			offX = pos.x - (int) oldBounds.getCenterX();
 			offY = pos.y - (int) oldBounds.getCenterY();
 		}
-		
-		for(int l = 0; l < lcomps.size(); l++) { 
+
+		for(int l = 0; l < lcomps.size(); l++) {
 			LComponent oldComp = lcomps.get(l);
 			IOManager oldIO = oldComp.getIO();
 			LComponent newComp = oldComp.makeCopy();
 			newComp.setX(oldComp.getX() + offX);
 			newComp.setY(oldComp.getY() + offY);
 			oldToNew.put(oldComp, newComp);
-			newComps.add(newComp);
 			for(int c = 0; c < oldIO.getNumInputs(); c++) {
 				Connection connection = oldIO.inputConnection(c);
 				if(connection.numWires() == 1) {
@@ -129,8 +130,7 @@ public class CompUtils {
 			}
 		}
 
-		for(int w = 0; w < oldWires.size(); w++) {
-			Wire oldWire = oldWires.get(w);
+		for (Wire oldWire : oldWires) {
 			OutputPin oldSourceConnection = oldWire.getSourceConnection();
 			InputPin oldDestConnection = oldWire.getDestConnection();
 			LComponent newSourceComp = oldToNew.get(oldSourceConnection.getLcomp());
@@ -142,8 +142,8 @@ public class CompUtils {
 			newSourceConnection.addWire(newWire);
 			newDestConnection.addWire(newWire);
 		}
-		
-		return newComps;
+
+		return new ArrayList<>(oldToNew.values());
 	}
 	
 	/**
@@ -191,15 +191,13 @@ public class CompUtils {
 		int rotation;
 		if(direction == Constants.CLOCKWISE) rotation = Constants.DOWN;
 		else rotation = Constants.UP;
-		for(int i = 0; i < lcomps.size(); i++) {
-			LComponent lcomp = lcomps.get(i);
+		for (LComponent lcomp : lcomps) {
 			Point rotPoint = withRotation(lcomp.getX() - x, lcomp.getY() - y, width, height, rotation);
-			if(direction == Constants.CLOCKWISE) {
+			if (direction == Constants.CLOCKWISE) {
 				lcomp.setRotation(lcomp.getRotation() + 1);
 				lcomp.setX(rotPoint.x - lcomp.getBounds().width + x + 1);
 				lcomp.setY(rotPoint.y + y);
-			}
-			else {
+			} else {
 				lcomp.setRotation(lcomp.getRotation() - 1);
 				lcomp.setX(rotPoint.x + x);
 				lcomp.setY(rotPoint.y - lcomp.getBounds().height + y + 1);

@@ -39,7 +39,7 @@ public class LogicEngine {
 			}
 			iterations++;
 		}
-		System.out.println("time: " + (System.currentTimeMillis() - time));
+		//System.out.println("time: " + (System.currentTimeMillis() - time));
 		return iterations;
 
 	}

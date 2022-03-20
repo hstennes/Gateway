@@ -1,9 +1,6 @@
 package com.logic.input;
 
-import com.logic.components.CompType;
-import com.logic.components.LComponent;
-import com.logic.components.SplitIn;
-import com.logic.components.SplitOut;
+import com.logic.components.*;
 import com.logic.engine.LogicWorker;
 import com.logic.ui.CircuitPanel;
 import com.logic.ui.InsertPanel;
@@ -12,8 +9,11 @@ import com.logic.ui.UserMessage;
 import com.logic.util.CompUtils;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.io.*;
+import java.util.ArrayList;
 
 /**
  * This class holds the code for adding components to the CircuitPanel
@@ -104,6 +104,7 @@ public class Inserter {
 	private void doInsert(String name, Point location) {
 		LComponent lcomp;
 		if(name.equalsIgnoreCase("splitter")) lcomp = makeSplitter(location);
+		else if(name.equalsIgnoreCase("rom")) lcomp = makeROM(location);
 		else lcomp = CompUtils.makeComponent(name, location.x, location.y);
 		if(lcomp == null) return;
 
@@ -139,6 +140,32 @@ public class Inserter {
 			return panel.getType() == CompType.SPLIT_IN ?
 					new SplitIn(location.x, location.y, panel.getSplit()) :
 					new SplitOut(location.x, location.y, panel.getSplit());
+		}
+		else return null;
+	}
+
+	private LComponent makeROM(Point location) {
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Hack programs", "hack");
+		JFileChooser fc = new JFileChooser();
+		fc.setFileFilter(filter);
+		if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			ArrayList<Integer> data = new ArrayList<>();
+			try {
+				File file = fc.getSelectedFile();
+				FileReader fr = new FileReader(file);
+				BufferedReader br = new BufferedReader(fr);
+
+				String line;
+				while ((line = br.readLine()) != null) data.add(Integer.parseInt(line, 2));
+			} catch(IOException e){
+				e.printStackTrace();
+			}
+
+			int[] program = new int[data.size()];
+			for(int i = 0; i < data.size(); i++) program[i] = data.get(i);
+			ROM rom = new ROM(location.x, location.y);
+			rom.setProgram(program);
+			return rom;
 		}
 		else return null;
 	}

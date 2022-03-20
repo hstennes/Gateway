@@ -24,13 +24,13 @@ public class InsertPanel extends JPanel implements ActionListener {
 	/**
 	 * The amount of padding around the body of each logic icon, used to determine how the SVGs should be rendered
 	 */
-	public static final int[] paddingValues = new int[] {20, 20, 20, 20, 20, 20, 20, 20, 16, 18, 15, 15, 15, 18, 17, 15};
+	public static final int[] paddingValues = new int[] {20, 20, 20, 20, 20, 20, 20, 20, 16, 18, 15, 15, 15, 18, 17, 15, 15};
 
 	/**
 	 * The names of the components in the InsertPanel, which are used for showing tool tips and by the Inserter
 	 */
 	private String[] logicNames = new String[] {"Buffer", "Not", "And", "Nand", "Or", "Nor", "Xor", "Xnor", "Clock", "Light", "Switch", 
-			"Zero", "One", "Button", "Display", "Splitter"};
+			"Zero", "One", "Button", "Display", "Splitter", "ROM"};
 	
 	/**
 	 * The collection of buttons
