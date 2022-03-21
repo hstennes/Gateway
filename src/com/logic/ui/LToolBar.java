@@ -1,10 +1,9 @@
 package com.logic.ui;
 
-import com.logic.components.ROM;
 import com.logic.custom.OpCustom2;
 import com.logic.files.FileManager;
 import com.logic.main.LogicSimApp;
-import com.logic.test.MemTest;
+import com.logic.test.ChipTester;
 import com.logic.util.Constants;
 
 import javax.swing.*;
@@ -154,10 +153,10 @@ public class LToolBar extends JToolBar implements ActionListener {
 		else if(command.equals("Create Custom Component")) {
 			//TODO this button is being used for testing
 			//cp.getEditor().getCustomCreator().createCustom();
-			//new MemTest((OpCustom2) cp.getEditor().getSelection().get(0)).execute();
-			ROM rom = new ROM(0, 0);
+			new ChipTester((OpCustom2) cp.getEditor().getSelection().get(0)).execute();
+			/*ROM rom = new ROM(0, 0);
 			rom.setProgram(new int[] {1, 1, 2, 3, 5, 8, 13});
-			cp.addLComp(rom);
+			cp.addLComp(rom);*/
 		}
 	}
 	
