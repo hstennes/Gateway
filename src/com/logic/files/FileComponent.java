@@ -105,6 +105,7 @@ public class FileComponent {
             cDataId = cSignalsIndex;
         }
         else if(type == CompType.ROM) program = ((ROM) lcomp).getProgram();
+        else if(type == CompType.RAM) program = ((RAM) lcomp).getData();
 
         IOManager io = lcomp.getIO();
         input = new int[io.getNumInputs()][4];
@@ -162,6 +163,7 @@ public class FileComponent {
         }
         else if(type == CompType.CLOCK) ((Clock) lcomp).setDelay(delay);
         else if(type == CompType.ROM) ((ROM) lcomp).setProgram(program);
+        else if(type == CompType.RAM) ((RAM) lcomp).setData(program);
         if(lcomp instanceof LabeledComponent) ((LabeledComponent) lcomp).setShowLabel(showLabel);
         if(lcomp instanceof BasicGate) ((BasicGate) lcomp).setNumInputs(input.length);
         return lcomp;

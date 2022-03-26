@@ -288,6 +288,9 @@ public class Renderer {
         if(type == CompType.ROM){
             drawBoxComponent(g2d, lcomp.getBoundsRight(), "ROM", -cb.x, -cb.y);
         }
+        else if(type == CompType.RAM){
+            drawBoxComponent(g2d, lcomp.getBoundsRight(), "RAM", -cb.x, -cb.y);
+        }
 
         //Otherwise render component image if there is one
         GraphicsNode svg = lcomp.getActiveImage();

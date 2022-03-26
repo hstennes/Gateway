@@ -31,7 +31,7 @@ public class IconLoader {
 	/**
 	 * The number of component icons used in the insert toolbar
 	 */
-	private final int numLogicIcons = 17;
+	private final int numLogicIcons = 18;
 
 	/**
 	 * The number of tool bar icons
@@ -133,6 +133,7 @@ public class IconLoader {
 		logicIcons[14] = new ImageIcon(renderLogicIcon(new Display(0, 0)));
 		logicIcons[15] = new ImageIcon(renderLogicIcon(new SplitOut(0, 0, new int[] {1, 1})));
 		logicIcons[16] = new ImageIcon(renderLogicIcon(new ROM(0, 0)));
+		logicIcons[17] = new ImageIcon(renderLogicIcon(new RAM(0, 0)));
 
 		logo = loadImage("/logo.png");
 	}

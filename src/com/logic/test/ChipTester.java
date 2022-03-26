@@ -1,9 +1,6 @@
 package com.logic.test;
 
-import com.logic.components.IOManager;
-import com.logic.components.LComponent;
-import com.logic.components.OutputPin;
-import com.logic.components.Wire;
+import com.logic.components.*;
 import com.logic.custom.OpCustom2;
 import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicWorker;
@@ -25,9 +22,9 @@ public class ChipTester extends SwingWorker<Void, Void> {
 
     private static final int maxValue = 65536;
 
-    private OpCustom2 chip;
+    private LComponent chip;
 
-    public ChipTester(OpCustom2 chip){
+    public ChipTester(LComponent chip){
         this.chip = chip;
     }
 
@@ -35,7 +32,7 @@ public class ChipTester extends SwingWorker<Void, Void> {
      * Tests random reads and writes from the memory chip. Run this method on a worker thread.
      * @param ram A Ram16K chip for the Hack platform
      */
-    private void testRam16K(OpCustom2 ram){
+    private void testRam16K(LComponent ram){
         //clock, address, load, value (not sure why its in this order)
         ArrayList<LComponent> ramList = new ArrayList<>();
         ramList.add(ram);
@@ -85,7 +82,7 @@ public class ChipTester extends SwingWorker<Void, Void> {
         }
     }
 
-    private void testALU(OpCustom2 alu) {
+    private void testALU(LComponent alu) {
         int[][] data = null;
         try {
             data = loadCMP("/ALU.cmp");
@@ -151,14 +148,17 @@ public class ChipTester extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() {
-        switch(chip.getCustomType().label){
-            case "RAM16K":
-                testRam16K(chip);
-                break;
-            case "ALU":
-                testALU(chip);
-                break;
+        if(chip instanceof OpCustom2) {
+            switch (((OpCustom2) chip).getCustomType().label) {
+                case "RAM16K":
+                    testRam16K(chip);
+                    break;
+                case "ALU":
+                    testALU(chip);
+                    break;
+            }
         }
+        else if(chip instanceof RAM) testRam16K(chip);
         return null;
     }
 }

@@ -153,7 +153,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 		else if(command.equals("Create Custom Component")) {
 			//TODO this button is being used for testing
 			//cp.getEditor().getCustomCreator().createCustom();
-			new ChipTester((OpCustom2) cp.getEditor().getSelection().get(0)).execute();
+			new ChipTester(cp.getEditor().getSelection().get(0)).execute();
 			/*ROM rom = new ROM(0, 0);
 			rom.setProgram(new int[] {1, 1, 2, 3, 5, 8, 13});
 			cp.addLComp(rom);*/

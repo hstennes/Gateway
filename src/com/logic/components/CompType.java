@@ -25,5 +25,6 @@ public enum CompType {
 	CUSTOM(),
 	SPLIT_OUT(),
 	SPLIT_IN(),
-	ROM();
+	ROM(),
+	RAM();
 }

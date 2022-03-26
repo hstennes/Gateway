@@ -21,7 +21,7 @@ public class DelaySpinner extends LabeledSpinner implements ChangeListener {
 	/**
 	 * The minimum delay value that a clock can be set to
 	 */
-	private final int min = 50;
+	private final int min = 1;
 	
 	/**
 	 * The maximum delay value that a clock can be set to
