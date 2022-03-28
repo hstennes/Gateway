@@ -209,7 +209,7 @@ public class Renderer {
         }
 
         g2d.draw(curve);
-        if (wire.getSignalOld()) g2d.setColor(Color.ORANGE);
+        if (wire.getSignal() == 1) g2d.setColor(Color.ORANGE);
         else g2d.setColor(Color.WHITE);
         g2d.setStroke(new BasicStroke(3));
         g2d.draw(curve);
@@ -266,30 +266,32 @@ public class Renderer {
         //Draw connections, same for all components
         drawConnections(g2d, lcomp, -cb.x, -cb.y);
 
-        //Special rendering currently for Custom, multi bit switch, multi bit light
-        if(type == CompType.CUSTOM) {
-            drawBoxComponent(g2d, lcomp.getBoundsRight(), ((OpCustom2) lcomp).getCustomType().label, -cb.x, -cb.y);
-            return image;
-        }
-        if(type == CompType.SWITCH && ((Switch) lcomp).getBitWidth() > 1){
-            drawSignalBox(g2d, lb,
-                    ((Switch) lcomp).getState(),
-                    ((Switch) lcomp).getBitWidth(),
-                    -cb.x, -cb.y);
-            return image;
-        }
-        if(type == CompType.LIGHT && ((Light) lcomp).getBitWidth() > 1){
-            drawSignalBox(g2d, lb,
-                    lcomp.getIO().getInput(0),
-                    ((Light) lcomp).getBitWidth(),
-                    -cb.x, -cb.y);
-            return image;
-        }
-        if(type == CompType.ROM){
-            drawBoxComponent(g2d, lcomp.getBoundsRight(), "ROM", -cb.x, -cb.y);
-        }
-        else if(type == CompType.RAM){
-            drawBoxComponent(g2d, lcomp.getBoundsRight(), "RAM", -cb.x, -cb.y);
+        switch(type){
+            case CUSTOM:
+                drawBoxComponent(g2d, lcomp.getBoundsRight(), ((OpCustom2) lcomp).getCustomType().label, -cb.x, -cb.y);
+                return image;
+            case SWITCH:
+                if(((Switch) lcomp).getBitWidth() == 1) break;
+                drawSignalBox(g2d, lb,
+                        ((Switch) lcomp).getState(),
+                        ((Switch) lcomp).getBitWidth(),
+                        -cb.x, -cb.y);
+                return image;
+            case LIGHT:
+                if(((Light) lcomp).getBitWidth() == 1) break;
+                drawSignalBox(g2d, lb,
+                        lcomp.getIO().getInput(0),
+                        ((Light) lcomp).getBitWidth(),
+                        -cb.x, -cb.y);
+                return image;
+            case ROM:
+                drawBoxComponent(g2d, lcomp.getBoundsRight(), "ROM", -cb.x, -cb.y);
+                return image;
+            case RAM:
+                drawBoxComponent(g2d, lcomp.getBoundsRight(), "RAM", -cb.x, -cb.y);
+                return image;
+            case SCREEN:
+                drawScreen(g2d, (Screen) lcomp, -cb.x, -cb.y);
         }
 
         //Otherwise render component image if there is one
@@ -326,11 +328,7 @@ public class Renderer {
     }
 
     private void drawSignalBox(Graphics2D g2d, Rectangle lb, int signal, int bitWidth, int dx, int dy){
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect(dx, dy, lb.width, lb.height);
-        g2d.setColor(Color.BLACK);
-        g2d.setStroke(new BasicStroke(4));
-        g2d.drawRect(dx + 2, dy + 2, lb.width - 4, lb.height - 4);
+        drawBox(g2d, dx, dy, lb);
 
         g2d.setFont(SWITCH_FONT);
         FontMetrics metrics = g2d.getFontMetrics(SWITCH_FONT);
@@ -341,6 +339,39 @@ public class Renderer {
                     dx + lb.width - SWITCH_BIT_SPACING * (i + 1) + (SWITCH_BIT_SPACING - strWidth) / 2,
                     dy + (lb.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
         }
+    }
+
+    private void drawScreen(Graphics2D g2d, Screen screen, int dx, int dy){
+        Rectangle bounds = screen.getBoundsRight();
+        drawBox(g2d, dx, dy, bounds);
+
+        InputPin inputPin = screen.getIO().inputConnection(0);
+        LComponent connected = null;
+        if(inputPin.numWires() > 0){
+           OutputPin source = inputPin.getWire().getSourceConnection();
+           if(source != null) connected = source.getLcomp();
+        }
+        if(connected != null && connected.getType() == CompType.RAM){
+            RAM ram = (RAM) connected;
+            for(int row = 0; row < 256; row++){
+                for(int reg = 0; reg < 32; reg++){
+                    int regVal = ram.getData()[16384 + row * 32 + reg];
+                    for(int x = 16 * reg; x < 16 * (reg + 1); x++){
+                        if(((regVal >> x) & 1) == 1) g2d.setColor(Color.DARK_GRAY);
+                        else g2d.setColor(Color.WHITE);
+                        g2d.drawRect(Screen.PADDING + x * 2, Screen.PADDING + row * 2, 2, 2);
+                    }
+                }
+            }
+        }
+    }
+
+    private void drawBox(Graphics2D g2d, int dx, int dy, Rectangle bounds) {
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(dx, dy, bounds.width, bounds.height);
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(4));
+        g2d.drawRect(dx + 2, dy + 2, bounds.width - 4, bounds.height - 4);
     }
 
     private void drawDisplayValue(Graphics2D g2d, Display display, int dx, int dy){

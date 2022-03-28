@@ -69,7 +69,7 @@ public class WireBuilder {
 	 */
 	public void endWire(Connection connection) {
 		if(workingWire != null && startConnection.getType() != connection.getType()) {
-			connection.addWire(workingWire);
+			if(!connection.addWire(workingWire)) cancelWire();
 			LogicWorker.startLogic(startConnection.getType() == Connection.OUTPUT ?
 					connection.getLcomp() : startConnection.getLcomp());
 			workingWire = null;

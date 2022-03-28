@@ -25,6 +25,10 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 	 * A constant representing an output connection
 	 */
 	public static final int OUTPUT = 1;
+
+	public static final int NORMAL = 0;
+
+	public static final int SCREEN = 1;
 	
 	/**
 	 * The range from the center of the connection inside which a user click will be interpreted as clicking the connection
@@ -61,6 +65,8 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 	private int direction;
 
 	private int bitWidth;
+
+	private int special;
 
 	/**
 	 * Constructs a new Connection
@@ -175,6 +181,14 @@ public abstract class Connection implements Deletable, BitWidthEntity {
 	 */
 	public int getY() {
 		return pos[1];
+	}
+
+	public int getSpecial() {
+		return special;
+	}
+
+	public void setSpecial(int special) {
+		this.special = special;
 	}
 
 	public int getType(){

@@ -26,5 +26,6 @@ public enum CompType {
 	SPLIT_OUT(),
 	SPLIT_IN(),
 	ROM(),
-	RAM();
+	RAM(),
+	SCREEN();
 }

@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class RAM extends LComponent{
 
-    public static int SIZE = 16384;
+    public static int SIZE = 32768;
 
     public static int WIDTH = 150, HEIGHT = 80;
 
@@ -23,7 +23,7 @@ public class RAM extends LComponent{
         io.addConnection(3 * WIDTH / 4, HEIGHT + 25, Connection.INPUT, Constants.DOWN);
         io.addConnection(-25, HEIGHT / 2, Connection.INPUT, Constants.LEFT);
         io.addConnection(WIDTH + 25, HEIGHT / 2, Connection.OUTPUT, Constants.RIGHT);
-        io.inputConnection(1).changeBitWidth(14);
+        io.inputConnection(1).changeBitWidth(15);
         io.inputConnection(3).changeBitWidth(16);
         data = new int[SIZE];
     }

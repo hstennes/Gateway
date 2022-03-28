@@ -81,6 +81,9 @@ public class CompUtils {
 			case "ram":
 				lcomp = new RAM(x, y);
 				break;
+			case "screen":
+				lcomp = new Screen(x, y);
+				break;
 			case "splitter":
 				throw new IllegalArgumentException("CompUtils.makeComponent does not support splitters");
 			default:
