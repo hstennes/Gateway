@@ -36,7 +36,7 @@ public class IconLoader {
 	/**
 	 * The number of tool bar icons
 	 */ 
-	private final int numToolBarIcons = 15;
+	private final int numToolBarIcons = 16;
 
 	/**
 	 * Shows the width of each logic image
@@ -115,6 +115,7 @@ public class IconLoader {
 		toolBarIcons[12] = new ImageIcon(loadImage("/rotate_counter.png"));
 		toolBarIcons[13] = new ImageIcon(loadImage("/rotate.png"));
 		toolBarIcons[14] = new ImageIcon(loadImage("/custom.png"));
+		toolBarIcons[15] = new ImageIcon(loadImage("/console.png"));
 
 		logicIcons[0] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.BUFFER)));
 		logicIcons[1] = new ImageIcon(renderLogicIcon(new SingleInputGate(0, 0, CompType.NOT)));

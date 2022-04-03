@@ -81,14 +81,14 @@ public class OpCustom2 extends LComponent {
 
     @Override
     public void update(LogicEngine engine) {
-        long start = System.nanoTime();
+        //long start = System.nanoTime();
 
         int[] inputs = new int[io.getNumInputs()];
         for(int i = 0; i < inputs.length; i++) inputs[i] = io.getInput(i);
 
         int[] outputs = type.nodeBox.update(signals, inputs, 0, new ActiveStack());
         for(int i = 0; i < io.getNumOutputs(); i++) io.setOutput(i, outputs[i], engine);
-        if(type.label.equals("CPU1")) System.out.println("CPU TIME CYCLE TIME: " + (System.nanoTime() - start));
+        //if(type.label.equals("CPU1")) System.out.println("CPU TIME CYCLE TIME: " + (System.nanoTime() - start));
     }
 
     /**

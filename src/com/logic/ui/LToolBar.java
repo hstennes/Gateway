@@ -4,6 +4,8 @@ import com.logic.custom.OpCustom2;
 import com.logic.files.FileManager;
 import com.logic.main.LogicSimApp;
 import com.logic.test.ChipTester;
+import com.logic.test.Debug;
+import com.logic.test.DebugConsole;
 import com.logic.util.Constants;
 
 import javax.swing.*;
@@ -29,7 +31,7 @@ public class LToolBar extends JToolBar implements ActionListener {
 	 * The names of each button
 	 */
 	private String[] tooltips = new String[] {"New", "Open", "Save", "Select", "Pan", "Insert", "Undo", "Redo", "Cut", "Copy", "Paste", 
-			"Delete", "Rotate Counter-Clockwise", "Rotate Clockwise", "Create Custom Component"};
+			"Delete", "Rotate Counter-Clockwise", "Rotate Clockwise", "Create Custom Component", "Debug Console"};
 	
 	/**
 	 * The button collection, used for the select, pan, and insert toggle buttons
@@ -150,14 +152,8 @@ public class LToolBar extends JToolBar implements ActionListener {
 		else if(command.equals("New")) LogicSimApp.newWindow(null);
 		else if(command.equals("Open")) fileManager.open();
 		else if(command.equals("Save")) fileManager.save();
-		else if(command.equals("Create Custom Component")) {
-			//TODO this button is being used for testing
-			//cp.getEditor().getCustomCreator().createCustom();
-			new ChipTester(cp.getEditor().getSelection().get(0)).execute();
-			/*ROM rom = new ROM(0, 0);
-			rom.setProgram(new int[] {1, 1, 2, 3, 5, 8, 13});
-			cp.addLComp(rom);*/
-		}
+		else if(command.equals("Create Custom Component")) cp.getEditor().getCustomCreator().createCustom();
+		else if(command.equals("Debug Console")) DebugConsole.promptCommand(cp);
 	}
 	
 	/**

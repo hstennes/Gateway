@@ -3,7 +3,13 @@ package com.logic.util;
 import com.logic.components.Button;
 import com.logic.components.*;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -271,6 +277,30 @@ public class CompUtils {
 			}
 			if(!compAdded) lcomps.add(lcomp);
 		}
+	}
+
+	public static int[] promptROMProgram(){
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Hack programs", "hack");
+		JFileChooser fc = new JFileChooser();
+		fc.setFileFilter(filter);
+		if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			ArrayList<Integer> data = new ArrayList<>();
+			try {
+				File file = fc.getSelectedFile();
+				FileReader fr = new FileReader(file);
+				BufferedReader br = new BufferedReader(fr);
+
+				String line;
+				while ((line = br.readLine()) != null) data.add(Integer.parseInt(line, 2));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			int[] program = new int[data.size()];
+			for (int i = 0; i < data.size(); i++) program[i] = data.get(i);
+			return program;
+		}
+		else return null;
 	}
 
 	/**

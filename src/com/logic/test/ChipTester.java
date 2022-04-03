@@ -6,6 +6,7 @@ import com.logic.engine.LogicEngine;
 import com.logic.engine.LogicWorker;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -124,6 +125,24 @@ public class ChipTester extends SwingWorker<Void, Void> {
         System.out.println("DONE TESTING");
     }
 
+    private void simulateMaxClockSpeed(LComponent clock){
+        boolean clockState = false;
+        long iterations = 0;
+        long startTime = System.currentTimeMillis();
+        ArrayList<LComponent> clockList = new ArrayList<>();
+        clockList.add(clock);
+        IOManager io = clock.getIO();
+        while(io.outputConnection(0).numWires() > 0){
+            ((Clock) clock).setOn(clockState);
+            new LogicEngine(clockList).doLogic();
+            clockState = !clockState;
+            iterations++;
+        }
+
+        float hz = ((float) iterations / (System.currentTimeMillis() - startTime)) * 1000;
+        System.out.println("Averaged " + hz + "HZ");
+    }
+
     private int[][] loadCMP(String path) throws IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource(path)).getPath());
         FileReader fr = new FileReader(file);
@@ -158,6 +177,7 @@ public class ChipTester extends SwingWorker<Void, Void> {
                     break;
             }
         }
+        else if(chip instanceof Clock) simulateMaxClockSpeed(chip);
         else if(chip instanceof RAM) testRam16K(chip);
         return null;
     }

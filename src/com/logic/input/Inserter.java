@@ -145,24 +145,8 @@ public class Inserter {
 	}
 
 	private LComponent makeROM(Point location) {
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("Hack programs", "hack");
-		JFileChooser fc = new JFileChooser();
-		fc.setFileFilter(filter);
-		if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			ArrayList<Integer> data = new ArrayList<>();
-			try {
-				File file = fc.getSelectedFile();
-				FileReader fr = new FileReader(file);
-				BufferedReader br = new BufferedReader(fr);
-
-				String line;
-				while ((line = br.readLine()) != null) data.add(Integer.parseInt(line, 2));
-			} catch(IOException e){
-				e.printStackTrace();
-			}
-
-			int[] program = new int[data.size()];
-			for(int i = 0; i < data.size(); i++) program[i] = data.get(i);
+		int[] program = CompUtils.promptROMProgram();
+		if(program != null){
 			ROM rom = new ROM(location.x, location.y);
 			rom.setProgram(program);
 			return rom;

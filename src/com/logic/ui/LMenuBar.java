@@ -2,6 +2,7 @@ package com.logic.ui;
 
 import com.logic.files.FileManager;
 import com.logic.main.LogicSimApp;
+import com.logic.test.DebugConsole;
 import com.logic.util.Constants;
 
 import javax.swing.*;
@@ -60,22 +61,22 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 	private void createMenu() {
 		JMenu menu = new JMenu("File");
 		JMenuItem menuItem = new JMenuItem("New", KeyEvent.VK_N);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Creates a new document");
 		addListener(menuItem, "New");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Open...", KeyEvent.VK_O);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Opens a document from the filesystem");
 		addListener(menuItem, "Open");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Save", KeyEvent.VK_S);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Saves this document");
 		addListener(menuItem, "Save");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Save as...", KeyEvent.VK_A);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Saves this document to a specified location");
 		addListener(menuItem, "Save as");
 		menu.add(menuItem);
@@ -83,27 +84,27 @@ public class LMenuBar extends JMenuBar implements ActionListener {
  
 		menu = new JMenu("Edit");
 		menuItem = new JMenuItem("Undo", KeyEvent.VK_Z);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Reverts the previous action");
 		addListener(menuItem, "Undo");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Redo", KeyEvent.VK_Y);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Undos an undo");
 		addListener(menuItem, "Redo");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Cut", KeyEvent.VK_X);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Cuts the current selection");
 		addListener(menuItem, "Cut");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Copy", KeyEvent.VK_C);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Copys the current selection");
 		addListener(menuItem, "Copy");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Paste", KeyEvent.VK_V);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Pastes a copied selection");
 		addListener(menuItem, "Paste");
 		menu.add(menuItem);
@@ -111,12 +112,12 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 		
 		menu = new JMenu("View");
 		menuItem = new JMenuItem("Zoom in", KeyEvent.VK_PLUS);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Reverts the previous action");
 		addListener(menuItem, "Zoom in");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Zoom out", KeyEvent.VK_MINUS);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Undos an undo");
 		addListener(menuItem, "Zoom out");
 		menu.add(menuItem);		
@@ -163,18 +164,23 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 		addListener(menuItem, "Delete");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Rotate clockwise", KeyEvent.VK_L);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Rotates the selection clockwise");
 		addListener(menuItem, "Clockwise");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Rotate counter-clockwise", KeyEvent.VK_K);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 		menuItem.getAccessibleContext().setAccessibleDescription("Rotates the selection counter-clockwise");
 		addListener(menuItem, "Counter");
 		menu.add(menuItem);
 		menuItem = new JMenuItem("Create custom component");
 		menuItem.getAccessibleContext().setAccessibleDescription("Creates a custom component from the current selection");
 		addListener(menuItem, "Custom");
+		menu.add(menuItem);
+		menuItem = new JMenuItem("Debug console");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+		menuItem.getAccessibleContext().setAccessibleDescription("Runs a debug command");
+		addListener(menuItem, "Console");
 		menu.add(menuItem);
 		add(menu);
 	}
@@ -216,6 +222,7 @@ public class LMenuBar extends JMenuBar implements ActionListener {
 		else if(command.equals("Clockwise")) cp.getEditor().getSelection().rotate(Constants.CLOCKWISE);
 		else if(command.equals("Counter")) cp.getEditor().getSelection().rotate(Constants.COUNTER_CLOCKWISE);
 		else if(command.equals("Custom")) cp.getEditor().getCustomCreator().createCustom();
+		else if(command.equals("Console")) DebugConsole.promptCommand(cp);
 	}
 	
 	/**

@@ -77,7 +77,7 @@ public class Clock extends SComponent {
 	@Override
 	public void start(CircuitPanel cp) {
 		if(timer != null) timer.stop();
-		timer = new Timer(delay, new ActionListener() {
+		/*timer = new Timer(delay, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				on = !on;
@@ -85,7 +85,7 @@ public class Clock extends SComponent {
 				cp.repaint();
 			}
 		});
-		timer.start();
+		timer.start();*/
 	}
 
 	@Override
@@ -120,5 +120,9 @@ public class Clock extends SComponent {
 
 	public boolean isOn() {
 		return on;
+	}
+
+	public void setOn(boolean on){
+		this.on = on;
 	}
 }

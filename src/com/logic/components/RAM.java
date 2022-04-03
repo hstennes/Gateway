@@ -61,6 +61,10 @@ public class RAM extends LComponent{
         return new RAM(x, y);
     }
 
+    public void clear(){
+        data = new int[SIZE];
+    }
+
     public void setData(int[] data){
         this.data = data;
     }
