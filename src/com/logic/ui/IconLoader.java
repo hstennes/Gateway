@@ -146,8 +146,8 @@ public class IconLoader {
 	 */
 	private Image renderLogicIcon(LComponent model){
 		Image[] images = new Image[2];
-		images[0] = new Renderer(null).renderComponentImage(model, 0.40f, 1.0f);
-		images[1] = new Renderer(null).renderComponentImage(model, 0.40f, LogicSimApp.DISP_SCALE);
+		images[0] = new Renderer(null).renderComponentImage(model, 0.40f, 1.0f, null);
+		images[1] = new Renderer(null).renderComponentImage(model, 0.40f, LogicSimApp.DISP_SCALE, null);
 		return new BaseMultiResolutionImage(images);
 	}
 

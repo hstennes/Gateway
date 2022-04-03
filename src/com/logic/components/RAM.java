@@ -41,6 +41,10 @@ public class RAM extends LComponent{
         io.setOutput(0, data[address], engine);
     }
 
+    public int getCurrentAddress(){
+        return io.getInput(1);
+    }
+
     @Override
     public Rectangle getBounds() {
         if(rotation == Constants.UP || rotation == Constants.DOWN) return new Rectangle(x, y, HEIGHT, WIDTH);

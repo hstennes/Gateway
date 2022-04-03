@@ -13,10 +13,13 @@ public class ImageCache {
     /**
      * Maps LComponent strings from getHashString to cached images
      */
-    private HashMap<String, CachedImage> images;
+    private HashMap<String, CachedImage> staticImages;
+
+    private HashMap<LComponent, CachedImage> updateImages;
 
     public ImageCache(){
-        images = new HashMap<>();
+        staticImages = new HashMap<>();
+        updateImages = new HashMap<>();
     }
 
     /**
@@ -24,8 +27,12 @@ public class ImageCache {
      * @param lcomp The LComponent associated with the image
      * @param image The image
      */
-    public void add(LComponent lcomp, CachedImage image){
-        images.put(getHashString(lcomp), image);
+    public void addStaticImage(LComponent lcomp, CachedImage image){
+        staticImages.put(getHashString(lcomp), image);
+    }
+
+    public void addUpdateImage(LComponent lcomp, CachedImage image){
+        updateImages.put(lcomp, image);
     }
 
     /**
@@ -33,15 +40,26 @@ public class ImageCache {
      * @param lcomp The LComponent
      * @return The image
      */
-    public CachedImage get(LComponent lcomp){
-        return images.get(getHashString(lcomp));
+    public CachedImage getStaticImage(LComponent lcomp){
+        return staticImages.get(getHashString(lcomp));
+    }
+
+    public CachedImage getUpdateImage(LComponent lcomp){
+        /*four cases:
+        There is no image for the component --> return null, renderer must completely draw the image
+        There is an image for the component, and it must be modified --> return image, renderer must modify the image
+        There is an image for the component, and it is good as is --> return image, renderer must draw the image
+        There is an image for the component, but the image must be completely redrawn --> return null, renderer will redraw the image
+         */
+        return checkUpdateImageValid(lcomp) ? updateImages.get(lcomp) : null;
     }
 
     /**
      * Clears the cache. Do this whenever the user zooms.
      */
     public void clear(){
-        images.clear();
+        staticImages.clear();
+        updateImages.clear();
     }
 
     /**
@@ -49,7 +67,7 @@ public class ImageCache {
      * @param lcomp The LComponent
      * @return The string to be used as the HashMap key
      */
-    public String getHashString(LComponent lcomp){
+    private String getHashString(LComponent lcomp){
         String ext = "";
         if(lcomp instanceof BasicGate) ext = Integer.toString(lcomp.getIO().getNumInputs());
         else if(lcomp instanceof Light) ext = lcomp.getIO().getInput(0) + "b" + ((Light) lcomp).getBitWidth();
@@ -61,6 +79,14 @@ public class ImageCache {
         else if(lcomp instanceof Splitter) ext = arrayString(((Splitter) lcomp).getSplit());
         else if(lcomp instanceof Display) ext = ((Display) lcomp).getValue() + lcomp.getRotation();
         return lcomp.getType().toString() + ext;
+    }
+
+    private boolean checkUpdateImageValid(LComponent lcomp){
+        if(lcomp.getType() == CompType.SCREEN){
+            Screen screen = (Screen) lcomp;
+            return !screen.mustFullRedraw();
+        }
+        return false;
     }
 
     private String arrayString(int[] arr){

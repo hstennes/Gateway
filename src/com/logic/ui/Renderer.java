@@ -216,10 +216,21 @@ public class Renderer {
     }
 
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
-        CachedImage image = cache.get(lcomp);
-        if(image == null){
-            image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE);
-            cache.add(lcomp, image);
+        CachedImage image;
+        if(lcomp.getType() == CompType.SCREEN){
+            image = cache.getUpdateImage(lcomp);
+            if(image == null){
+                image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, null);
+                cache.addUpdateImage(lcomp, image);
+            }
+            renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, image);
+        }
+        else {
+            image = cache.getStaticImage(lcomp);
+            if(image == null){
+                image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, null);
+                cache.addUpdateImage(lcomp, image);
+            }
         }
 
         Point p = circuitToScreen(lcomp.getX(), lcomp.getY());
@@ -245,26 +256,30 @@ public class Renderer {
         g2d.rotate(-radians, p.x, p.y);
     }
 
-    public CachedImage renderComponentImage(LComponent lcomp, float zoom, float dpiScale){
+    public CachedImage renderComponentImage(LComponent lcomp, float zoom, float dpiScale, CachedImage oldImage){
         //set up BufferedImage and graphics object, same for all components
         Rectangle lb = lcomp.getBoundsRight();
         Rectangle cb = lcomp.getIO().getConnectionBounds();
         CompType type = lcomp.getType();
         float invDpiScale = 1 / dpiScale;
         zoom *= dpiScale;
-        CachedImage image = new CachedImage(
-                (int) (cb.width * zoom),
-                (int) (cb.height * zoom),
-                (int) (-cb.x * zoom * invDpiScale),
-                (int) (-cb.y * zoom * invDpiScale),
-                (int) ((-cb.x + lb.width) * zoom * invDpiScale),
-                (int) ((-cb.y + lb.height) * zoom * invDpiScale));
+        CachedImage image;
+        if(oldImage == null) {
+            image = new CachedImage(
+                    (int) (cb.width * zoom),
+                    (int) (cb.height * zoom),
+                    (int) (-cb.x * zoom * invDpiScale),
+                    (int) (-cb.y * zoom * invDpiScale),
+                    (int) ((-cb.x + lb.width) * zoom * invDpiScale),
+                    (int) ((-cb.y + lb.height) * zoom * invDpiScale));
+        }
+        else image = oldImage;
         Graphics2D g2d = (Graphics2D) image.getGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.scale(zoom, zoom);
 
         //Draw connections, same for all components
-        drawConnections(g2d, lcomp, -cb.x, -cb.y);
+        if(oldImage == null) drawConnections(g2d, lcomp, -cb.x, -cb.y);
 
         switch(type){
             case CUSTOM:
@@ -291,7 +306,9 @@ public class Renderer {
                 drawBoxComponent(g2d, lcomp.getBoundsRight(), "RAM", -cb.x, -cb.y);
                 return image;
             case SCREEN:
-                drawScreen(g2d, (Screen) lcomp, -cb.x, -cb.y);
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+                if(oldImage == null) drawScreen(g2d, (Screen) lcomp, -cb.x, -cb.y);
+                else updateScreen(g2d, (Screen) lcomp, -cb.x, -cb.y);
         }
 
         //Otherwise render component image if there is one
@@ -345,24 +362,38 @@ public class Renderer {
         Rectangle bounds = screen.getBoundsRight();
         drawBox(g2d, dx, dy, bounds);
 
-        InputPin inputPin = screen.getIO().inputConnection(0);
-        LComponent connected = null;
-        if(inputPin.numWires() > 0){
-           OutputPin source = inputPin.getWire().getSourceConnection();
-           if(source != null) connected = source.getLcomp();
-        }
-        if(connected != null && connected.getType() == CompType.RAM){
-            RAM ram = (RAM) connected;
+        RAM ram = screen.getRamIfExists();
+        if(ram != null){
             for(int row = 0; row < 256; row++){
                 for(int reg = 0; reg < 32; reg++){
                     int regVal = ram.getData()[16384 + row * 32 + reg];
-                    for(int x = 16 * reg; x < 16 * (reg + 1); x++){
+                    for(int x = 0; x < 16; x++){
                         if(((regVal >> x) & 1) == 1) g2d.setColor(Color.DARK_GRAY);
                         else g2d.setColor(Color.WHITE);
-                        g2d.drawRect(Screen.PADDING + x * 2, Screen.PADDING + row * 2, 2, 2);
+                        g2d.fillRect(dx + Screen.PADDING + (x + 16 * reg) * 2, dy + Screen.PADDING + row * 2, 2, 2);
                     }
                 }
             }
+            screen.clearRamUpdates();
+            screen.didFullRedraw();
+        }
+    }
+
+    private void updateScreen(Graphics2D g2d, Screen screen, int dx, int dy){
+        RAM ram = screen.getRamIfExists();
+        if(ram != null){
+            for(int address : screen.getRamUpdates()){
+                int register = address - Screen.ADDR;
+                int value = ram.getData()[address];
+                int y = register / 32;
+                int xStart = (register % 32) * 16;
+                for(int x = 0; x < 16; x++){
+                    if(((value >> x) & 1) == 1) g2d.setColor(Color.DARK_GRAY);
+                    else g2d.setColor(Color.WHITE);
+                    g2d.fillRect(dx + Screen.PADDING + (x + xStart) * 2, dy + Screen.PADDING + y * 2, 2, 2);
+                }
+            }
+            screen.clearRamUpdates();
         }
     }
 
