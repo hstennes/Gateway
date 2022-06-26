@@ -9,6 +9,8 @@ import com.logic.util.ActionUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,8 @@ public class CircuitPanel extends JPanel {
 	private Window window;
 
 	private Renderer renderer;
+
+	private Timer renderTimer;
 	
 	/**
 	 * Constructs a new CircuitPanel
@@ -101,6 +105,17 @@ public class CircuitPanel extends JPanel {
 		renderer = new Renderer(this);
 		//Debug.loadTestCircuit(this, true);
 		//Debug.testCircuit2(this);
+
+		renderTimer = new Timer(50, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				repaint();
+			}
+		});
+	}
+
+	public void startRenderTimer(){
+		renderTimer.start();
 	}
 
 	/**

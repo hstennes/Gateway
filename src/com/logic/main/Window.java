@@ -91,7 +91,9 @@ public class Window extends JFrame {
 		LMenuBar menuBar = new LMenuBar(cp, toolbar, fileManager);
 		toolbar.setLMenuBar(menuBar);
 		setJMenuBar(menuBar);
-		
+
+		cp.startRenderTimer();
+
 		add(mainPanel);
 		setVisible(true);
 		return fileManager;

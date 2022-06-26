@@ -218,12 +218,12 @@ public class Renderer {
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
         CachedImage image;
         if(lcomp.getType() == CompType.SCREEN){
-            image = cache.getUpdateImage(lcomp);
+            /*image = cache.getUpdateImage(lcomp);
             if(image == null){
                 image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, null);
                 cache.addUpdateImage(lcomp, image);
-            }
-            renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, image);
+            }*/
+            image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, null);
         }
         else {
             image = cache.getStaticImage(lcomp);
@@ -374,8 +374,8 @@ public class Renderer {
                     }
                 }
             }
-            screen.clearRamUpdates();
-            screen.didFullRedraw();
+            //screen.clearRamUpdates();
+            //screen.didFullRedraw();
         }
     }
 
