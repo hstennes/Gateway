@@ -102,6 +102,7 @@ public class LogicSimApp {
 				e.printStackTrace();
 			}
 		}
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
 		SwingUtilities.invokeLater(LogicSimApp::new);
 		/**
 		 * To do list:
