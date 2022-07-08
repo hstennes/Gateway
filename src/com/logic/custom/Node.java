@@ -18,16 +18,31 @@ public abstract class Node {
 
     public Node(int[] in, int[][] rawMark, int address){
         this.in = in;
-        mark = new Integer[rawMark.length][];
-        for(int i = 0; i < mark.length; i++){
-            this.mark[i] = new Integer[rawMark[i].length];
-            for(int x = 0; x < mark[i].length; x++) mark[i][x] = rawMark[i][x];
-        }
+        if(rawMark != null) {
+            mark = new Integer[rawMark.length][];
+            for (int i = 0; i < mark.length; i++) {
+                this.mark[i] = new Integer[rawMark[i].length];
+                for (int x = 0; x < mark[i].length; x++) mark[i][x] = rawMark[i][x];
+            }
+        } else mark = null;
         this.address = address;
     }
 
     /**
-     * Updates the output signal based on inputs acquired from the given NodeBox
+     * Updates the output signals of this node. This method is for an event-based simulation, which requires each node
+     * to mark the nodes that should be updated next
+     * @param signals The signals array
+     * @param offset The signal address offset of the NodeBox
+     * @param active The active stack
      */
-    public abstract void update(int[] signals, int offset, ActiveStack active);
+    public abstract void updateEvent(int[] signals, int offset, ActiveStack active);
+
+    /**
+     * Updates the output signals of this node. This method is for an LCC simulation, which does not require nodes
+     * to mark other nodes for updating
+     * @param signals The signals array
+     * @param offset The signal address offset of the NodeBox
+     * @param active The active stack (only useful for CustomNode)
+     */
+    public abstract void updateLCC(int[] signals, int offset, ActiveStack active);
 }

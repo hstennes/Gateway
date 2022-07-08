@@ -14,15 +14,25 @@ public class SplitInNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ActiveStack active) {
+    public void updateEvent(int[] signals, int offset, ActiveStack active){
+        int newSignal = doLogic(signals, offset);
+        if(newSignal == signals[address + offset]) return;
+        signals[address + offset] = newSignal;
+        active.mark(mark[0]);
+    }
+
+    @Override
+    public void updateLCC(int[] signals, int offset, ActiveStack active){
+        signals[address + offset] = doLogic(signals, offset);
+    }
+
+    private int doLogic(int[] signals, int offset){
         int newSignal = 0;
         int shift = 0;
         for(int i = 0; i < split.length; i++){
             newSignal |= (signals[in[i] + offset] & ((1 << split[i]) - 1)) << shift;
             shift += split[i];
         }
-        if(newSignal == signals[address + offset]) return;
-        signals[address + offset] = newSignal;
-        active.mark(mark[0]);
+        return newSignal;
     }
 }

@@ -14,5 +14,8 @@ public class PlaceholderNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ActiveStack active) { }
+    public void updateEvent(int[] signals, int offset, ActiveStack active) { }
+
+    @Override
+    public void updateLCC(int[] signals, int offset, ActiveStack active) { }
 }

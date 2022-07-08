@@ -11,7 +11,9 @@ public class StartNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ActiveStack active) {
+    public void updateEvent(int[] signals, int offset, ActiveStack active) {
         active.mark(mark[0]);
     }
+
+    public void updateLCC(int[] signals, int offset, ActiveStack active) { }
 }

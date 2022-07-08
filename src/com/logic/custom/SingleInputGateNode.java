@@ -16,10 +16,15 @@ public class SingleInputGateNode extends Node {
     }
 
     @Override
-    public void update(int[] signals, int offset, ActiveStack active) {
+    public void updateEvent(int[] signals, int offset, ActiveStack active){
         int newSignal = signals[in[0] + offset] ^ mask;
         if(newSignal == signals[address + offset]) return;
         signals[address + offset] = newSignal;
         active.mark(mark[0]);
+    }
+
+    @Override
+    public void updateLCC(int[] signals, int offset, ActiveStack active){
+        signals[address + offset] = signals[in[0] + offset] ^ mask;
     }
 }

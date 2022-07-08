@@ -18,7 +18,7 @@ public class CustomNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ActiveStack active) {
+    public void updateEvent(int[] signals, int offset, ActiveStack active){
         int[] inputs = new int[in.length];
         for(int i = 0; i < inputs.length; i++) inputs[i] = signals[offset + in[i]];
 
@@ -33,6 +33,15 @@ public class CustomNode extends Node{
             signals[index] = newSignal;
             active.mark(mark[i]);
         }
+    }
+
+    @Override
+    public void updateLCC(int[] signals, int offset, ActiveStack active) {
+        int[] inputs = new int[in.length];
+        for(int i = 0; i < inputs.length; i++) inputs[i] = signals[offset + in[i]];
+
+        int[] outputs = type.nodeBox.update(signals, inputs, offset + innerOffset, active);
+        for(int i = 0; i < outputs.length; i++) signals[address + offset + i] = outputs[i];
     }
 
     public CustomType getType(){

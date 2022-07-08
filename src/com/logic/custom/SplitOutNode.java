@@ -14,7 +14,7 @@ public class SplitOutNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ActiveStack active) {
+    public void updateEvent(int[] signals, int offset, ActiveStack active){
         int input = signals[in[0] + offset];
         for(int i = 0; i < split.length; i++){
             int newSignal = input & (1 << split[i]) - 1;
@@ -23,6 +23,15 @@ public class SplitOutNode extends Node{
             if(newSignal == signals[index]) continue;
             signals[index] = newSignal;
             active.mark(mark[i]);
+        }
+    }
+
+    @Override
+    public void updateLCC(int[] signals, int offset, ActiveStack active){
+        int input = signals[in[0] + offset];
+        for(int i = 0; i < split.length; i++){
+            signals[address + offset + i] = input & (1 << split[i]) - 1;
+            input >>= split[i];
         }
     }
 }

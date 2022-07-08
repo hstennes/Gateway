@@ -13,7 +13,19 @@ public class BasicGateNode extends Node{
     }
 
     @Override
-    public void update(int[] signals, int offset, ActiveStack active) {
+    public void updateEvent(int[] signals, int offset, ActiveStack active){
+        int newSignal = doLogic(signals, offset);
+        if(newSignal == signals[address + offset]) return;
+        signals[address + offset] = newSignal;
+        active.mark(mark[0]);
+    }
+
+    @Override
+    public void updateLCC(int[] signals, int offset, ActiveStack active){
+        signals[address + offset] = doLogic(signals, offset);
+    }
+
+    private int doLogic(int[] signals, int offset){
         int newSignal = signals[in[0] + offset];
         switch(function){
             case 0:
@@ -35,9 +47,6 @@ public class BasicGateNode extends Node{
                 for(int i = 1; i < in.length; i++) newSignal = ~(newSignal ^ signals[in[i] + offset]);
                 break;
         }
-
-        if(newSignal == signals[address + offset]) return;
-        signals[address + offset] = newSignal;
-        active.mark(mark[0]);
+        return newSignal;
     }
 }

@@ -100,6 +100,9 @@ public class CustomType {
         init();
     }
 
+    /**
+     * Initializes the NodeBox and populates customs, nbIndex, nestedAddr, and defaultSignals
+     */
     private void init(){
         HashMap<LComponent, Integer> sigIndex = new HashMap<>();
         HashMap<OpCustom2, Integer> nestedIndex = new HashMap<>();
@@ -122,6 +125,11 @@ public class CustomType {
             sigLength += lcomp.getIO().getNumOutputs();
         }
         nestedAddr = sigLength;
+
+        int[][] levels = LCCCompiler.compile(lcomps, nbIndex);
+        boolean lccMode = levels != null;
+
+        System.out.println("Compiling " + label + ", LCC " + (lccMode ? "ON" : "OFF"));
 
         for(OpCustom2 custom : customs){
             nestedIndex.put(custom, sigLength);
@@ -149,9 +157,7 @@ public class CustomType {
             else if(lcomp instanceof SplitIn) nodes[i] = new SplitInNode(in, mark, address, ((SplitIn) lcomp).getSplit());
             else if(lcomp instanceof SplitOut) nodes[i] = new SplitOutNode(in, mark, address, ((SplitOut) lcomp).getSplit());
             else if(lcomp instanceof Clock) {
-                //TODO clocks inside custom chips are currently not supported
-                //clocks.add(new int[] {((Clock) lcomp).getDelay(), i});
-                //nodes[i] = new ClockNode(in, out);
+                //TODO clocks inside custom chips are currently not supported. Create node and add to clock list.
             }
             else if(lcomp instanceof OpCustom2) {
                 OpCustom2 custom = (OpCustom2) lcomp;
@@ -159,16 +165,13 @@ public class CustomType {
                 int[] innerSignals = custom.getSignals();
                 nodes[i] = new CustomNode(in, mark, address, custom.getCustomType(), nestedOffset);
                 System.arraycopy(innerSignals, 0, signals, nestedOffset, innerSignals.length);
-                /*clocks.addAll(custom.getCustomType().clocks
-                        .stream()
-                        .map(oldClock -> nestClock(oldClock, spc))
-                        .collect(Collectors.toList()));*/
+                //TODO add all clocks inside the inner custom component to the clock list
             }
             else nodes[i] = new PlaceholderNode(in, mark, address, lcomp.getType());
         }
 
         defaultSignals = signals;
-        nodeBox = new NodeBox2(nodes, outNodes);
+        nodeBox = lccMode ? new LCCNodeBox(nodes, outNodes, levels) : new EventNodeBox(nodes, outNodes);
     }
 
     public void modify(ArrayList<LComponent> newComps){
@@ -213,7 +216,8 @@ public class CustomType {
     }
 
     public void projectInnerState(OpCustom2 custom){
-        if(custom.getCustomType() != this) throw new IllegalArgumentException("Custom component supplied to projectInnerState must be of the same CompType");
+        if(custom.getCustomType() != this)
+            throw new IllegalArgumentException("Custom component supplied to projectInnerState must be of the same CompType");
         int[] signals = custom.getSignals();
         Node[] nodes = nodeBox.getNodes();
 
@@ -229,7 +233,11 @@ public class CustomType {
         }
     }
 
-    private int[] mapIO(LComponent[][] content, Map<LComponent, Integer> nbIndex, Map<LComponent, Integer> sigIndex,  Map<Light, Integer> lightIndex, ArrayList<LComponent> nodeComps){
+    private int[] mapIO(LComponent[][] content,
+                        Map<LComponent, Integer> nbIndex,
+                        Map<LComponent, Integer> sigIndex,
+                        Map<Light, Integer> lightIndex,
+                        ArrayList<LComponent> nodeComps){
         int numInputs = 0, numOutputs = 0;
         for(int s = Constants.RIGHT; s <= Constants.UP; s++) {
             LComponent[] side = content[s];
@@ -282,7 +290,11 @@ public class CustomType {
         return in;
     }
 
-    private int[][] getMarkList(LComponent lcomp, Map<LComponent, Integer> nbIndex, Map<LComponent, Integer> sigIndex, Map<Light, Integer> lightIndex, int[] outNodes){
+    private int[][] getMarkList(LComponent lcomp,
+                                Map<LComponent, Integer> nbIndex,
+                                Map<LComponent, Integer> sigIndex,
+                                Map<Light, Integer> lightIndex,
+                                int[] outNodes){
         IOManager io = lcomp.getIO();
         int[][] mark = new int[io.getNumOutputs()][];
         for(int n = 0; n < io.getNumOutputs(); n++){
