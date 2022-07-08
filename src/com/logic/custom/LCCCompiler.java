@@ -77,8 +77,7 @@ public class LCCCompiler {
                                                     HashSet<LComponent> active){
         int leveledCount = 0;
         for(LComponent lcomp : lcomps){
-            if(lcomp.getType() == CompType.CUSTOM) return -1;
-            else if(lcomp.getType() == CompType.SWITCH || lcomp.getType() == CompType.BUTTON){
+            if(lcomp.getType() == CompType.SWITCH || lcomp.getType() == CompType.BUTTON){
                 markNext(lcomp, active);
                 compToLevel.put(lcomp, -1);
             }

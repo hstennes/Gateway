@@ -126,6 +126,7 @@ public class ChipTester extends SwingWorker<Void, Void> {
     }
 
     private void simulateMaxClockSpeed(LComponent clock){
+        Debug.start("PONG_TEST");
         boolean clockState = false;
         long iterations = 0;
         long startTime = System.currentTimeMillis();

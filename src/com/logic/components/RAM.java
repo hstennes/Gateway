@@ -1,6 +1,7 @@
 package com.logic.components;
 
 import com.logic.engine.LogicEngine;
+import com.logic.test.Debug;
 import com.logic.util.Constants;
 import org.apache.bcel.classfile.ConstantNameAndType;
 
@@ -34,6 +35,8 @@ public class RAM extends LComponent{
         int address = io.getInput(1);
         int load = io.getInput(2);
         int value = io.getInput(3);
+
+        if(address == 24010 && value == 65535) Debug.end("PONG_TEST");
 
         if(clock == 1 && prevClock == 0 && load == 1) data[address] = value;
         prevClock = clock;
