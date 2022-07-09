@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class LCCCompiler {
 
-    public static int[][] compile(ArrayList<LComponent> lcomps, Map<LComponent, Integer> nbIndex){
+    public static int[] compile(ArrayList<LComponent> lcomps, Map<LComponent, Integer> nbIndex){
         HashMap<LComponent, Integer> compToLevel = new HashMap<>();
         HashMap<Integer, ArrayList<LComponent>> levelToComp = new HashMap<>();
         HashSet<LComponent> active = new HashSet<>();
@@ -56,7 +56,7 @@ public class LCCCompiler {
             nextActive = new HashSet<>();
         }
         if(leveledCount != expectedLeveledCount) return null;
-        return convertToIntArray(levelToComp, nbIndex, globalMaxLevel);
+        return convertToIntArray(levelToComp, nbIndex, globalMaxLevel, leveledCount);
     }
 
     private static void markNext(LComponent lcomp, HashSet<LComponent> nextActive){
@@ -77,7 +77,10 @@ public class LCCCompiler {
                                                     HashSet<LComponent> active){
         int leveledCount = 0;
         for(LComponent lcomp : lcomps){
-            if(lcomp.getType() == CompType.SWITCH || lcomp.getType() == CompType.BUTTON){
+            if(lcomp.getType() == CompType.SWITCH ||
+                    lcomp.getType() == CompType.BUTTON ||
+                    lcomp.getType() == CompType.ZERO ||
+                    lcomp.getType() == CompType.ONE){
                 markNext(lcomp, active);
                 compToLevel.put(lcomp, -1);
             }
@@ -102,17 +105,16 @@ public class LCCCompiler {
         return leveledCount;
     }
 
-    private static int[][] convertToIntArray(HashMap<Integer, ArrayList<LComponent>> levelToComp,
+    private static int[] convertToIntArray(HashMap<Integer, ArrayList<LComponent>> levelToComp,
                                              Map<LComponent, Integer> nbIndex,
-                                             int globalMaxLevel){
-        int[][] levels = new int[globalMaxLevel + 1][];
-        for(int i = 0; i < levels.length; i++){
+                                             int globalMaxLevel, int leveledCount){
+        int[] levels = new int[leveledCount];
+        int index = 0;
+        for(int i = 0; i < globalMaxLevel + 1; i++){
             ArrayList<LComponent> compList = levelToComp.get(i);
-            levels[i] = new int[compList.size()];
-            int j = 0;
             for(LComponent lcomp : compList) {
-                levels[i][j] = nbIndex.get(lcomp);
-                j++;
+                levels[index] = nbIndex.get(lcomp);
+                index++;
             }
         }
         return levels;

@@ -126,7 +126,8 @@ public class CustomType {
         }
         nestedAddr = sigLength;
 
-        int[][] levels = LCCCompiler.compile(lcomps, nbIndex);
+        System.out.println(label);
+        int[] levels = LCCCompiler.compile(lcomps, nbIndex);
         boolean lccMode = levels != null;
 
         System.out.println("Compiling " + label + ", LCC " + (lccMode ? "ON" : "OFF"));

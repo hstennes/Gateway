@@ -2,9 +2,9 @@ package com.logic.custom;
 
 public class LCCNodeBox extends NodeBox2{
 
-    private final int[][] levels;
+    private final int[] levels;
 
-    public LCCNodeBox(Node[] nodes, int[] outNodes, int[][] levels) {
+    public LCCNodeBox(Node[] nodes, int[] outNodes, int[] levels) {
         super(nodes, outNodes);
         this.levels = levels;
     }
@@ -14,20 +14,15 @@ public class LCCNodeBox extends NodeBox2{
         boolean change = false;
         for(int i = 0; i < in.length; i++){
             int address = nodes[i].address + offset;
-            int currentSignal = signals[address];
-            int newSignal = in[i];
-
-            if(currentSignal != newSignal) {
+            if(signals[address] != in[i]) {
                 change = true;
-                signals[address] = newSignal;
+                signals[address] = in[i];
             }
         }
         if(!change) return getOutputs(signals, offset);
 
-        for(int[] level : levels){
-            for(int i : level){
-                nodes[i].updateLCC(signals, offset, active);
-            }
+        for(int i : levels){
+            nodes[i].updateLCC(signals, offset, active);
         }
         return getOutputs(signals, offset);
     }

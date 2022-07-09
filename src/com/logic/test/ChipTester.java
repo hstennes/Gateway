@@ -126,14 +126,14 @@ public class ChipTester extends SwingWorker<Void, Void> {
     }
 
     private void simulateMaxClockSpeed(LComponent clock){
-        Debug.start("PONG_TEST");
+        //Debug.start("PONG_TEST");
         boolean clockState = false;
         long iterations = 0;
         long startTime = System.currentTimeMillis();
         ArrayList<LComponent> clockList = new ArrayList<>();
         clockList.add(clock);
         IOManager io = clock.getIO();
-        while(io.outputConnection(0).numWires() > 0){
+        while(/*io.outputConnection(0).numWires() > 0*/ iterations < 1000000){
             ((Clock) clock).setOn(clockState);
             new LogicEngine(clockList).doLogic();
             clockState = !clockState;
