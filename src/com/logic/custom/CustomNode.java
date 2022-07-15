@@ -55,4 +55,9 @@ public class CustomNode extends Node{
     public void setInnerOffset(int innerOffset){
         this.innerOffset = innerOffset;
     }
+
+    @Override
+    public int getNumOutputs(){
+        return type.nodeBox.getNumOutputs();
+    }
 }

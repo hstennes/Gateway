@@ -45,4 +45,6 @@ public abstract class Node {
      * @param active The active stack (only useful for CustomNode)
      */
     public abstract void updateLCC(int[] signals, int offset, ActiveStack active);
+
+    public abstract int getNumOutputs();
 }

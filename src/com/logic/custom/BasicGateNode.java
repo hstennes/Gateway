@@ -49,4 +49,9 @@ public class BasicGateNode extends Node{
         }
         return newSignal;
     }
+
+    @Override
+    public int getNumOutputs(){
+        return 1;
+    }
 }

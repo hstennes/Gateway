@@ -34,4 +34,9 @@ public class SplitOutNode extends Node{
             input >>= split[i];
         }
     }
+
+    @Override
+    public int getNumOutputs(){
+        return split.length;
+    }
 }

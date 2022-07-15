@@ -34,4 +34,8 @@ public abstract class NodeBox2 {
     public Node[] getNodes(){
         return nodes;
     }
+
+    public int getNumOutputs(){
+        return outNodes.length;
+    }
 }

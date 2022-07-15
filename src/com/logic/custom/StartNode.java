@@ -16,4 +16,9 @@ public class StartNode extends Node{
     }
 
     public void updateLCC(int[] signals, int offset, ActiveStack active) { }
+
+    @Override
+    public int getNumOutputs(){
+        return 1;
+    }
 }

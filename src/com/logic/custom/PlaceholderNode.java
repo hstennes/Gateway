@@ -18,4 +18,14 @@ public class PlaceholderNode extends Node{
 
     @Override
     public void updateLCC(int[] signals, int offset, ActiveStack active) { }
+
+    public CompType getType(){
+        return type;
+    }
+
+    @Override
+    public int getNumOutputs(){
+        //TODO not accurate for displays and possibly other components
+        return 1;
+    }
 }

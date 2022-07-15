@@ -27,4 +27,9 @@ public class SingleInputGateNode extends Node {
     public void updateLCC(int[] signals, int offset, ActiveStack active){
         signals[address + offset] = signals[in[0] + offset] ^ mask;
     }
+
+    @Override
+    public int getNumOutputs(){
+        return 1;
+    }
 }

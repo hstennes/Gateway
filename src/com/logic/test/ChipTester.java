@@ -133,7 +133,7 @@ public class ChipTester extends SwingWorker<Void, Void> {
         ArrayList<LComponent> clockList = new ArrayList<>();
         clockList.add(clock);
         IOManager io = clock.getIO();
-        while(/*io.outputConnection(0).numWires() > 0*/ iterations < 1000000){
+        while(io.outputConnection(0).numWires() > 0 /*iterations < 1000000*/){
             ((Clock) clock).setOn(clockState);
             new LogicEngine(clockList).doLogic();
             clockState = !clockState;

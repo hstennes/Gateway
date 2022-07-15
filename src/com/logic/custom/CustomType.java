@@ -126,12 +126,6 @@ public class CustomType {
         }
         nestedAddr = sigLength;
 
-        System.out.println(label);
-        int[] levels = LCCCompiler.compile(lcomps, nbIndex);
-        boolean lccMode = levels != null;
-
-        System.out.println("Compiling " + label + ", LCC " + (lccMode ? "ON" : "OFF"));
-
         for(OpCustom2 custom : customs){
             nestedIndex.put(custom, sigLength);
             sigLength += custom.getCustomType().defaultSignals.length;
@@ -172,6 +166,9 @@ public class CustomType {
         }
 
         defaultSignals = signals;
+        int[] levels = LCCCompiler.nodeCompile(nodes);
+        boolean lccMode = levels != null;
+        System.out.println("Compiling " + label + ", LCC " + (lccMode ? "ON" : "OFF"));
         nodeBox = lccMode ? new LCCNodeBox(nodes, outNodes, levels) : new EventNodeBox(nodes, outNodes);
     }
 
