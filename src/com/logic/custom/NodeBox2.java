@@ -10,9 +10,7 @@ public abstract class NodeBox2 {
     protected final Node[] nodes;
 
     /**
-     * Maps nodes to signal outputs in the format {node 1 ID, node 1 output index, node 2 ID, node 2 output index...}
-     *
-     * TODO Needs updated documentation
+     * The indices of the output signals in the signals array
      */
     protected final int[] outNodes;
 

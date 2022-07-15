@@ -39,4 +39,12 @@ public class SplitOutNode extends Node{
     public int getNumOutputs(){
         return split.length;
     }
+
+    @Override
+    public Node makeCopyWithOffset(int sigOffset, int nodeOffset){
+        int[] newIn = new int[in.length];
+        for(int i = 0; i < newIn.length; i++) newIn[i] = in[i] + sigOffset;
+        int[][] newMark = copyMarkWithOffset(nodeOffset);
+        return new SplitOutNode(newIn, newMark, address + sigOffset, split);
+    }
 }

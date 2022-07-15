@@ -28,4 +28,12 @@ public class PlaceholderNode extends Node{
         //TODO not accurate for displays and possibly other components
         return 1;
     }
+
+    @Override
+    public Node makeCopyWithOffset(int sigOffset, int nodeOffset){
+        int[] newIn = new int[in.length];
+        for(int i = 0; i < newIn.length; i++) newIn[i] = in[i] + sigOffset;
+        int[][] newMark = copyMarkWithOffset(nodeOffset);
+        return new PlaceholderNode(newIn, newMark, address + sigOffset, type);
+    }
 }

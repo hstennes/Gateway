@@ -116,6 +116,32 @@ public class CustomType {
         int sigLength = numConnect[0] + 1;
         customs = new ArrayList<>();
 
+
+        /* when you find a custom chip that you want to inline:
+
+        Copy all of its nodes, omitting StartNodes (these should be the first n nodes, where n is the number of inputs to the chip)
+
+        Determine where in the nodes array the nodes will be placed, and determine where in the signals array the signals will
+        be copied to
+
+        Update the mark arrays by adding the new "starting index" of the nodes in the node list
+
+        Update the in arrays by adding the new "starting index" of the nodes in the signals array
+
+        Update the addresses by adding the new "starting index" of the nodes in the signals array
+
+        When converting lcomps to nodes, if an lcomp has this custom chip as an input, use outNodes (which must also be
+        translated to the new index) to set the addresses that the in array should point to
+
+        When converting lcomps to nodes, if an lcomp has this custom chip as an output, save this information to a map
+        (OpCustom2, input index) -> signal address of the lcomp. We also need a map of
+        (copied node that was connected to a StartNode) -> OpCustom2 the node came from
+
+        After everything has been placed, use above maps to set the nodes that were previously connected to StartNodes to point
+        to the correct nodes in the larger circuit.
+
+         */
+
         for (LComponent lcomp : lcomps) {
             if(lcomp instanceof Light || lcomp instanceof Switch) continue;
             if(lcomp instanceof OpCustom2) customs.add((OpCustom2) lcomp);

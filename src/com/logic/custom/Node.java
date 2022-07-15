@@ -28,6 +28,15 @@ public abstract class Node {
         this.address = address;
     }
 
+    protected int[][] copyMarkWithOffset(int offset){
+        int[][] newMark = new int[mark.length][];
+        for(int i = 0; i < newMark.length; i++){
+            newMark[i] = new int[mark[i].length];
+            for(int j = 0; j < mark[i].length; j++) newMark[i][j] = mark[i][j] + offset;
+        }
+        return newMark;
+    }
+
     /**
      * Updates the output signals of this node. This method is for an event-based simulation, which requires each node
      * to mark the nodes that should be updated next
@@ -47,4 +56,6 @@ public abstract class Node {
     public abstract void updateLCC(int[] signals, int offset, ActiveStack active);
 
     public abstract int getNumOutputs();
+
+    public abstract Node makeCopyWithOffset(int sigOffset, int nodeOffset);
 }

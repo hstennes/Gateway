@@ -32,4 +32,12 @@ public class SingleInputGateNode extends Node {
     public int getNumOutputs(){
         return 1;
     }
+
+    @Override
+    public Node makeCopyWithOffset(int sigOffset, int nodeOffset){
+        int[] newIn = new int[in.length];
+        for(int i = 0; i < newIn.length; i++) newIn[i] = in[i] + sigOffset;
+        int[][] newMark = copyMarkWithOffset(nodeOffset);
+        return new SingleInputGateNode(newIn, newMark, address + sigOffset, mask == -1 ? CompType.NOT : CompType.BUFFER);
+    }
 }
