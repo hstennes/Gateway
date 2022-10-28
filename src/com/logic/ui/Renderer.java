@@ -1,11 +1,13 @@
 package com.logic.ui;
 
 import com.logic.components.*;
+import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
 import com.logic.main.LogicSimApp;
 import com.logic.util.CompUtils;
 import com.logic.util.Constants;
 import org.apache.batik.gvt.GraphicsNode;
+import org.apache.bcel.classfile.ConstantNameAndType;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -218,11 +220,6 @@ public class Renderer {
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
         CachedImage image;
         if(lcomp.getType() == CompType.SCREEN){
-            /*image = cache.getUpdateImage(lcomp);
-            if(image == null){
-                image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, null);
-                cache.addUpdateImage(lcomp, image);
-            }*/
             image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, null);
         }
         else {
@@ -284,6 +281,7 @@ public class Renderer {
         switch(type){
             case CUSTOM:
                 drawBoxComponent(g2d, lcomp.getBoundsRight(), ((OpCustom2) lcomp).getCustomType().label, -cb.x, -cb.y);
+                drawCustomConnectionLabels(g2d, ((OpCustom2) lcomp), -cb.x, -cb.y);
                 return image;
             case SWITCH:
                 if(((Switch) lcomp).getBitWidth() == 1) break;
@@ -342,6 +340,42 @@ public class Renderer {
         g2d.drawString(label,
                 (bounds.width - metrics.stringWidth(label)) / 2 + dx,
                 (bounds.height - metrics.getHeight()) / 2 + dy + metrics.getAscent());
+    }
+
+    private void drawCustomConnectionLabels(Graphics2D g2d, OpCustom2 custom, int dx, int dy){
+        IOManager io = custom.getIO();
+        for(int i = 0; i < io.getNumInputs(); i++) {
+            drawCustomConnectionLabel(g2d, custom, i, Connection.INPUT, dx, dy);
+        }
+        for(int i = 0; i < io.getNumOutputs(); i++) {
+            drawCustomConnectionLabel(g2d, custom, i, Connection.OUTPUT, dx, dy);
+        }
+    }
+
+    private void drawCustomConnectionLabel(Graphics2D g2d, OpCustom2 custom, int index, int connectionType, int dx, int dy) {
+        IOManager io = custom.getIO();
+        Connection connect = connectionType == Connection.INPUT ? io.inputConnection(index) : io.outputConnection(index);
+        CustomType type = custom.getCustomType();
+        int[] sideNum = type.helper.getSideAndNum(index, connectionType);
+        String label = type.connectionLabels[sideNum[0]][sideNum[1]];
+        Point connectPos = translateDir(new Point(connect.getX(), connect.getY()),
+                CONNECT_LENGTH,
+                (connect.getDirection() + 2) % 4);
+        connectPos.translate(dx, dy);
+
+        int alignX;
+        int direction = connect.getDirection();
+        if(direction == Constants.UP || direction == Constants.DOWN) alignX = LabelDrawer.CENTER;
+        else if(direction == Constants.RIGHT) alignX = LabelDrawer.END;
+        else alignX = LabelDrawer.START;
+
+        Point strLoc = LabelDrawer.calcTextPositioning(g2d,
+                connectPos.x,
+                connectPos.y,
+                alignX,
+                LabelDrawer.CENTER,
+                label, CUSTOM_LABEL_FONT);
+        g2d.drawString(label, strLoc.x, strLoc.y);
     }
 
     private void drawSignalBox(Graphics2D g2d, Rectangle lb, int signal, int bitWidth, int dx, int dy){
@@ -457,26 +491,25 @@ public class Renderer {
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(3));
         int direction = c.getDirection();
-        Point connectEnd = null;
-        if(direction == Constants.RIGHT) {
-            g2d.drawLine(p.x, p.y, p.x - CONNECT_LENGTH, p.y);
-            connectEnd = new Point(p.x - CONNECT_LENGTH, p.y);
-        }
-        if(direction == Constants.UP) {
-            g2d.drawLine(p.x, p.y, p.x, p.y + CONNECT_LENGTH);
-            connectEnd = new Point(p.x, p.y + CONNECT_LENGTH);
-        }
-        if(direction == Constants.LEFT) {
-            g2d.drawLine(p.x, p.y, p.x + CONNECT_LENGTH, p.y);
-            connectEnd = new Point(p.x + CONNECT_LENGTH, p.y);
-        }
-        if(direction == Constants.DOWN) {
-            g2d.drawLine(p.x, p.y, p.x, p.y - CONNECT_LENGTH);
-            connectEnd = new Point(p.x, p.y - CONNECT_LENGTH);
-        }
+        Point connectEnd = translateDir(new Point(p.x, p.y), CONNECT_LENGTH, (direction + 2) % 4);
+        g2d.drawLine(p.x, p.y, connectEnd.x, connectEnd.y);
         g2d.setColor(SELECT_COLOR);
         g2d.fillOval(p.x - 9, p.y - 9, 18, 18);
         return connectEnd;
+    }
+
+    /**
+     * Returns a new point that represents the given point translated in one of four directions
+     * @param p The point
+     * @param dist The distance to translate
+     * @param direction The direction
+     * @return The new point
+     */
+    private Point translateDir(Point p, int dist, int direction) {
+        if(direction == Constants.RIGHT) return new Point(p.x + dist, p.y);
+        else if(direction == Constants.UP) return new Point(p.x, p.y - dist);
+        else if(direction == Constants.LEFT) return new Point(p.x - dist, p.y);
+        return new Point(p.x, p.y + dist);
     }
 
     /**

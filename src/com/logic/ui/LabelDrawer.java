@@ -43,4 +43,25 @@ public class LabelDrawer {
         g2d.drawRect(boxX, boxY, bWidth, bHeight);
         g2d.drawString(text, textX, textY);
     }
+
+    /**
+     * Calculates the position that should be passed to g.drawString to align the text to the given coordinate
+     * @param g2d The Graphics2D object
+     * @param x desired x position
+     * @param y desired y position
+     * @param alignX x alignment
+     * @param alignY y alignment
+     * @param text text to consider
+     * @param textFont font
+     * @return Text rendering position
+     */
+    public static Point calcTextPositioning(Graphics2D g2d, int x, int y, int alignX, int alignY, String text, Font textFont){
+        FontMetrics metrics = g2d.getFontMetrics(textFont);
+        int tWidth = metrics.stringWidth(text);
+        int tHeight = metrics.getHeight();
+        int ascent = metrics.getAscent();
+        int textX = alignX == START ? x : alignX == CENTER ? x - tWidth / 2 : x - tWidth;
+        int textY = alignY == START ? y + ascent : alignY == CENTER ? (y + ascent) - tHeight / 2 : y - ascent - tHeight;
+        return new Point(textX, textY);
+    }
 }
