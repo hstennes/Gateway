@@ -106,7 +106,6 @@ public class FileManager {
 			String path = file.getAbsolutePath();
 			if(!path.equals(currentFile)) {
 				openFile(path, cp.lcomps.size() > 0);
-				currentFile = path;
 			}
 		}
 	}
@@ -160,6 +159,7 @@ public class FileManager {
 				revision.saveState(new CircuitState(cp));
 				cp.getWindow().setTitle(path);
 				cp.repaint();
+				currentFile = path;
 			} catch (JsonParseException e){
 				cp.dispMessage(new UserMessage(cp, "File type not supported", 3000));
 			} catch (IOException e) {
