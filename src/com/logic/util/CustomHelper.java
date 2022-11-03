@@ -40,17 +40,13 @@ public class CustomHelper {
 	/**
 	 * The map of lights and switches from the CustomCreator
 	 */
-	private LComponent[][] content;
+	private final LComponent[][] content;
 
 	private String[][] connectionLabels;
 
 	private int[][] inIndexToSideNum;
 
 	private int[][] outIndexToSideNum;
-
-	private int numInputs;
-
-	private int numOutputs;
 
 	private final int[] sideRange = {Constants.RIGHT, Constants.DOWN, Constants.LEFT, Constants.UP};
 	
@@ -61,13 +57,6 @@ public class CustomHelper {
 	public CustomHelper(LComponent[][] content) {
 		this.content = content;
 		connectionLabels = generateConnectionLabels();
-		for(int i : sideRange) {
-			for(int j = 0; j < content[i].length; j++) {
-				LComponent lcomp = content[i][j];
-				if (lcomp instanceof Switch) numInputs++;
-				else if (lcomp instanceof Light) numOutputs++;
-			}
-		}
 		generateIndexToSideNum();
 	}
 	
@@ -138,7 +127,8 @@ public class CustomHelper {
 	 * components.
 	 * @return The connection labels
 	 */
-	public String[][] getConnectionLabels() {
+	public String[][] getConnectionLabels(boolean refresh) {
+		if(refresh) connectionLabels = generateConnectionLabels();
 		return connectionLabels;
 	}
 
@@ -175,6 +165,15 @@ public class CustomHelper {
 	 * Fills inIndexToSideNum and outIndexToSideNum. See getSideAndNum.
 	 */
 	private void generateIndexToSideNum() {
+		int numInputs = 0;
+		int numOutputs = 0;
+		for(int i : sideRange) {
+			for(int j = 0; j < content[i].length; j++) {
+				LComponent lcomp = content[i][j];
+				if (lcomp instanceof Switch) numInputs++;
+				else if (lcomp instanceof Light) numOutputs++;
+			}
+		}
 		inIndexToSideNum = new int[numInputs][];
 		outIndexToSideNum = new int[numOutputs][];
 		int inIndex = 0;

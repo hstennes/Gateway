@@ -98,7 +98,7 @@ public class CustomType {
         this.lcomps = lcomps;
         this.typeID = typeID;
         helper = new CustomHelper(content);
-        connectionLabels = helper.getConnectionLabels();
+        connectionLabels = helper.getConnectionLabels(false);
         width = helper.chooseWidth(label, Renderer.CUSTOM_LABEL_FONT);
         height = helper.chooseHeight();
         nbIndex = new HashMap<>();
@@ -181,6 +181,7 @@ public class CustomType {
     public void modify(ArrayList<LComponent> newComps){
         this.lcomps = newComps;
         nbIndex.clear();
+        connectionLabels = helper.getConnectionLabels(true);
         init();
         didModify = true;
     }
