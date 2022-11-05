@@ -34,6 +34,7 @@ public class NameConverter {
 		else if(type == CompType.CUSTOM) return "Custom component";
 		else if(type == CompType.SPLIT_OUT) return "Output splitter";
 		else if(type == CompType.SPLIT_IN) return "Input splitter";
+		else if(type == CompType.LABEL) return "Label";
 		return "Unknown name";
 	}
 	

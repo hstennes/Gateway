@@ -90,6 +90,9 @@ public class CompUtils {
 			case "screen":
 				lcomp = new Screen(x, y);
 				break;
+			case "label":
+				lcomp = new UserLabel(x, y);
+				break;
 			case "splitter":
 				throw new IllegalArgumentException("CompUtils.makeComponent does not support splitters");
 			default:

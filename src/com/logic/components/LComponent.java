@@ -46,7 +46,7 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	/**
 	 * The component's name, which is displayed in the CompProperties panel
 	 */
-	private String name;
+	protected String name;
 	
 	/**
 	 * Comments about the component, which is display in the CompProperties panel

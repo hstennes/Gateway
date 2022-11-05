@@ -68,6 +68,8 @@ public class Renderer {
      */
     public static final Font SWITCH_FONT = new Font("Arial", Font.PLAIN, 34);
 
+    public static final Font USER_LABEL_FONT = new Font("Arial", Font.PLAIN, 20);
+
     /**
      * The font used for rendering Display components
      */
@@ -93,6 +95,8 @@ public class Renderer {
      */
     private float cx, cy, zoom;
 
+    private LabelDrawer userLabelDrawer;
+
     private final LabelDrawer userMessageDrawer;
 
     /**
@@ -103,6 +107,7 @@ public class Renderer {
     public Renderer(CircuitPanel cp){
         this.cp = cp;
         cache = new ImageCache();
+        userLabelDrawer = new LabelDrawer(UserMessage.MESSAGE_FONT, UserMessage.MESSAGE_COLOR, UserLabel.MARGIN, UserLabel.MARGIN);
         userMessageDrawer = new LabelDrawer(UserMessage.MESSAGE_FONT, UserMessage.MESSAGE_COLOR, UserMessage.X_MARGIN, UserMessage.Y_MARGIN);
         DISPLAY_FONT = LogicSimApp.fontLoader.sevenSegFont.deriveFont(70f);
     }
@@ -307,6 +312,10 @@ public class Renderer {
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
                 if(oldImage == null) drawScreen(g2d, (Screen) lcomp, -cb.x, -cb.y);
                 else updateScreen(g2d, (Screen) lcomp, -cb.x, -cb.y);
+            case LABEL:
+                userLabelDrawer.render(g2d,
+                        UserLabel.BOUNDS_PADDING, UserLabel.BOUNDS_PADDING,
+                        LabelDrawer.START, LabelDrawer.START, lcomp.getName());
         }
 
         //Otherwise render component image if there is one
