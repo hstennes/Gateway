@@ -78,6 +78,7 @@ public class ImageCache {
         else if(lcomp instanceof OpCustom2) ext = ((OpCustom2) lcomp).getCustomType().label;
         else if(lcomp instanceof Splitter) ext = arrayString(((Splitter) lcomp).getSplit());
         else if(lcomp instanceof Display) ext = ((Display) lcomp).getValue() + lcomp.getRotation();
+        else if(lcomp instanceof UserLabel) ext = lcomp.getName();
         return lcomp.getType().toString() + ext;
     }
 

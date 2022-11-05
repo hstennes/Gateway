@@ -231,7 +231,7 @@ public class Renderer {
             image = cache.getStaticImage(lcomp);
             if(image == null){
                 image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, null);
-                cache.addUpdateImage(lcomp, image);
+                cache.addStaticImage(lcomp, image);
             }
         }
 
@@ -312,6 +312,7 @@ public class Renderer {
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
                 if(oldImage == null) drawScreen(g2d, (Screen) lcomp, -cb.x, -cb.y);
                 else updateScreen(g2d, (Screen) lcomp, -cb.x, -cb.y);
+                break;
             case LABEL:
                 userLabelDrawer.render(g2d,
                         UserLabel.BOUNDS_PADDING, UserLabel.BOUNDS_PADDING,
