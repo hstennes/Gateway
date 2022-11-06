@@ -208,7 +208,7 @@ public class Renderer {
         CubicCurve2D curve = wire.getCurveUpdate(cp);
         if(wire.isSelected()) {
             g2d.setColor(Renderer.SELECT_COLOR);
-            g2d.setStroke(new BasicStroke(10));
+            g2d.setStroke(new BasicStroke(12));
         }
         else {
             g2d.setColor(Color.BLACK);

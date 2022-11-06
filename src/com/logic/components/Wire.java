@@ -16,6 +16,8 @@ import java.io.Serializable;
 public class Wire extends CircuitElement implements Deletable, Serializable {
 	
 	private static final long serialVersionUID = 1L;
+
+	private static final float CURVINESS = 0.18f;
 	
 	/**
 	 * The path that the wire follows in the CircuitPanel
@@ -32,12 +34,6 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * The input connection the wire is attached to
 	 */
 	private InputPin dest;
-
-	/**
-	 * A wire is consistent if the source and dest connections have the same bit width. If the source or dest connection
-	 * is null (the wire is still being drawn, or the wire is dead), then the wire is consistent.
-	 */
-	private boolean consistent;
 	
 	/**
 	 * Returns the wire's signal (the least significant bit if there are multiple)
@@ -120,7 +116,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 
 	private int wireOffset(Point p1, Point p2){
 		int dx = p1.x - p2.x, dy = p1.y - p2.y;
-		return (int) (0.2 * (Math.abs(dx) + Math.abs(dy)));
+		return (int) (CURVINESS * (Math.abs(dx) + Math.abs(dy)));
 	}
 
 	/**
@@ -144,15 +140,6 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 */
 	public boolean isComplete() {
 		return source != null && dest != null;
-	}
-
-	public void checkConsistent(){
-		if(source == null || dest == null) consistent = true;
-		else consistent = source.getBitWidth() == dest.getBitWidth();
-	}
-
-	public boolean isConsistent(){
-		return consistent;
 	}
 	
 	@Override
