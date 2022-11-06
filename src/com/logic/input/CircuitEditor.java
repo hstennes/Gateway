@@ -43,6 +43,8 @@ public class CircuitEditor extends MouseAdapter {
 	 * A dragMode that shows that the user is dragging the highlight rectangle
 	 */
 	public static final int DRAGGING_HIGHLIGHT = 2;
+
+	public static final int DRAGGING_WIRE_POINT = 3;
 	
 	/**
 	 * A boolean that tells whether this CircuitEditor is currently enabled. If set to false, all methods that change the state of the 
@@ -217,20 +219,21 @@ public class CircuitEditor extends MouseAdapter {
 	 */
 	public void onMouseDragged(MouseEvent e) {
 		Point p = cp.withTransform(e.getPoint());
+		boolean shouldDoDrag = false;
 		if(SwingUtilities.isLeftMouseButton(e)) {
-			if(toolbar.getToolMode().equals("Select")) {
-				if(dragMode == DRAGGING_HIGHLIGHT) highlight.drag(p.x, p.y);
-				else if(dragMode == DRAGGING_SELECTION) selection.drag(p.x, p.y);
-				else if(dragMode == DRAGGING_WIRE) wireBuilder.setMousePoint(cp.withTransform(e.getPoint()));
-			}
+			if(toolbar.getToolMode().equals("Select")) shouldDoDrag = true;
 			else if(toolbar.getToolMode().equals("Insert")) {
 				if(Math.abs(p.x - prevMouse.getX()) >= DRAG_THRESH && Math.abs(p.y - prevMouse.getY()) >= DRAG_THRESH) {
 					toolbar.changeToSelect(LToolBar.INTERNAL);
-				 	if(dragMode == DRAGGING_HIGHLIGHT) highlight.drag(p.x, p.y);
-				 	else if(dragMode == DRAGGING_SELECTION) selection.drag(p.x, p.y);
-				 	else if(dragMode == DRAGGING_WIRE) wireBuilder.setMousePoint(cp.withTransform(e.getPoint()));
+				 	shouldDoDrag = true;
 				}
 			}
+		}
+		if(shouldDoDrag) {
+			if (dragMode == DRAGGING_HIGHLIGHT) highlight.drag(p.x, p.y);
+			else if (dragMode == DRAGGING_SELECTION) selection.drag(p.x, p.y);
+			else if (dragMode == DRAGGING_WIRE) wireBuilder.setMousePoint(cp.withTransform(e.getPoint()));
+			else if (dragMode == DRAGGING_WIRE_POINT) wireEditor.moveWirePoint(p.x, p.y);
 		}
 		prevMouse = new Point(p.x, p.y);
 		cp.repaint();
@@ -282,12 +285,19 @@ public class CircuitEditor extends MouseAdapter {
 			dragMode = DRAGGING_WIRE;
 		}
 		else if(result == CompSearch.TOUCHING_WIRE) {
-			wireEditor.select(cs.getWire());
+			wireEditor.selectWire(cs.getWire());
+			if(doubleClick) {
+				cs.getWire().addShapePoint(p);
+			}
 			selection.clear();
 			if(wireBuilder.isWorking()) {
 				wireBuilder.cancelWire();
 				wireEditor.clear();
 			}
+		}
+		else if(result == CompSearch.TOUCHING_WIRE_POINT) {
+			dragMode = DRAGGING_WIRE_POINT;
+			wireEditor.selectWirePoint(cs.getWire(), cs.getWirePointIndex());
 		}
 		else {
 			wireBuilder.cancelWire();
@@ -301,7 +311,7 @@ public class CircuitEditor extends MouseAdapter {
 	 */
 	public void deleteElements() {
 		if(enabled) {
-			if(wireEditor.hasSelectedWire()) wireEditor.deleteWire();
+			if(wireEditor.hasSelectedWireOrPoint()) wireEditor.deleteWireOrPoint();
 			else selection.deleteComponents();
 		}
 	}
@@ -354,6 +364,10 @@ public class CircuitEditor extends MouseAdapter {
 	 */
 	public WireBuilder getWireBuilder() {
 		return wireBuilder;
+	}
+
+	public WireEditor getWireEditor() {
+		return wireEditor;
 	}
 	
 	/**

@@ -5,8 +5,9 @@ import com.logic.util.Constants;
 import com.logic.util.Deletable;
 
 import java.awt.*;
-import java.awt.geom.CubicCurve2D;
+import java.awt.geom.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * A CircuitElement that holds a boolean signal and connects an output connection to an input connection
@@ -22,8 +23,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	/**
 	 * The path that the wire follows in the CircuitPanel
 	 */
-	private CubicCurve2D curve;
-
+	private Path2D path;
 
 	/**
 	 * The output connection the wire is attached to
@@ -34,6 +34,15 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 	 * The input connection the wire is attached to
 	 */
 	private InputPin dest;
+
+	/**
+	 * The list of shaping points on the wire
+	 */
+	private ArrayList<Point> shapePoints;
+
+	public Wire() {
+		shapePoints = new ArrayList<>();
+	}
 	
 	/**
 	 * Returns the wire's signal (the least significant bit if there are multiple)
@@ -75,15 +84,40 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 		else if(dest == null && connect instanceof InputPin) dest = (InputPin) connect;
 	}
 
-	public CubicCurve2D getCurve(){
-		return curve;
+	public int touchingShapePoint(Point p) {
+		for(int i = 0; i < shapePoints.size(); i++){
+			Point sp = shapePoints.get(i);
+			if(Math.abs(sp.x - p.x) < 5 && Math.abs(sp.y - p.y) < 5) return i;
+		}
+		return -1;
+	}
+
+	public void addShapePoint(Point p){
+		shapePoints.add(p);
+	}
+
+	public void removeShapePoint(int index) {
+		shapePoints.remove(index);
+	}
+
+	public void moveShapePoint(int index, Point moveTo) {
+		if(index >= shapePoints.size()) return;
+		shapePoints.get(index).setLocation(moveTo);
+	}
+
+	public ArrayList<Point> getShapePoints() {
+		return shapePoints;
+	}
+
+	public Path2D getCurve(){
+		return path;
 	}
 	
 	/**
 	 * Returns the curve last drawn by this wire
 	 * @return The wire's curve
 	 */
-	public CubicCurve2D getCurveUpdate(CircuitPanel cp) {
+	public Path2D getCurveUpdate(CircuitPanel cp) {
 		Connection s = getSourceConnection(), d = getDestConnection();
 		Connection c1, c2;
 		if(d != null && s == null) {
@@ -98,20 +132,44 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 
 		Point p1 = c1.getCoord();
 		Point p3, p4;
-		int offset;
+		int startOffset;
+		int endOffset;
 		if(c2 == null){
 			p4 = cp.getEditor().getWireBuilder().getMousePoint();
-			p3 = p4;
-			offset = wireOffset(p1, p4);
+			startOffset = wireOffset(p1, p4);
+			endOffset = 0;
 		}
 		else{
 			p4 = c2.getCoord();
-			offset = wireOffset(p1, p4);
-			p3 = offsetInDirection(p4, offset, c2.getAbsoluteDirection());
+			startOffset = wireOffset(p1, shapePoints.size() > 0 ? shapePoints.get(0) : p4);
+			endOffset = wireOffset(shapePoints.size() > 0 ? shapePoints.get(shapePoints.size() - 1) : p1, p4);
 		}
-		Point p2 = offsetInDirection(p1, offset, c1.getAbsoluteDirection());
-		curve = new CubicCurve2D.Double(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
-		return curve;
+		Point p2 = offsetInDirection(p1, startOffset, c1.getAbsoluteDirection());
+		p3 = offsetInDirection(p4, endOffset, c2 == null ? Constants.RIGHT : c2.getAbsoluteDirection());
+		path = buildPath(p1, p2, p3, p4);
+		return path;
+	}
+
+	private Path2D buildPath(Point p1, Point p2, Point p3, Point p4) {
+		path = new Path2D.Double();
+		if(shapePoints.size() == 0) {
+			CubicCurve2D curve = new CubicCurve2D.Double(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
+			path.append(curve, false);
+			return path;
+		}
+		else {
+			Point sp1 = shapePoints.get(0);
+			CubicCurve2D startCurve = new CubicCurve2D.Double(p1.x, p1.y, p2.x, p2.y, sp1.x, sp1.y, sp1.x, sp1.y);
+			path.append(startCurve, false);
+			for(int i = 1; i < shapePoints.size(); i++){
+				sp1 = shapePoints.get(i);
+				Point sp2 = shapePoints.get(i - 1);
+				path.append(new Line2D.Double(sp2.x, sp2.y, sp1.x, sp1.y), false);
+			}
+			CubicCurve2D endCurve = new CubicCurve2D.Double(sp1.x, sp1.y, sp1.x, sp1.y, p3.x, p3.y, p4.x, p4.y);
+			path.append(endCurve, false);
+		}
+		return path;
 	}
 
 	private int wireOffset(Point p1, Point p2){

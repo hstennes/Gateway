@@ -8,6 +8,7 @@ import com.logic.ui.CircuitPanel;
 
 import java.awt.*;
 import java.awt.geom.CubicCurve2D;
+import java.awt.geom.Path2D;
 
 /**
  * A class for searching through all of the components in the CircuitPanel to determine what a mouse press is touching
@@ -30,6 +31,8 @@ public class CompSearch {
 	 * Used when the mouse is touching a wire
 	 */
 	public static int TOUCHING_WIRE = 4;
+
+	public static int TOUCHING_WIRE_POINT = 5;
 	
 	/**
 	 * Used when the mouse is touching a connection
@@ -60,6 +63,8 @@ public class CompSearch {
 	 * The Wire that was touched if TOUCHING_WIRE was returned
 	 */
 	private Wire wire;
+
+	private int wirePointIndex;
 	
 	/**
 	 * The Connection that was touched if TOUCHING_CONNECTION was returned
@@ -101,11 +106,12 @@ public class CompSearch {
 		}
 		for(int i = 0; i < cp.wires.size(); i++) {
 			Wire tempWire = cp.wires.get(i);
-			CubicCurve2D tempCurve = tempWire.getCurve();
+			Path2D tempCurve = tempWire.getCurve();
 			if(tempCurve != null && tempCurve.intersects(coord.x - wireDetectRadius, coord.y - wireDetectRadius, 
 					2 * wireDetectRadius, 2 * wireDetectRadius)) {
 				wire = tempWire;
-				return TOUCHING_WIRE;
+				wirePointIndex = wire.touchingShapePoint(coord);
+				return wirePointIndex == -1 ? TOUCHING_WIRE : TOUCHING_WIRE_POINT;
 			}
 		}
 		return CLEAR;
@@ -133,5 +139,9 @@ public class CompSearch {
 	 */
 	public Connection getConnection() {
 		return connection;
+	}
+
+	public int getWirePointIndex() {
+		return wirePointIndex;
 	}
 }

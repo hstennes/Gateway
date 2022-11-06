@@ -3,6 +3,7 @@ package com.logic.ui;
 import com.logic.components.*;
 import com.logic.custom.CustomType;
 import com.logic.custom.OpCustom2;
+import com.logic.input.WireEditor;
 import com.logic.main.LogicSimApp;
 import com.logic.util.CompUtils;
 import com.logic.util.Constants;
@@ -13,6 +14,7 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
 
 public class Renderer {
@@ -205,7 +207,7 @@ public class Renderer {
     }
 
     private void renderWire(Graphics2D g2d, Wire wire){
-        CubicCurve2D curve = wire.getCurveUpdate(cp);
+        Path2D curve = wire.getCurveUpdate(cp);
         if(wire.isSelected()) {
             g2d.setColor(Renderer.SELECT_COLOR);
             g2d.setStroke(new BasicStroke(12));
@@ -220,6 +222,12 @@ public class Renderer {
         else g2d.setColor(Color.WHITE);
         g2d.setStroke(new BasicStroke(3));
         g2d.draw(curve);
+
+        WireEditor wireEditor = cp.getEditor().getWireEditor();
+        ArrayList<Point> shapePoints = wire.getShapePoints();
+        for(int i = 0; i < shapePoints.size(); i++) {
+            drawWireShapePoint(g2d, shapePoints.get(i), wireEditor.isPointSelected(wire, i));
+        }
     }
 
     private void renderComponent(Graphics2D g2d, LComponent lcomp){
@@ -245,7 +253,6 @@ public class Renderer {
                 p.y - image.anchors[rotationAnchorTranslate[rot][1]],
                 (int) (image.getWidth() * LogicSimApp.INV_DISP_SCALE),
                 (int) (image.getHeight() * LogicSimApp.INV_DISP_SCALE));
-
 
         g2d.drawImage(image,
                 imageBox.x, imageBox.y, imageBox.width, imageBox.height, null);
@@ -418,8 +425,6 @@ public class Renderer {
                     }
                 }
             }
-            //screen.clearRamUpdates();
-            //screen.didFullRedraw();
         }
     }
 
@@ -506,6 +511,12 @@ public class Renderer {
         g2d.setColor(SELECT_COLOR);
         g2d.fillOval(p.x - 9, p.y - 9, 18, 18);
         return connectEnd;
+    }
+
+    private void drawWireShapePoint(Graphics2D g2d, Point p, boolean selected) {
+        g2d.setColor(SELECT_COLOR);
+        g2d.fillOval(p.x - 9, p.y - 9, 18, 18);
+        if(selected) g2d.drawRect(p.x - 15, p.y - 15, 30, 30);
     }
 
     /**
