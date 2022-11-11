@@ -89,8 +89,8 @@ public class Clock extends SComponent {
 	}
 
 	@Override
-	public int getActiveImageIndex(){
-		if(on) return 1;
+	public int getActiveImageIndex(int compData){
+		if(compData == 1) return 1;
 		return 0;
 	}
 	

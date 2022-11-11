@@ -236,10 +236,10 @@ public class Renderer {
             image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, null);
         }
         else {
-            image = cache.getStaticImage(lcomp);
+            image = cache.getStaticImage(lcomp, CompUtils.getSensitiveCompData(lcomp));
             if(image == null){
                 image = renderComponentImage(lcomp, zoom, LogicSimApp.DISP_SCALE, null);
-                cache.addStaticImage(lcomp, image);
+                cache.addStaticImage(image);
             }
         }
 
@@ -266,6 +266,8 @@ public class Renderer {
     }
 
     public CachedImage renderComponentImage(LComponent lcomp, float zoom, float dpiScale, CachedImage oldImage){
+        //Record component state that could change ahead of time to avoid threading issues
+        int compData = CompUtils.getSensitiveCompData(lcomp);
         //set up BufferedImage and graphics object, same for all components
         Rectangle lb = lcomp.getBoundsRight();
         Rectangle cb = lcomp.getIO().getConnectionBounds();
@@ -280,7 +282,8 @@ public class Renderer {
                     (int) (-cb.x * zoom * invDpiScale),
                     (int) (-cb.y * zoom * invDpiScale),
                     (int) ((-cb.x + lb.width) * zoom * invDpiScale),
-                    (int) ((-cb.y + lb.height) * zoom * invDpiScale));
+                    (int) ((-cb.y + lb.height) * zoom * invDpiScale),
+                    ImageCache.getHashString(lcomp, compData));
         }
         else image = oldImage;
         Graphics2D g2d = (Graphics2D) image.getGraphics();
@@ -297,17 +300,11 @@ public class Renderer {
                 return image;
             case SWITCH:
                 if(((Switch) lcomp).getBitWidth() == 1) break;
-                drawSignalBox(g2d, lb,
-                        ((Switch) lcomp).getState(),
-                        ((Switch) lcomp).getBitWidth(),
-                        -cb.x, -cb.y);
+                drawSignalBox(g2d, lb, compData, ((Switch) lcomp).getBitWidth(), -cb.x, -cb.y);
                 return image;
             case LIGHT:
                 if(((Light) lcomp).getBitWidth() == 1) break;
-                drawSignalBox(g2d, lb,
-                        lcomp.getIO().getInput(0),
-                        ((Light) lcomp).getBitWidth(),
-                        -cb.x, -cb.y);
+                drawSignalBox(g2d, lb, compData, ((Light) lcomp).getBitWidth(), -cb.x, -cb.y);
                 return image;
             case ROM:
                 drawBoxComponent(g2d, lcomp.getBoundsRight(), "ROM", -cb.x, -cb.y);
@@ -321,13 +318,12 @@ public class Renderer {
                 else updateScreen(g2d, (Screen) lcomp, -cb.x, -cb.y);
                 break;
             case LABEL:
-                userLabelDrawer.render(g2d,
-                        UserLabel.BOUNDS_PADDING, UserLabel.BOUNDS_PADDING,
+                userLabelDrawer.render(g2d, UserLabel.BOUNDS_PADDING, UserLabel.BOUNDS_PADDING,
                         LabelDrawer.START, LabelDrawer.START, lcomp.getName());
         }
 
         //Otherwise render component image if there is one
-        GraphicsNode svg = lcomp.getActiveImage();
+        GraphicsNode svg = lcomp.getActiveImage(compData);
         if(svg != null) {
             int size = Math.max(lb.width, lb.height);
             float difference = Math.abs(lb.width - lb.height);
@@ -340,7 +336,7 @@ public class Renderer {
         //Final step of adding marks for basic gates and value for display
         if(type == CompType.XOR || type == CompType.XNOR) drawExclusive(g2d, -cb.x, -cb.y);
         if(type == CompType.NAND || type == CompType.NOR || type == CompType.XNOR || type == CompType.NOT) drawInverted(g2d, -cb.x, -cb.y);
-        if(type == CompType.DISPLAY) drawDisplayValue(g2d, ((Display) lcomp), -cb.x, -cb.y);
+        if(type == CompType.DISPLAY) drawDisplayValue(g2d, ((Display) lcomp), compData, -cb.x, -cb.y);
         return image;
     }
 
@@ -454,13 +450,13 @@ public class Renderer {
         g2d.drawRect(dx + 2, dy + 2, bounds.width - 4, bounds.height - 4);
     }
 
-    private void drawDisplayValue(Graphics2D g2d, Display display, int dx, int dy){
+    private void drawDisplayValue(Graphics2D g2d, Display display, int compData, int dx, int dy){
         double radians = CompUtils.RAD_ROTATION[display.getRotation()];
         Rectangle bounds = display.getBounds();
         g2d.rotate(-radians, dx + bounds.width / 2, dy + bounds.height / 2);
         g2d.setFont(DISPLAY_FONT);
         g2d.setColor(SELECT_COLOR);
-        g2d.drawString(display.getValue(), dx + 22, dy + 85);
+        g2d.drawString(Display.VALUE_STRS[compData], dx + 22, dy + 85);
         g2d.rotate(radians, dx + bounds.width / 2, dy + bounds.height / 2);
     }
 

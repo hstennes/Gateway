@@ -3,6 +3,7 @@ package com.logic.components;
 import com.logic.engine.LogicEngine;
 import com.logic.main.LogicSimApp;
 import com.logic.ui.CompProperties;
+import com.logic.util.CompUtils;
 import com.logic.util.Constants;
 import com.logic.util.Deletable;
 import com.logic.util.NameConverter;
@@ -97,15 +98,17 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * @return A bounding box for the component
 	 */
 	public Rectangle getBoundsRight() {
-		int index = images[getActiveImageIndex()];
+		int index = images[getActiveImageIndex(CompUtils.getSensitiveCompData(this))];
 		return new Rectangle(x, y, LogicSimApp.iconLoader.imageWidth[index], LogicSimApp.iconLoader.imageHeight[index]);
 	}
 
 	/**
 	 * Returns the index of the current image in the CompDrawer.images array. Subclasses should override if they use more than one image.
+	 * Rather than reading from the components own internal state to determine the image, this method takes the parameter compData in the
+	 * format returned by CompUtils.getSentitiveCompData. See CompUtils.getSensitiveCompData for more information.
 	 * @return The active image index
 	 */
-	protected int getActiveImageIndex(){
+	protected int getActiveImageIndex(int compData){
 		return 0;
 	}
 
@@ -113,9 +116,9 @@ public abstract class LComponent extends CircuitElement implements Deletable, Se
 	 * Returns the SVG that should be used for the component based on its current state
 	 * @return The active image
 	 */
-	public GraphicsNode getActiveImage(){
+	public GraphicsNode getActiveImage(int compData){
 		if(images == null) return null;
-		return LogicSimApp.iconLoader.logicSVGs[images[getActiveImageIndex()]];
+		return LogicSimApp.iconLoader.logicSVGs[images[getActiveImageIndex(compData)]];
 	}
 	
 	/**

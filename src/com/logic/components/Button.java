@@ -51,8 +51,8 @@ public class Button extends IComponent {
 	}
 
 	@Override
-	public int getActiveImageIndex(){
-		if(getStateOld()) return 1;
+	public int getActiveImageIndex(int compData){
+		if((compData & 1) == 1) return 1;
 		return 0;
 	}
 	

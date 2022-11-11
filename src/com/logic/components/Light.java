@@ -30,8 +30,8 @@ public class Light extends LabeledComponent implements BitWidthEntity {
 	public void update(LogicEngine engine) {}
 
 	@Override
-	public int getActiveImageIndex(){
-		if(io.getInputOld(0)) return 1;
+	public int getActiveImageIndex(int compData){
+		if((compData & 1) == 1) return 1;
 		return 0;
 	}
 	

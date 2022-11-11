@@ -52,8 +52,8 @@ public class Switch extends IComponent implements BitWidthEntity {
 	public void notification(int type) { }
 
 	@Override
-	public int getActiveImageIndex(){
-		if(getStateOld()) return 1;
+	public int getActiveImageIndex(int compData){
+		if((compData & 1) == 1) return 1;
 		return 0;
 	}
 	

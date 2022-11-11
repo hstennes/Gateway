@@ -102,6 +102,34 @@ public class CompUtils {
 	}
 
 	/**
+	 * Returns component data that is related to the state of the simulation. This varies based on the type of component,
+	 * and is not meaningful for all components. The purpose of this method is to record component state before performing
+	 * rendering that considers the component state multiple times, as the state could change during rendering as the simulation
+	 * runs on its own thread. For example, we may want to record the signal that a Light is receiving ahead of time to make
+	 * sure the value stays constant. The same data format returned from this method is considered by many methods in the
+	 * Renderer, as well as LComponent.getActiveImageIndex.
+	 * @param lcomp The lcomp to read state from
+	 * @return The relevant component state represented as an integer
+	 */
+	public static int getSensitiveCompData(LComponent lcomp) {
+		switch(lcomp.getType()) {
+			case SWITCH:
+				return ((Switch) lcomp).getState();
+			case BUTTON:
+				return ((Button) lcomp).getState();
+			case LIGHT:
+				IOManager io = lcomp.getIO();
+				if(io.getNumInputs() == 0) return 0;
+				return io.getInput(0);
+			case CLOCK:
+				return ((Clock) lcomp).isOn() ? 1 : 0;
+			case DISPLAY:
+				return ((Display) lcomp).getValue();
+		}
+		return 0;
+	}
+
+	/**
 	 * Creates a deep clone of the given list of LComponents without adding any offset
 	 * @param lcomps The LComponents to duplicate
 	 * @return The list of duplicated components

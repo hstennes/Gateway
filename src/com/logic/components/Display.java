@@ -13,7 +13,7 @@ public class Display extends LComponent {
 	/**
 	 * Letters used to represent values greater than 9
 	 */
-	private static final String[] VALUE_STRS = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "b", "C", "d", "E", "F"};
+	public static final String[] VALUE_STRS = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "b", "C", "d", "E", "F"};
 	
 	/**
 	 * Constructs a new Display
@@ -32,12 +32,12 @@ public class Display extends LComponent {
 	@Override
 	public void update(LogicEngine engine) { }
 
-	public String getValue(){
+	public int getValue() {
 		int val = 0;
-		for(int i = 3; i >= 0; i--){
+		for(int i = io.getNumInputs() - 1; i >= 0; i--){
 			val = 2 * val + io.getInputStrict(i);
 		}
-		return VALUE_STRS[val];
+		return val;
 	}
 	
 	@Override
