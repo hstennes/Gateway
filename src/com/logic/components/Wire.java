@@ -84,13 +84,7 @@ public class Wire extends CircuitElement implements Deletable, Serializable {
 		else if(dest == null && connect instanceof InputPin) dest = (InputPin) connect;
 	}
 
-	public int touchingShapePoint(Point p) {
-		for(int i = 0; i < shapePoints.size(); i++){
-			Point sp = shapePoints.get(i);
-			if(Math.abs(sp.x - p.x) < 5 && Math.abs(sp.y - p.y) < 5) return i;
-		}
-		return -1;
-	}
+
 
 	public void addShapePoint(Point p){
 		shapePoints.add(p);

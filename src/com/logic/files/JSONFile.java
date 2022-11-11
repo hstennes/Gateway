@@ -48,6 +48,8 @@ public class JSONFile {
      */
     public CustomBlueprint[] cTypes;
 
+    public FileWires[] wires;
+
     /**
      * Holds all wire data associated with custom components, including nested customs
      */
@@ -82,6 +84,7 @@ public class JSONFile {
         }
 
         components = new FileComponent[lcomps.size()];
+        wires = new FileWires[lcomps.size()];
         for(int i = 0; i < lcomps.size(); i++) {
             LComponent lcomp = lcomps.get(i);
             if(lcomp.getType() == CompType.CUSTOM) {
@@ -89,6 +92,7 @@ public class JSONFile {
                 components[i] = new FileComponent(lcomps.get(i), compIndex, cSigs.size() - 1);
             }
             else components[i] = new FileComponent(lcomps.get(i), compIndex, 0);
+            wires[i] = new FileWires(lcomp);
         }
     }
 
@@ -133,6 +137,7 @@ public class JSONFile {
                 int[] input = fc.input[x];
                 if(isEmptyConnection(input, version)) continue;
                 Wire wire = new Wire();
+                if(wires != null) wires[i].populateShapePoints(wire, x);
                 OutputPin source = lcomps.get(input[0]).getIO().outputConnection(input[1]);
                 applySignal(version, source, input);
                 source.addWire(wire);

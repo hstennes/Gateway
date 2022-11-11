@@ -84,6 +84,15 @@ public class JacksonTest {
     section of a CustomBlueprint. In either case, signal data needs to be stored.
         wire connected: [id, output number, bit width, signal]
         nothing connected: [bit width]
+
+     version 7 (honestly idk what happened in version 6, I think it's pretty much the same as version 5?):
+     Added support for shapeable wires
+     In top level of JSON structure:
+     wires: [
+        [[p1x, p1y, p2x, p2y...]],
+        ...
+     ]
+     Matches structure of component input array (i.e. input connection data at components[1][2] corresponds to wire shape data at wires[1][2])
      */
 
     /*

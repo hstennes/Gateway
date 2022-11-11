@@ -9,6 +9,7 @@ import com.logic.ui.CircuitPanel;
 import java.awt.*;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
 
 /**
  * A class for searching through all of the components in the CircuitPanel to determine what a mouse press is touching
@@ -48,6 +49,11 @@ public class CompSearch {
 	 * The radius around the mouse that can intersect a wire to return a TOUCHING_WIRE value
 	 */
 	private final int wireDetectRadius = 3;
+
+	/**
+	 * The radius around the center of a wire shape point to check for mouse intersection
+	 */
+	private final int shapePointDetectRadius = 10;
 	
 	/**
 	 * The CircuitPanel
@@ -110,11 +116,20 @@ public class CompSearch {
 			if(tempCurve != null && tempCurve.intersects(coord.x - wireDetectRadius, coord.y - wireDetectRadius, 
 					2 * wireDetectRadius, 2 * wireDetectRadius)) {
 				wire = tempWire;
-				wirePointIndex = wire.touchingShapePoint(coord);
+				wirePointIndex = touchingShapePoint(wire, coord);
 				return wirePointIndex == -1 ? TOUCHING_WIRE : TOUCHING_WIRE_POINT;
 			}
 		}
 		return CLEAR;
+	}
+
+	private int touchingShapePoint(Wire w, Point p) {
+		ArrayList<Point> shapePoints = w.getShapePoints();
+		for(int i = 0; i < shapePoints.size(); i++){
+			Point sp = shapePoints.get(i);
+			if(Math.abs(sp.x - p.x) < 5 && Math.abs(sp.y - p.y) < shapePointDetectRadius) return i;
+		}
+		return -1;
 	}
 	
 	/**
