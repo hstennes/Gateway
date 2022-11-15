@@ -31,6 +31,11 @@ public class CustomHelper {
 	 * Value to be added to absolute minimum width required to fit left connection, right connection, main labels
 	 */
 	private final int labelWidthPadding = 50;
+
+	/**
+	 * Extra value to be added to necessary height of component
+	 */
+	private final int verticalSpacing = 10;
 	
 	/**
 	 * The minimum size for the width or height of a component.
@@ -93,7 +98,7 @@ public class CustomHelper {
 	 * @return
 	 */
 	public int chooseHeight() {
-		return findDimension(content[Constants.LEFT], content[Constants.RIGHT]);
+		return findDimension(content[Constants.LEFT], content[Constants.RIGHT]) + verticalSpacing;
 	}
 	
 	/**

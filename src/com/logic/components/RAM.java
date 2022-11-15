@@ -11,11 +11,15 @@ public class RAM extends LComponent{
 
     public static int SIZE = 32768;
 
-    public static int WIDTH = 150, HEIGHT = 80;
+    public static int WIDTH = 250, HEIGHT = 100;
 
     private int[] data;
 
     private int prevClock;
+
+    public static final String[] INPUT_LABELS = {"Clock", "Address", "Load", "Data"};
+
+    public static final String[] OUTPUT_LABELS = {"Out"};
 
     public RAM(int x, int y) {
         super(x, y, CompType.RAM);

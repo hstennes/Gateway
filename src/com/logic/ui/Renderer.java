@@ -63,14 +63,14 @@ public class Renderer {
     /**
      * The font used to display the label of the component
      */
-    public static final Font CUSTOM_LABEL_FONT = new Font("Arial", Font.PLAIN, 15);
+    public static final Font CUSTOM_LABEL_FONT = new Font("Arial", Font.PLAIN, 20);
 
     /**
      * The font used for multi bit switches
      */
     public static final Font SWITCH_FONT = new Font("Arial", Font.PLAIN, 34);
 
-    public static final Font USER_LABEL_FONT = new Font("Arial", Font.PLAIN, 20);
+    public static final Font USER_LABEL_FONT = new Font("Arial", Font.PLAIN, 25);
 
     /**
      * The font used for rendering Display components
@@ -109,7 +109,7 @@ public class Renderer {
     public Renderer(CircuitPanel cp){
         this.cp = cp;
         cache = new ImageCache();
-        userLabelDrawer = new LabelDrawer(UserMessage.MESSAGE_FONT, UserMessage.MESSAGE_COLOR, UserLabel.MARGIN, UserLabel.MARGIN);
+        userLabelDrawer = new LabelDrawer(USER_LABEL_FONT, UserMessage.MESSAGE_COLOR, UserLabel.MARGIN, UserLabel.MARGIN);
         userMessageDrawer = new LabelDrawer(UserMessage.MESSAGE_FONT, UserMessage.MESSAGE_COLOR, UserMessage.X_MARGIN, UserMessage.Y_MARGIN);
         DISPLAY_FONT = LogicSimApp.fontLoader.sevenSegFont.deriveFont(70f);
     }
@@ -276,13 +276,9 @@ public class Renderer {
         zoom *= dpiScale;
         CachedImage image;
         if(oldImage == null) {
-            image = new CachedImage(
-                    (int) (cb.width * zoom),
-                    (int) (cb.height * zoom),
-                    (int) (-cb.x * zoom * invDpiScale),
-                    (int) (-cb.y * zoom * invDpiScale),
-                    (int) ((-cb.x + lb.width) * zoom * invDpiScale),
-                    (int) ((-cb.y + lb.height) * zoom * invDpiScale),
+            image = new CachedImage((int) (cb.width * zoom), (int) (cb.height * zoom),
+                    (int) (-cb.x * zoom * invDpiScale), (int) (-cb.y * zoom * invDpiScale),
+                    (int) ((-cb.x + lb.width) * zoom * invDpiScale), (int) ((-cb.y + lb.height) * zoom * invDpiScale),
                     ImageCache.getHashString(lcomp, compData));
         }
         else image = oldImage;
@@ -311,6 +307,7 @@ public class Renderer {
                 return image;
             case RAM:
                 drawBoxComponent(g2d, lcomp.getBoundsRight(), "RAM", -cb.x, -cb.y);
+                drawRamConnectionLabels(g2d, ((RAM) lcomp), -cb.x, -cb.y);
                 return image;
             case SCREEN:
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -357,20 +354,34 @@ public class Renderer {
 
     private void drawCustomConnectionLabels(Graphics2D g2d, OpCustom2 custom, int dx, int dy){
         IOManager io = custom.getIO();
+        CustomType type = custom.getCustomType();
         for(int i = 0; i < io.getNumInputs(); i++) {
-            drawCustomConnectionLabel(g2d, custom, i, Connection.INPUT, dx, dy);
+            Connection connect = io.inputConnection(i);
+            int[] sideNum = type.helper.getSideAndNum(i, Connection.INPUT);
+            String label = type.connectionLabels[sideNum[0]][sideNum[1]];
+            drawCustomConnectionLabel(g2d, connect, label, dx, dy);
         }
         for(int i = 0; i < io.getNumOutputs(); i++) {
-            drawCustomConnectionLabel(g2d, custom, i, Connection.OUTPUT, dx, dy);
+            Connection connect = io.outputConnection(i);
+            int[] sideNum = type.helper.getSideAndNum(i, Connection.OUTPUT);
+            String label = type.connectionLabels[sideNum[0]][sideNum[1]];
+            drawCustomConnectionLabel(g2d, connect, label, dx, dy);
         }
     }
 
-    private void drawCustomConnectionLabel(Graphics2D g2d, OpCustom2 custom, int index, int connectionType, int dx, int dy) {
-        IOManager io = custom.getIO();
-        Connection connect = connectionType == Connection.INPUT ? io.inputConnection(index) : io.outputConnection(index);
-        CustomType type = custom.getCustomType();
-        int[] sideNum = type.helper.getSideAndNum(index, connectionType);
-        String label = type.connectionLabels[sideNum[0]][sideNum[1]];
+    private void drawRamConnectionLabels(Graphics2D g2d, RAM ram, int dx, int dy){
+        IOManager io = ram.getIO();
+        for(int i = 0; i < io.getNumInputs(); i++) {
+            Connection connect = io.inputConnection(i);
+            drawCustomConnectionLabel(g2d, connect, RAM.INPUT_LABELS[i], dx, dy);
+        }
+        for(int i = 0; i < io.getNumOutputs(); i++) {
+            Connection connect = io.outputConnection(i);
+            drawCustomConnectionLabel(g2d, connect, RAM.OUTPUT_LABELS[i], dx, dy);
+        }
+    }
+
+    private void drawCustomConnectionLabel(Graphics2D g2d, Connection connect, String label, int dx, int dy) {
         Point connectPos = translateDir(new Point(connect.getX(), connect.getY()),
                 CONNECT_LENGTH,
                 (connect.getDirection() + 2) % 4);
